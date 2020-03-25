@@ -78,16 +78,38 @@ def configHeal(master, currentLife, currentMana):
 		pyautogui.press(keyPressMana)
 
 def confirmIsTarget(image):
-	esq = pyautogui.locate('C:/Users/Leo/Desktop/heal_bot/images/esq.png', image, grayscale=True, confidence=.75)
-	dir = pyautogui.locate('C:/Users/Leo/Desktop/heal_bot/images/dir.png', image, grayscale=True, confidence=.75)
-	cima = pyautogui.locate('C:/Users/Leo/Desktop/heal_bot/images/cima.png', image, grayscale=True, confidence=.75)
-	baixo = pyautogui.locate('C:/Users/Leo/Desktop/heal_bot/images/baixo.png', image, grayscale=True, confidence=.75)
+	left = pyautogui.locate('C:/Users/Leo/Desktop/heal_bot/images/left.png', image, grayscale=True, confidence=.75)
+	right = pyautogui.locate('C:/Users/Leo/Desktop/heal_bot/images/right.png', image, grayscale=True, confidence=.75)
+	top = pyautogui.locate('C:/Users/Leo/Desktop/heal_bot/images/top.png', image, grayscale=True, confidence=.75)
+	bottom = pyautogui.locate('C:/Users/Leo/Desktop/heal_bot/images/bottom.png', image, grayscale=True, confidence=.75)
 	
-	if (esq != None and dir != None and cima != None and baixo != None):
+	if (left != None and right != None and top != None and bottom != None):
 		return True
 
 	return False
 
+def identifyNumbers(imgLife, imgMana, vector_life, vector_mana):
+	for x in range(0, 10):
+		vector_life[x] =  pyautogui.locateAll('C:/Users/Leo/Desktop/heal_bot/images/' + str(x) + '.png', imgLife, grayscale=True, confidence=.95)
+		vector_mana[x] =  pyautogui.locateAll('C:/Users/Leo/Desktop/heal_bot/images/' + str(x) + '.png', imgMana, grayscale=True, confidence=.95)
+
+def convertNumbersToString(validIndex, vector, currentValue):
+	while(validIndex):
+		max = 2000
+		indexRemoved = 0
+		insideIndexRemove = 0
+		for value in vector:
+			if (vector[value] != None):
+				for valueIntoItem in vector[value]:
+					if (max > valueIntoItem[0]):
+						indexRemoved = value
+						insideIndexRemove = valueIntoItem
+						max = valueIntoItem[0]
+		if (insideIndexRemove != 0):
+			vector[indexRemoved].remove(insideIndexRemove)
+		currentValue += str(indexRemoved)
+		validIndex -= 1
+	return currentValue
 
 def controller(concur):
 	time.sleep(1)
@@ -117,27 +139,7 @@ def controller(concur):
 		hasHungry = pyautogui.locate('C:/Users/Leo/Desktop/heal_bot/images/food.png', food, grayscale=True, confidence=.75)
 		hasSpeed = pyautogui.locate('C:/Users/Leo/Desktop/heal_bot/images/speed.png', food, grayscale=True, confidence=.75)
 		
-		vector_life[0] =  pyautogui.locateAll('C:/Users/Leo/Desktop/heal_bot/images/0.png', life, grayscale=True, confidence=.95)
-		vector_life[1] =  pyautogui.locateAll('C:/Users/Leo/Desktop/heal_bot/images/1.png', life, grayscale=True, confidence=.95)
-		vector_life[2] =  pyautogui.locateAll('C:/Users/Leo/Desktop/heal_bot/images/2.png', life, grayscale=True, confidence=.95)
-		vector_life[3] =  pyautogui.locateAll('C:/Users/Leo/Desktop/heal_bot/images/3.png', life, grayscale=True, confidence=.95)
-		vector_life[4] =  pyautogui.locateAll('C:/Users/Leo/Desktop/heal_bot/images/4.png', life, grayscale=True, confidence=.95)
-		vector_life[5] =  pyautogui.locateAll('C:/Users/Leo/Desktop/heal_bot/images/5.png', life, grayscale=True, confidence=.95)
-		vector_life[6] =  pyautogui.locateAll('C:/Users/Leo/Desktop/heal_bot/images/6.png', life, grayscale=True, confidence=.95)
-		vector_life[7] =  pyautogui.locateAll('C:/Users/Leo/Desktop/heal_bot/images/7.png', life, grayscale=True, confidence=.95)
-		vector_life[8] =  pyautogui.locateAll('C:/Users/Leo/Desktop/heal_bot/images/8.png', life, grayscale=True, confidence=.95)
-		vector_life[9] =  pyautogui.locateAll('C:/Users/Leo/Desktop/heal_bot/images/9.png', life, grayscale=True, confidence=.95)
-		
-		vector_mana[0] =  pyautogui.locateAll('C:/Users/Leo/Desktop/heal_bot/images/0.png', mana, grayscale=True, confidence=.95)
-		vector_mana[1] =  pyautogui.locateAll('C:/Users/Leo/Desktop/heal_bot/images/1.png', mana, grayscale=True, confidence=.95)
-		vector_mana[2] =  pyautogui.locateAll('C:/Users/Leo/Desktop/heal_bot/images/2.png', mana, grayscale=True, confidence=.95)
-		vector_mana[3] =  pyautogui.locateAll('C:/Users/Leo/Desktop/heal_bot/images/3.png', mana, grayscale=True, confidence=.95)
-		vector_mana[4] =  pyautogui.locateAll('C:/Users/Leo/Desktop/heal_bot/images/4.png', mana, grayscale=True, confidence=.95)
-		vector_mana[5] =  pyautogui.locateAll('C:/Users/Leo/Desktop/heal_bot/images/5.png', mana, grayscale=True, confidence=.95)
-		vector_mana[6] =  pyautogui.locateAll('C:/Users/Leo/Desktop/heal_bot/images/6.png', mana, grayscale=True, confidence=.95)
-		vector_mana[7] =  pyautogui.locateAll('C:/Users/Leo/Desktop/heal_bot/images/7.png', mana, grayscale=True, confidence=.95)
-		vector_mana[8] =  pyautogui.locateAll('C:/Users/Leo/Desktop/heal_bot/images/8.png', mana, grayscale=True, confidence=.95)
-		vector_mana[9] =  pyautogui.locateAll('C:/Users/Leo/Desktop/heal_bot/images/9.png', mana, grayscale=True, confidence=.95)
+		identifyNumbers(life, mana, vector_life, vector_mana)
 		
 		validIndexLife = 0
 		validIndexMana = 0
@@ -160,40 +162,10 @@ def controller(concur):
 		mustAtk = concur.master["autoSpellInTarget"].get()
 		spellAtk = concur.master["keyAutoAtk"].get().lower()
 				
-
-		while(validIndexLife):
-			max = 2000
-			indexRemoved = 0
-			insideIndexRemove = 0
-			for value in vector_life:
-				if (vector_life[value] != None):
-					for valueIntoItem in vector_life[value]:
-						if (max > valueIntoItem[0]):
-							indexRemoved = value
-							insideIndexRemove = valueIntoItem
-							max = valueIntoItem[0]
-			if (insideIndexRemove != 0):
-				vector_life[indexRemoved].remove(insideIndexRemove)
-			lifeValue += str(indexRemoved)
-			validIndexLife -= 1
-				
-		while(validIndexMana):
-			max = 2000
-			indexRemoved = 0
-			insideIndexRemove = 0
-			for value in vector_mana:
-				if (vector_mana[value] != None):
-					for valueIntoItem in vector_mana[value]:
-						if (max > valueIntoItem[0]):
-							indexRemoved = value
-							insideIndexRemove = valueIntoItem
-							max = valueIntoItem[0]
-			if (insideIndexRemove != 0):
-				vector_mana[indexRemoved].remove(insideIndexRemove)
-			manaValue += str(indexRemoved)
-			validIndexMana -= 1
+		lifeValue = convertNumbersToString(validIndexLife, vector_life, lifeValue)
+		manaValue = convertNumbersToString(validIndexMana, vector_mana, manaValue)
 		
-		#print(lifeValue + ' ---- ' + manaValue)
+		print(lifeValue + ' ---- ' + manaValue)
 		#print(e1)
 			
 		if (hasHungry != None and mustEatFood):
@@ -205,6 +177,15 @@ def controller(concur):
 			
 		configHeal(master, int(lifeValue), int(manaValue))
 
+def popupmsg(msg):
+    popup = tk.Tk()
+    popup.wm_title("Warning")
+    label = ttk.Label(popup, text=msg, font=("Verdana", 8))
+    label.pack(side="top", fill="x", pady=10)
+    B1 = ttk.Button(popup, text="Okay", command = popup.destroy)
+    B1.pack()
+    popup.mainloop()
+
 def stopBot(concur, master):
 	master.title('TibiaBot - Stopped')
 	concur.pause()
@@ -213,10 +194,15 @@ def loadConfig(a, b):
 	print(a.get())
 	print(b.get())
 	
-
 def startBot(concur, master):
-	master.title('TibiaBot - Running')
-	concur.resume()
+	valueTotalMana = concur.master["totalMana"].get()
+	valueTotalLife = concur.master["totalLife"].get()
+	
+	if (valueTotalLife.isdigit() == False or valueTotalMana.isdigit() == False):
+		popupmsg('Configure Total Life and Total Mana')
+	else:
+		concur.resume()
+		master.title('TibiaBot - Running')
 	
 if __name__ == '__main__':
 	master = tk.Tk()
@@ -236,16 +222,13 @@ if __name__ == '__main__':
 
 	totalLife = tk.Entry(master, width=7)
 	totalMana = tk.Entry(master, width=7)
-	#autoHur = tk.Entry(master, width=18)
 	
 	totalLife.grid(row=0, column=1)
 	totalMana.grid(row=1, column=1)
-	#autoHur.grid(row=0, column=4, padx=5)
 
 	keyPressHur = StringVar()
-	keyPressRun = ttk.Combobox(master, width = 6, textvariable = keyPressHur) 
-	  
-	# Adding combobox drop down list 
+	keyPressRun = ttk.Combobox(master, width = 6, textvariable = keyPressHur)
+
 	keyPressRun['values'] = fKeys
 	  
 	keyPressRun.grid(row = 0, column = 4) 
@@ -264,18 +247,16 @@ if __name__ == '__main__':
 	Checkbutton(master, text="Change Gold", variable=changeGold).grid(row=1, column = 5, sticky=W)
 	
 	keyAtk = StringVar()
-	keyAutoAtk = ttk.Combobox(master, width = 4, textvariable = keyAtk) 
-	  
-	# Adding combobox drop down list 
+	keyAutoAtk = ttk.Combobox(master, width = 4, textvariable = keyAtk)
+	
 	keyAutoAtk['values'] = fKeys 
 	  
 	keyAutoAtk.grid(row = 0, column = 5, sticky=W, padx = 95) 
 	keyAutoAtk.current() 
 
 	keyPressFood = StringVar()
-	keyChoosen = ttk.Combobox(master, width = 4, textvariable = keyPressFood) 
-	  
-	# Adding combobox drop down list 
+	keyChoosen = ttk.Combobox(master, width = 4, textvariable = keyPressFood)
+	
 	keyChoosen['values'] = fKeys 
 	  
 	keyChoosen.grid(row = 1, column = 4, sticky=W) 
@@ -285,9 +266,8 @@ if __name__ == '__main__':
 			text="Life 90%").grid(row = 3)
 			
 	keyPressCure90 = StringVar()
-	keyChoosenCure90 = ttk.Combobox(master, width = 6, textvariable = keyPressCure90) 
-	  
-	# Adding combobox drop down list 
+	keyChoosenCure90 = ttk.Combobox(master, width = 6, textvariable = keyPressCure90)
+	
 	keyChoosenCure90['values'] = fKeys
 	  
 	keyChoosenCure90.grid(row = 3, column = 1, sticky=W) 
@@ -298,8 +278,7 @@ if __name__ == '__main__':
 			
 	keyPressCure70 = StringVar()
 	keyChoosenCure70 = ttk.Combobox(master, width = 6, textvariable = keyPressCure70) 
-	  
-	# Adding combobox drop down list 
+
 	keyChoosenCure70['values'] = fKeys
 	  
 	keyChoosenCure70.grid(row = 3, column = 4, sticky=W) 
@@ -310,8 +289,7 @@ if __name__ == '__main__':
 			
 	keyPressCure50 = StringVar()
 	keyChoosenCure50 = ttk.Combobox(master, width = 6, textvariable = keyPressCure50) 
-	  
-	# Adding combobox drop down list 
+
 	keyChoosenCure50['values'] =  fKeys
 	  
 	keyChoosenCure50.grid(row = 3, column = 5, sticky=W, padx = 60) 
