@@ -1,10 +1,10 @@
 # bot_for_tibia12.01
+----
+Bot for Tibia 12+. <br>
+It doesn't work on TibiaGlobal, just in OTservers. <br>
+It was tested on TaleonAres. <br>
 
-Single bot for Tibia 12+.
-It doesn't work on TibiaGlobal, just in OTservers. 
-It was tested on TaleonAres.
-
-#Features
-Auto Heal
-Auto Speed
-Auto Food
+## Features
+- Auto Heal
+- Auto Speed
+- Auto Food
