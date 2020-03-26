@@ -13,9 +13,11 @@ import sys
 import os
 import json
 
-global firstTime
-global configIndex
+configIndex = 0
+P1 = 0
+P2 = 0
 firstTime = False
+shouldListener = False
 
 def returnListPointsBar():
 	file = open("config_screen.txt", "r")
@@ -23,7 +25,7 @@ def returnListPointsBar():
 	list = []
 	indexPrevious = 0
 	indexNext = 0
-	for i in range (4):
+	for i in range (16):
 		value = ""
 		indexPrevious = contents.index('"', indexNext + 1)
 		indexNext = contents.index('"', indexPrevious + 1)
@@ -33,29 +35,35 @@ def returnListPointsBar():
 	return list
 
 def checkConfigScreen():
-	list = returnListPointsBar()
 	im=pyautogui.screenshot()
-	im = im.crop((int(list[0]), int(list[1]), int(list[2]), int(list[3])))
+	im = im.crop((int(P1[0]), int(P1[1]), int(P2[0]), int(P2[1])))
 	im.show()
-	#popupmsg('Is valid this screen?')
+	popupmsg('Please, confirm if the following points are valids\n P1' + str(P1) + ', P2' + str(P2))
 
 def on_move(x, y):
+	global firstTime
 	if (firstTime == False):
 		return False
 
 def on_click(x, y, button, pressed):
+	global shouldListener
 	if pressed:
-		if (button == mouse.Button.right):
+		if (button == mouse.Button.right and shouldListener):
+			shouldListener = False
 			checkConfigScreen()
-			Listener.stop()
 			return False
 		else:
-			file = open('config_screen.txt', 'a')
+			global configIndex, P1, P2
+			#file = open('config_screen.txt', 'a')
 			if (configIndex == 0):
-				file.write('x:"' + str(x) + '" - y:"' + str(y) + '"\n')
+				#file.write('x:"' + str(x) + '" - y:"' + str(y) + '"\n')
+				P1 = [x, y]
+				configIndex = 1
 			elif (configIndex == 1):
-				file.write('mx:"' + str(x) + '" - my:"' + str(y) + '"\n')
-			file.close()
+				#file.write('mx:"' + str(x) + '" - my:"' + str(y) + '"\n')
+				P2 = [x, y]
+				configIndex = 0
+			#file.close()
 
 with MouseListener(on_move=on_move, on_click=on_click) as listener:
 	listener.join()
@@ -173,9 +181,12 @@ def controller(concur):
 		list = returnListPointsBar()
 		#life = life.crop((1200, 135, 1350, 155))
 		life = life.crop((int(list[0]), int(list[1]), int(list[2]), int(list[3])))
-		mana = mana.crop((1200, 152, 1350, 174))
-		food = food.crop((1190, 310, 1310, 330))
-		isTarget = isTarget.crop((1170, 405, 1300, 482))
+		mana = mana.crop((int(list[4]), int(list[5]), int(list[6]), int(list[7])))
+		food = food.crop((int(list[8]), int(list[9]), int(list[10]), int(list[11])))
+		isTarget = isTarget.crop((int(list[12]), int(list[13]), int(list[14]), int(list[15])))
+		#mana = mana.crop((1200, 152, 1350, 174))
+		#food = food.crop((1190, 310, 1310, 330))
+		#isTarget = isTarget.crop((1170, 405, 1300, 482))
 		
 		screenBot = pyautogui.locate('C:/Users/Leo/Desktop/heal_bot/images/bot.png', im, grayscale=True, confidence=.75)
 		
@@ -236,9 +247,7 @@ def popupmsg(msg):
 	popup.wm_title("Warning")
 	label = ttk.Label(popup, text=msg, font=("Verdana", 8))
 	label.pack(side="top", fill="x", pady=10)
-	B1 = ttk.Button(popup, text="Validate", command = lambda: increaseConfig(popup))
-	B1.pack()
-	B2 = ttk.Button(popup, text="Repeat", command = popup.destroy)
+	B2 = ttk.Button(popup, text="Ok", command = popup.destroy)
 	B2.pack()
 	popup.mainloop()
 
@@ -260,11 +269,12 @@ def startBot(concur, master):
 		concur.resume()
 		master.title('TibiaBot - Running')
 
-def configScreen():
+def configScreen(openConfigScreen):
+	global shouldListener
+	shouldListener = True
 	listener.run()
 		
 if __name__ == '__main__':
-	configIndex = 0
 	firstTime = True
 	master = tk.Tk()
 	master.geometry("510x150")
@@ -395,9 +405,11 @@ if __name__ == '__main__':
 	concur.start()
 	concur.pause()
 
-	tk.Button(master, 
+	openConfigScreen = tk.Button(master, 
 			  text='Config Screen', 
-			  command=lambda: configScreen()).grid(row=4, 
+			  bg='red',
+			  activebackground='green',
+			  command=lambda: configScreen(openConfigScreen)).grid(row=4, 
 										column=5, 
 										sticky=W, 
 										pady=4)
