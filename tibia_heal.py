@@ -10,7 +10,6 @@ import tkinter as tk
 from tkinter import *
 from pynput.mouse import Listener as MouseListener
 from pynput import mouse
-from PIL import Image
 
 configIndex = 0
 P1 = 0
