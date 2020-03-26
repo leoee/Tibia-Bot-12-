@@ -22,8 +22,8 @@ It was tested on TaleonAres. <br>
 ## How to configure?
 First of all, you need to configure your screen. For that, you need to set your coordinates from Life Bar, Mana Bar, Tools and Battle.<br>
 Click on "Config Screen" in the bot. After the click, a listener will be started and will save your coordinates when clicked with the left button mouse.<br> 
-![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/botRD.png)
-Click in 2 points to cut an image. When finished the clicks, click with right button and the listener will be stopped and an image will be showed o your. If the image is right, copy the coordinates from pop-up message and save into "config_screen.txt". There are some images examples below to help you in the cutting.<br>
+![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/botRD.png)<br>
+Click in 2 points to cut an image. When finished the clicks, click with right button and the listener will be stopped and an image will be showed. If the image is right, copy the coordinates from pop-up message and save into "config_screen.txt". There are some images examples below to help you in the cutting.<br>
 ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/lifeRD.png)<br>
 ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/manaRD.png)<br>
 ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/toolsRD.png)<br>
@@ -42,6 +42,21 @@ x:"P2.x" - y:"P2.y"
 ***Battle*****
 x:"P1.x" - y:"P1.y"
 x:"P2.x" - y:"P2.y"
+```
+Another example<br>
+```
+***Life Bar*****
+x:"1193" - y:"138"
+x:"1344" - y:"154"
+***Mana Bar*****
+x:"1193" - y:"148"
+x:"1357" - y:"167"
+***Tools*****
+x:"1197" - y:"310"
+x:"1313" - y:"327"
+***Battle*****
+x:"1190" - y:"400"
+x:"1357" - y:"477"
 ```
 That is the pattern, please don't change.<br>
 
