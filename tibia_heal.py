@@ -1,4 +1,7 @@
 from tkinter import *
+import logging
+from pynput.mouse import Listener as MouseListener
+from pynput import mouse
 from tkinter import ttk
 import tkinter as tk
 import threading
@@ -6,11 +9,56 @@ import pyscreenshot as ImageGrab
 from PIL import Image
 import pyautogui
 import time
-from firebase import firebase
-from datetime import datetime
 import sys
 import os
 import json
+
+global firstTime
+global configIndex
+firstTime = False
+
+def returnListPointsBar():
+	file = open("config_screen.txt", "r")
+	contents = file.read()
+	list = []
+	indexPrevious = 0
+	indexNext = 0
+	for i in range (4):
+		value = ""
+		indexPrevious = contents.index('"', indexNext + 1)
+		indexNext = contents.index('"', indexPrevious + 1)
+		for x in range(indexPrevious + 1, indexNext):
+			value += contents[x]
+		list.append(value)
+	return list
+
+def checkConfigScreen():
+	list = returnListPointsBar()
+	im=pyautogui.screenshot()
+	im = im.crop((int(list[0]), int(list[1]), int(list[2]), int(list[3])))
+	im.show()
+	#popupmsg('Is valid this screen?')
+
+def on_move(x, y):
+	if (firstTime == False):
+		return False
+
+def on_click(x, y, button, pressed):
+	if pressed:
+		if (button == mouse.Button.right):
+			checkConfigScreen()
+			Listener.stop()
+			return False
+		else:
+			file = open('config_screen.txt', 'a')
+			if (configIndex == 0):
+				file.write('x:"' + str(x) + '" - y:"' + str(y) + '"\n')
+			elif (configIndex == 1):
+				file.write('mx:"' + str(x) + '" - my:"' + str(y) + '"\n')
+			file.close()
+
+with MouseListener(on_move=on_move, on_click=on_click) as listener:
+	listener.join()
 
 class Concur(threading.Thread):
 	def __init__(self):
@@ -122,7 +170,9 @@ def controller(concur):
 		mana = im
 		food = im
 		isTarget = im
-		life = life.crop((1200, 135, 1350, 155))
+		list = returnListPointsBar()
+		#life = life.crop((1200, 135, 1350, 155))
+		life = life.crop((int(list[0]), int(list[1]), int(list[2]), int(list[3])))
 		mana = mana.crop((1200, 152, 1350, 174))
 		food = food.crop((1190, 310, 1310, 330))
 		isTarget = isTarget.crop((1170, 405, 1300, 482))
@@ -177,14 +227,20 @@ def controller(concur):
 			
 		configHeal(master, int(lifeValue), int(manaValue))
 
+def increaseConfig(popup):
+	configIndex += 1
+	print(configIndex)
+
 def popupmsg(msg):
-    popup = tk.Tk()
-    popup.wm_title("Warning")
-    label = ttk.Label(popup, text=msg, font=("Verdana", 8))
-    label.pack(side="top", fill="x", pady=10)
-    B1 = ttk.Button(popup, text="Okay", command = popup.destroy)
-    B1.pack()
-    popup.mainloop()
+	popup = tk.Tk()
+	popup.wm_title("Warning")
+	label = ttk.Label(popup, text=msg, font=("Verdana", 8))
+	label.pack(side="top", fill="x", pady=10)
+	B1 = ttk.Button(popup, text="Validate", command = lambda: increaseConfig(popup))
+	B1.pack()
+	B2 = ttk.Button(popup, text="Repeat", command = popup.destroy)
+	B2.pack()
+	popup.mainloop()
 
 def stopBot(concur, master):
 	master.title('TibiaBot - Stopped')
@@ -203,8 +259,13 @@ def startBot(concur, master):
 	else:
 		concur.resume()
 		master.title('TibiaBot - Running')
-	
+
+def configScreen():
+	listener.run()
+		
 if __name__ == '__main__':
+	configIndex = 0
+	firstTime = True
 	master = tk.Tk()
 	master.geometry("510x150")
 	master.resizable(False, False)
@@ -335,14 +396,14 @@ if __name__ == '__main__':
 	concur.pause()
 
 	tk.Button(master, 
-			  text='Save Config', 
-			  command=master.quit).grid(row=4, 
+			  text='Config Screen', 
+			  command=lambda: configScreen()).grid(row=4, 
 										column=5, 
 										sticky=W, 
 										pady=4)
 	tk.Button(master, 
-			  text='Load Config', 
-			  command = lambda: loadConfig(eatFood, keyChoosen)).grid(row=4, 
+			  text='Check Config', 
+			  command = lambda: checkConfigScreen()).grid(row=4, 
 										column=4, 
 										sticky=E, 
 										pady=4,
