@@ -1,17 +1,16 @@
-from tkinter import *
+import json
 import logging
+import os
+import threading
+import pyautogui
+import pyscreenshot as ImageGrab
+import sys
+import time
+import tkinter as tk
+from tkinter import *
 from pynput.mouse import Listener as MouseListener
 from pynput import mouse
-from tkinter import ttk
-import tkinter as tk
-import threading
-import pyscreenshot as ImageGrab
 from PIL import Image
-import pyautogui
-import time
-import sys
-import os
-import json
 
 configIndex = 0
 P1 = 0
@@ -54,16 +53,12 @@ def on_click(x, y, button, pressed):
 			return False
 		else:
 			global configIndex, P1, P2
-			#file = open('config_screen.txt', 'a')
 			if (configIndex == 0):
-				#file.write('x:"' + str(x) + '" - y:"' + str(y) + '"\n')
 				P1 = [x, y]
 				configIndex = 1
 			elif (configIndex == 1):
-				#file.write('mx:"' + str(x) + '" - my:"' + str(y) + '"\n')
 				P2 = [x, y]
 				configIndex = 0
-			#file.close()
 
 with MouseListener(on_move=on_move, on_click=on_click) as listener:
 	listener.join()
@@ -73,8 +68,8 @@ class Concur(threading.Thread):
 		super(Concur, self).__init__()
 		self.iterations = 0
 		self.master = None
-		self.daemon = True  # Allow main to exit even if still running.
-		self.paused = True  # Start out paused.
+		self.daemon = True
+		self.paused = True
 		self.state = threading.Condition()
 
 	def setMaster(self, master):
@@ -85,7 +80,7 @@ class Concur(threading.Thread):
 		while True:
 			with self.state:
 				if self.paused:
-					self.state.wait()  # Block execution until notified.
+					self.state.wait()
 			controller(self)
 			time.sleep(.1)
 			self.iterations += 1
@@ -93,11 +88,11 @@ class Concur(threading.Thread):
 	def resume(self):
 		with self.state:
 			self.paused = False
-			self.state.notify()  # Unblock self if waiting.
+			self.state.notify()
 
 	def pause(self):
 		with self.state:
-			self.paused = True  # Block self.
+			self.paused = True
 
 
 def changeGeneratorToList(vector_life, vector_mana):
@@ -134,11 +129,11 @@ def configHeal(master, currentLife, currentMana):
 		pyautogui.press(keyPressMana)
 
 def confirmIsTarget(image):
-	left = pyautogui.locate('C:/Users/Leo/Desktop/heal_bot/images/left.png', image, grayscale=True, confidence=.75)
-	right = pyautogui.locate('C:/Users/Leo/Desktop/heal_bot/images/right.png', image, grayscale=True, confidence=.75)
-	top = pyautogui.locate('C:/Users/Leo/Desktop/heal_bot/images/top.png', image, grayscale=True, confidence=.75)
-	bottom = pyautogui.locate('C:/Users/Leo/Desktop/heal_bot/images/bottom.png', image, grayscale=True, confidence=.75)
-	
+	left = pyautogui.locate('C:/Users/Leo/Desktop/heal_bot/images/left.png', image, grayscale=True, confidence=.85)
+	right = pyautogui.locate('C:/Users/Leo/Desktop/heal_bot/images/right.png', image, grayscale=True, confidence=.85)
+	top = pyautogui.locate('C:/Users/Leo/Desktop/heal_bot/images/top.png', image, grayscale=True, confidence=.85)
+	bottom = pyautogui.locate('C:/Users/Leo/Desktop/heal_bot/images/bottom.png', image, grayscale=True, confidence=.85)
+		
 	if (left != None and right != None and top != None and bottom != None):
 		return True
 
@@ -179,19 +174,14 @@ def controller(concur):
 		food = im
 		isTarget = im
 		list = returnListPointsBar()
-		#life = life.crop((1200, 135, 1350, 155))
 		life = life.crop((int(list[0]), int(list[1]), int(list[2]), int(list[3])))
 		mana = mana.crop((int(list[4]), int(list[5]), int(list[6]), int(list[7])))
 		food = food.crop((int(list[8]), int(list[9]), int(list[10]), int(list[11])))
 		isTarget = isTarget.crop((int(list[12]), int(list[13]), int(list[14]), int(list[15])))
-		#mana = mana.crop((1200, 152, 1350, 174))
-		#food = food.crop((1190, 310, 1310, 330))
-		#isTarget = isTarget.crop((1170, 405, 1300, 482))
 		
 		screenBot = pyautogui.locate('C:/Users/Leo/Desktop/heal_bot/images/bot.png', im, grayscale=True, confidence=.75)
 		
 		if (screenBot != None):
-			print('Skipping')
 			continue
 		
 		vector_life = {}
@@ -201,7 +191,7 @@ def controller(concur):
 		hasSpeed = pyautogui.locate('C:/Users/Leo/Desktop/heal_bot/images/speed.png', food, grayscale=True, confidence=.75)
 		
 		identifyNumbers(life, mana, vector_life, vector_mana)
-		
+				
 		validIndexLife = 0
 		validIndexMana = 0
 		lifeValue = ""
@@ -225,22 +215,15 @@ def controller(concur):
 				
 		lifeValue = convertNumbersToString(validIndexLife, vector_life, lifeValue)
 		manaValue = convertNumbersToString(validIndexMana, vector_mana, manaValue)
-		
-		print(lifeValue + ' ---- ' + manaValue)
-		#print(e1)
-			
+					
 		if (hasHungry != None and mustEatFood):
 			pyautogui.press(keyPressEatFood)
 		if (hasSpeed == None and mustUseHur and spellHur != " "):
 			pyautogui.press(spellHur)
-		if (mustAtk and spellAtk != " " and confirmIsTarget(isTarget)):
-			pyautogui.press(spellAtk)
+		#if (mustAtk and spellAtk != " " and confirmIsTarget(isTarget)):
+		#	pyautogui.press(spellAtk)
 			
 		configHeal(master, int(lifeValue), int(manaValue))
-
-def increaseConfig(popup):
-	configIndex += 1
-	print(configIndex)
 
 def popupmsg(msg):
 	popup = tk.Tk()
@@ -252,6 +235,13 @@ def popupmsg(msg):
 	popup.mainloop()
 
 def stopBot(concur, master):
+	children_widgets = master.winfo_children()
+	for child_widget in children_widgets:
+		if child_widget.winfo_class() == 'Button':
+			if (str(child_widget) == ".!button4"):
+				child_widget.configure(bg="red")
+			elif (str(child_widget) == ".!button3"):
+				child_widget.configure(bg="green")
 	master.title('TibiaBot - Stopped')
 	concur.pause()
 
@@ -260,6 +250,13 @@ def loadConfig(a, b):
 	print(b.get())
 	
 def startBot(concur, master):
+	children_widgets = master.winfo_children()
+	for child_widget in children_widgets:
+		if child_widget.winfo_class() == 'Button':
+			if (str(child_widget) == ".!button4"):
+				child_widget.configure(bg="green")
+			elif (str(child_widget) == ".!button3"):
+				child_widget.configure(bg="red")
 	valueTotalMana = concur.master["totalMana"].get()
 	valueTotalLife = concur.master["totalLife"].get()
 	
@@ -269,7 +266,48 @@ def startBot(concur, master):
 		concur.resume()
 		master.title('TibiaBot - Running')
 
-def configScreen(openConfigScreen):
+def confirmFieldsAreBeSeeing(master, itemsFromScreen):
+	children_widgets = master.winfo_children()
+	valueLife = itemsFromScreen["totalLife"].get()
+	valueMana = itemsFromScreen["totalMana"].get()
+	im=pyautogui.screenshot()
+	life = im
+	mana = im
+	isTarget = im
+	list = returnListPointsBar()
+	life = life.crop((int(list[0]), int(list[1]), int(list[2]), int(list[3])))
+	mana = mana.crop((int(list[4]), int(list[5]), int(list[6]), int(list[7])))
+	isTarget = isTarget.crop((int(list[12]), int(list[13]), int(list[14]), int(list[15])))
+	
+	vector_life = {}
+	vector_mana = {}
+		
+	identifyNumbers(life, mana, vector_life, vector_mana)
+			
+	validIndexLife = 0
+	validIndexMana = 0
+	
+	changeGeneratorToList(vector_life, vector_mana)
+	
+	for i in range(0, 10):
+		validIndexLife += (sum(x is not None for x in vector_life[i]))
+		validIndexMana += (sum(x is not None for x in vector_mana[i]))
+
+	if (valueLife == "" or valueMana == ""):
+		popupmsg('Set total life and total mana')
+	if (validIndexLife != len(valueLife)):
+		popupmsg('Length total life does not match with your length from life bar.\n'+
+					'If your total life is right, please change your Life Bar points into config_screen.')
+	elif (validIndexMana != len(valueMana)):
+		popupmsg('Length total mana does not match with your length from mana bar.\n'+
+					'If your total mana is right, please change your Life Mana points into config_screen.')
+	else:
+		for child_widget in children_widgets:
+			if child_widget.winfo_class() == 'Button':
+				if (str(child_widget) == ".!button2"):
+					child_widget.configure(bg="green")
+
+def configScreen():
 	global shouldListener
 	shouldListener = True
 	listener.run()
@@ -277,7 +315,7 @@ def configScreen(openConfigScreen):
 if __name__ == '__main__':
 	firstTime = True
 	master = tk.Tk()
-	master.geometry("510x150")
+	master.geometry("550x150")
 	master.resizable(False, False)
 	master.title('TibiaBot - Stopped')
 		
@@ -288,8 +326,6 @@ if __name__ == '__main__':
 			 text="Total Life").grid(row = 0)
 	tk.Label(master, 
 			 text="Total Mana").grid(row = 1)
-	tk.Label(master, 
-			 text="Spell").grid(row = 0, column = 4)
 
 	totalLife = tk.Entry(master, width=7)
 	totalMana = tk.Entry(master, width=7)
@@ -302,7 +338,7 @@ if __name__ == '__main__':
 
 	keyPressRun['values'] = fKeys
 	  
-	keyPressRun.grid(row = 0, column = 4) 
+	keyPressRun.grid(row = 0, column = 4, sticky=W) 
 	keyPressRun.current()	
 
 	eatFood = IntVar()
@@ -313,9 +349,6 @@ if __name__ == '__main__':
 	
 	autoTarget = IntVar()
 	Checkbutton(master, text="Auto Target", variable=autoTarget).grid(row=0, column = 5, sticky=W)
-	
-	changeGold = IntVar()
-	Checkbutton(master, text="Change Gold", variable=changeGold).grid(row=1, column = 5, sticky=W)
 	
 	keyAtk = StringVar()
 	keyAutoAtk = ttk.Combobox(master, width = 4, textvariable = keyAtk)
@@ -377,7 +410,6 @@ if __name__ == '__main__':
 	keyPressCureMana = StringVar()
 	keyPressCureMana = ttk.Combobox(master, width = 6, textvariable = keyPressCureMana) 
 	  
-	# Adding combobox drop down list 
 	keyPressCureMana['values'] =  fKeys
 	  
 	keyPressCureMana.grid(row = 4, column = 3) 
@@ -396,8 +428,7 @@ if __name__ == '__main__':
 		"autoRun": autoRun,
 		"spellHur": keyPressRun,
 		"autoSpellInTarget": autoTarget,
-		"keyAutoAtk": keyAutoAtk,
-		"changeGold": changeGold
+		"keyAutoAtk": keyAutoAtk
 	}
 	
 	concur = Concur()
@@ -405,17 +436,17 @@ if __name__ == '__main__':
 	concur.start()
 	concur.pause()
 
-	openConfigScreen = tk.Button(master, 
-			  text='Config Screen', 
-			  bg='red',
+	tk.Button(master, 
+			  text='Config Screen',
 			  activebackground='green',
-			  command=lambda: configScreen(openConfigScreen)).grid(row=4, 
+			  command=lambda: configScreen()).grid(row=4, 
 										column=5, 
 										sticky=W, 
 										pady=4)
 	tk.Button(master, 
-			  text='Check Config', 
-			  command = lambda: checkConfigScreen()).grid(row=4, 
+			  text='Check Config Screen',
+			  bg='red',
+			  command = lambda: confirmFieldsAreBeSeeing(master, itemsFromScreen)).grid(row=4, 
 										column=4, 
 										sticky=E, 
 										pady=4,
