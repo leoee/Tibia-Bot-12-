@@ -17,6 +17,7 @@ P2 = 0
 firstTime = False
 shouldListener = False
 
+path = os.getcwd()
 def returnListPointsBar():
 	file = open("config_screen.txt", "r")
 	contents = file.read()
@@ -128,10 +129,10 @@ def configHeal(master, currentLife, currentMana):
 		pyautogui.press(keyPressMana)
 
 def confirmIsTarget(image):
-	left = pyautogui.locate('C:/Users/Leo/Desktop/heal_bot/images/left.png', image, grayscale=True, confidence=.85)
-	right = pyautogui.locate('C:/Users/Leo/Desktop/heal_bot/images/right.png', image, grayscale=True, confidence=.85)
-	top = pyautogui.locate('C:/Users/Leo/Desktop/heal_bot/images/top.png', image, grayscale=True, confidence=.85)
-	bottom = pyautogui.locate('C:/Users/Leo/Desktop/heal_bot/images/bottom.png', image, grayscale=True, confidence=.85)
+	left = pyautogui.locate(path + '/images/left.png', image, grayscale=True, confidence=.85)
+	right = pyautogui.locate(path + '/images/right.png', image, grayscale=True, confidence=.85)
+	top = pyautogui.locate(path + '/images/top.png', image, grayscale=True, confidence=.85)
+	bottom = pyautogui.locate(path + '/images/bottom.png', image, grayscale=True, confidence=.85)
 		
 	if (left != None and right != None and top != None and bottom != None):
 		return True
@@ -140,8 +141,8 @@ def confirmIsTarget(image):
 
 def identifyNumbers(imgLife, imgMana, vector_life, vector_mana):
 	for x in range(0, 10):
-		vector_life[x] =  pyautogui.locateAll('C:/Users/Leo/Desktop/heal_bot/images/' + str(x) + '.png', imgLife, grayscale=True, confidence=.95)
-		vector_mana[x] =  pyautogui.locateAll('C:/Users/Leo/Desktop/heal_bot/images/' + str(x) + '.png', imgMana, grayscale=True, confidence=.95)
+		vector_life[x] =  pyautogui.locateAll(path + '/images/' + str(x) + '.png', imgLife, grayscale=True, confidence=.95)
+		vector_mana[x] =  pyautogui.locateAll(path + '/images/' + str(x) + '.png', imgMana, grayscale=True, confidence=.95)
 
 def convertNumbersToString(validIndex, vector, currentValue):
 	while(validIndex):
@@ -178,7 +179,7 @@ def controller(concur):
 		food = food.crop((int(list[8]), int(list[9]), int(list[10]), int(list[11])))
 		isTarget = isTarget.crop((int(list[12]), int(list[13]), int(list[14]), int(list[15])))
 		
-		screenBot = pyautogui.locate('C:/Users/Leo/Desktop/heal_bot/images/bot.png', im, grayscale=True, confidence=.75)
+		screenBot = pyautogui.locate('images/bot.png', im, grayscale=True, confidence=.75)
 		
 		if (screenBot != None):
 			continue
@@ -186,8 +187,8 @@ def controller(concur):
 		vector_life = {}
 		vector_mana = {}
 		
-		hasHungry = pyautogui.locate('C:/Users/Leo/Desktop/heal_bot/images/food.png', food, grayscale=True, confidence=.75)
-		hasSpeed = pyautogui.locate('C:/Users/Leo/Desktop/heal_bot/images/speed.png', food, grayscale=True, confidence=.75)
+		hasHungry = pyautogui.locate(path + '/images/food.png', food, grayscale=True, confidence=.75)
+		hasSpeed = pyautogui.locate(path + '/images/speed.png', food, grayscale=True, confidence=.75)
 		
 		identifyNumbers(life, mana, vector_life, vector_mana)
 				
@@ -272,11 +273,11 @@ def confirmFieldsAreBeSeeing(master, itemsFromScreen):
 	im=pyautogui.screenshot()
 	life = im
 	mana = im
-	isTarget = im
+	#isTarget = im
 	list = returnListPointsBar()
 	life = life.crop((int(list[0]), int(list[1]), int(list[2]), int(list[3])))
 	mana = mana.crop((int(list[4]), int(list[5]), int(list[6]), int(list[7])))
-	isTarget = isTarget.crop((int(list[12]), int(list[13]), int(list[14]), int(list[15])))
+	#isTarget = isTarget.crop((int(list[12]), int(list[13]), int(list[14]), int(list[15])))
 	
 	vector_life = {}
 	vector_mana = {}
@@ -292,6 +293,8 @@ def confirmFieldsAreBeSeeing(master, itemsFromScreen):
 		validIndexLife += (sum(x is not None for x in vector_life[i]))
 		validIndexMana += (sum(x is not None for x in vector_mana[i]))
 
+	print(valueLife)
+	print(valueMana)
 	if (valueLife == "" or valueMana == ""):
 		popupmsg('Set total life and total mana')
 	if (validIndexLife != len(valueLife)):
