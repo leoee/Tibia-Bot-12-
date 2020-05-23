@@ -1,7 +1,7 @@
 # TibiaBot12+
 Bot for Tibia 12+. <br>
 It doesn't work on TibiaGlobal, just in OTservers. <br>
-It was tested with OtServers 12+. <br>
+It was tested with OtServers 12+. The OtServers allowed bots.<br>
 
 ## Features
 - Auto Heal
