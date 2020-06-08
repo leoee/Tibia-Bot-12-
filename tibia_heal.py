@@ -294,7 +294,9 @@ def confirmFieldsAreBeSeeing(master, itemsFromScreen):
 		validIndexMana += (sum(x is not None for x in vector_mana[i]))
 
 	print(valueLife)
+	print(validIndexLife)
 	print(valueMana)
+	print(validIndexMana)
 	if (valueLife == "" or valueMana == ""):
 		popupmsg('Set total life and total mana')
 	if (validIndexLife != len(valueLife)):
