@@ -129,10 +129,10 @@ def configHeal(master, currentLife, currentMana):
 		pyautogui.press(keyPressMana)
 
 def confirmIsTarget(image):
-	left = pyautogui.locate(path + '/images/left.png', image, grayscale=True, confidence=.85)
-	right = pyautogui.locate(path + '/images/right.png', image, grayscale=True, confidence=.85)
-	top = pyautogui.locate(path + '/images/top.png', image, grayscale=True, confidence=.85)
-	bottom = pyautogui.locate(path + '/images/bottom.png', image, grayscale=True, confidence=.85)
+	left = pyautogui.locateAll(path + '/images/left.png', image, grayscale=True, confidence=.85)
+	right = pyautogui.locateAll(path + '/images/right.png', image, grayscale=True, confidence=.85)
+	top = pyautogui.locateAll(path + '/images/top.png', image, grayscale=True, confidence=.85)
+	bottom = pyautogui.locateAll(path + '/images/bottom.png', image, grayscale=True, confidence=.85)
 		
 	if (left != None and right != None and top != None and bottom != None):
 		return True
@@ -179,7 +179,7 @@ def controller(concur):
 		food = food.crop((int(list[8]), int(list[9]), int(list[10]), int(list[11])))
 		isTarget = isTarget.crop((int(list[12]), int(list[13]), int(list[14]), int(list[15])))
 		
-		screenBot = pyautogui.locate('images/bot.png', im, grayscale=True, confidence=.75)
+		screenBot = pyautogui.locateAll('images/bot.png', im, grayscale=True, confidence=.75)
 		
 		if (screenBot != None):
 			continue
@@ -187,8 +187,8 @@ def controller(concur):
 		vector_life = {}
 		vector_mana = {}
 		
-		hasHungry = pyautogui.locate(path + '/images/food.png', food, grayscale=True, confidence=.75)
-		hasSpeed = pyautogui.locate(path + '/images/speed.png', food, grayscale=True, confidence=.75)
+		hasHungry = pyautogui.locateAll(path + '/images/food.png', food, grayscale=True, confidence=.75)
+		hasSpeed = pyautogui.locateAll(path + '/images/speed.png', food, grayscale=True, confidence=.75)
 		
 		identifyNumbers(life, mana, vector_life, vector_mana)
 				
