@@ -173,25 +173,25 @@ def controller(concur):
 		mana = im
 		food = im
 		isTarget = im
-		list = returnListPointsBar()
-		life = life.crop((int(list[0]), int(list[1]), int(list[2]), int(list[3])))
-		mana = mana.crop((int(list[4]), int(list[5]), int(list[6]), int(list[7])))
-		food = food.crop((int(list[8]), int(list[9]), int(list[10]), int(list[11])))
-		isTarget = isTarget.crop((int(list[12]), int(list[13]), int(list[14]), int(list[15])))
+		listPoints = returnListPointsBar()
+		life = life.crop((int(listPoints[0]), int(listPoints[1]), int(listPoints[2]), int(listPoints[3])))
+		mana = mana.crop((int(listPoints[4]), int(listPoints[5]), int(listPoints[6]), int(listPoints[7])))
+		food = food.crop((int(listPoints[8]), int(listPoints[9]), int(listPoints[10]), int(listPoints[11])))
+		#isTarget = isTarget.crop((int(listPoints[12]), int(listPoints[13]), int(listPoints[14]), int(listPoints[15])))
 		
-		screenBot = pyautogui.locateAll('images/bot.png', im, grayscale=True, confidence=.75)
-		
-		if (screenBot != None):
+		screenBot = pyautogui.locateAll('images/bot.png', im, grayscale=True, confidence=.80)
+		lstScreen = list(screenBot)
+		if (len(lstScreen) != 0):
 			continue
-		
 		vector_life = {}
 		vector_mana = {}
 		
 		hasHungry = pyautogui.locateAll(path + '/images/food.png', food, grayscale=True, confidence=.75)
+		lstHasHungry = list(hasHungry)
 		hasSpeed = pyautogui.locateAll(path + '/images/speed.png', food, grayscale=True, confidence=.75)
+		lstHasSpeed = list(hasSpeed)
 		
 		identifyNumbers(life, mana, vector_life, vector_mana)
-				
 		validIndexLife = 0
 		validIndexMana = 0
 		lifeValue = ""
@@ -216,13 +216,13 @@ def controller(concur):
 		lifeValue = convertNumbersToString(validIndexLife, vector_life, lifeValue)
 		manaValue = convertNumbersToString(validIndexMana, vector_mana, manaValue)
 					
-		if (hasHungry != None and mustEatFood):
+		if (len(lstHasHungry) != 0 and mustEatFood):
 			pyautogui.press(keyPressEatFood)
-		if (hasSpeed == None and mustUseHur and spellHur != " "):
+		if (len(lstHasSpeed) == 0 and mustUseHur and spellHur != " "):
 			pyautogui.press(spellHur)
 		#if (mustAtk and spellAtk != " " and confirmIsTarget(isTarget)):
 		#	pyautogui.press(spellAtk)
-			
+
 		configHeal(master, int(lifeValue), int(manaValue))
 
 def popupmsg(msg):
