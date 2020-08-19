@@ -16,11 +16,11 @@ It was tested with OtServers 12+. The OtServers allowed bots.<br>
 - OpenCv
 ## How to install?
 - Downloading Python: https://www.python.org/downloads/release/python-372/
-After downloaded python, you're able to use "pip". Open terminal and use the follow commands:
-- Installing PyAutoGUI: ```pip install pyautogui```
-- Installing Pyscreenshot: ```pip3 install pyscreenshot```
-- Installing Pynput: ```pip install pynput```
-- Installing OpenCv: ```pip install opencv-python```
+- After downloaded python, you're able to use "pip". Open terminal and use the follow commands:
+    - Installing PyAutoGUI: ```pip install pyautogui```
+    - Installing Pyscreenshot: ```pip3 install pyscreenshot```
+    - Installing Pynput: ```pip install pynput```
+    - Installing OpenCv: ```pip install opencv-python```
 ## How does it work?
  It uses PyAutoGUI to manage the mouse clicks and keys clicks, as the F keys (F1, F2, etc). Pyscreenshot allows to identify objects on screen, as Life Bar and Mana Bar. Pynput is used to trigger a listener to save our coordinates (x, y) from mouse when the user is settings objects location on your own screen.
 ## How to configure?
