@@ -15,6 +15,8 @@ It was tested with OtServers 12+. The OtServers allowed bots.<br>
 - Pynput
 - OpenCv
 ## How to install?
+- Downloading Python: https://www.python.org/downloads/release/python-372/
+After downloaded python, you're able to use "pip". Open terminal and use the follow commands:
 - Installing PyAutoGUI: ```pip install pyautogui```
 - Installing Pyscreenshot: ```pip3 install pyscreenshot```
 - Installing Pynput: ```pip install pynput```
@@ -66,3 +68,6 @@ After all of these steps, you can check your coordinates with the button "Check 
 
 ## How to use?
 After the configuration, you can use. The way how this bot works is analyzing your screen, then the features will be work ***IF YOU KEEP ON GAME SCREEN***. You can change the screen, but the functionalities will be executed when the game screen be seeing.
+
+## Warning
+If you're trying to use the bot, but always you get fail on the "Check Config Screen", you should try to cut the numbers of the your Tibia. As you can see, inside images folder, we have a lot of images that represents the numbers. Cut all of your numbers inside the tibia and try again. Just the numbers are needed.

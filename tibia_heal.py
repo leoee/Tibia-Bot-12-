@@ -141,8 +141,8 @@ def confirmIsTarget(image):
 
 def identifyNumbers(imgLife, imgMana, vector_life, vector_mana):
 	for x in range(0, 10):
-		vector_life[x] =  pyautogui.locateAll(path + '/images/' + str(x) + '.png', imgLife, grayscale=True, confidence=.85)
-		vector_mana[x] =  pyautogui.locateAll(path + '/images/' + str(x) + '.png', imgMana, grayscale=True, confidence=.85)
+		vector_life[x] =  pyautogui.locateAll(path + '/images/' + str(x) + '.png', imgLife, grayscale=True, confidence=.90)
+		vector_mana[x] =  pyautogui.locateAll(path + '/images/' + str(x) + '.png', imgMana, grayscale=True, confidence=.90)
 
 def convertNumbersToString(validIndex, vector, currentValue):
 	while(validIndex):
@@ -293,10 +293,6 @@ def confirmFieldsAreBeSeeing(master, itemsFromScreen):
 		validIndexLife += (sum(x is not None for x in vector_life[i]))
 		validIndexMana += (sum(x is not None for x in vector_mana[i]))
 
-	print(valueLife)
-	print(validIndexLife)
-	print(valueMana)
-	print(validIndexMana)
 	if (valueLife == "" or valueMana == ""):
 		popupmsg('Set total life and total mana')
 	if (validIndexLife != len(valueLife)):
