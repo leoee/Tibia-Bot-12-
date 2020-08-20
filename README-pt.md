@@ -1,38 +1,38 @@
 # TibiaBot12+
-Bot for Tibia 12+. <br>
-It doesn't work on TibiaGlobal, just in OTservers. <br>
-It was tested with OtServers 12+. The OtServers allowed bots.<br>
+Bot para Tibia 12+. <br>
+Isso não funciona no Global, somente em OtServer. <br>
+Foi testado em OtServers com versões 12+. Os mesmos permitiam uso de bots.<br>
 
-## Features
+## Características
 - Auto Heal
 - Auto Speed
 - Auto Food
 
-## Dependencies
+## Dependências
 - Python 3.7+
 - PyAutoGUI
 - Pyscreenshot
 - Pynput
 - OpenCv
-## How to install?
-- Downloading Python: https://www.python.org/downloads/release/python-372/
-- After downloaded python, you're able to use "pip". Open terminal and use the follow commands:
-    - Installing PyAutoGUI: ```pip install pyautogui```
-    - Installing Pyscreenshot: ```pip3 install pyscreenshot```
-    - Installing Pynput: ```pip install pynput```
-    - Installing OpenCv: ```pip install opencv-python```
-## How does it work?
- It uses PyAutoGUI to manage the mouse clicks and keys clicks, as the F keys (F1, F2, etc). Pyscreenshot allows to identify objects on screen, as Life Bar and Mana Bar. Pynput is used to trigger a listener to save our coordinates (x, y) from mouse when the user is settings objects location on your own screen.
-## How to configure?
-First of all, you need to configure your screen. For that, you need to set your coordinates from Life Bar, Mana Bar, Tools and Battle.<br>
-Click on "Config Screen" in the bot. After the click, a listener will be started and will save your coordinates when clicked with the left button mouse.<br> 
+## Como instalar?
+- Baixe Python: https://www.python.org/downloads/release/python-372/
+- Após baixar, você pode usar o comando "pip" no terminal. Portanto, abre o terminal e digite os comandos:
+    - Instalando PyAutoGUI: ```pip install pyautogui```
+    - Instalando Pyscreenshot: ```pip3 install pyscreenshot```
+    - Instalando Pynput: ```pip install pynput```
+    - Instalando OpenCv: ```pip install opencv-python```
+## Como o bot funciona?
+ Ele usa PyAutoGui para gerenciar os cliques do mouse e teclas, como as telas do F (F1, F2, etc). Pyscreenshot permite identificar objetos na tela, como barra de vida e mana. Pynput é usado para trigar um ouvinte para salvar suas coordenadas (x, y) do mouse quando você está cortando as imagens da sua tela.
+## Como configurar?
+Primeiro de tudo, você precisa configurar sua tela. Para isso, você precisa configurar as coordenadas da sua barra de vida, mana, ferramentas e batalhas.<br>
+Clique em "Config Screen" no bot. Depois de clicar, um ouvinte vai começar a salvar onde você clica com o botão esquerdo do mouse.<br> 
 ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/botRD.png)<br>
-Click in 2 points to cut an image. When finished the clicks, click with right button and the listener will be stopped and an image will be showed. If the image is right, copy the coordinates from pop-up message and save into "config_screen.txt". There are some images examples below to help you in the cutting. I recommend you to cut with space after the value of life and mana. This because as you up level, the numbers that represents your life and mana will increase. If the image is not enought to see all the numbers, the bot won't work.<br>
+Clique em 2 pontos para cortar uma imagem. Ao finalizar os cliques, clique com o botão direito e o ouvinte será parado e uma imagem será mostrada. Se a imagem estiver correta, copie as coordenadas da mensagem pop-up e salve em "config_screen.txt". Seguem alguns exemplos de imagens abaixo para ajudá-lo no corte. Eu recomendo que você corte com espaço após o valor da vida e mana. Isso porque conforme você sobe de nível, os números que representam sua vida e mana aumentam. Se a imagem não for suficiente para ver todos os números, o bot não funcionará.<br>
 ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/lifeRD.png)<br>
 ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/manaRD.png)<br>
 ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/toolsRD.png)<br>
 ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/battleRD.png)<br>
-In the project, there is a txt file with the coordinates. The content file is the following:
+No projeto, existe um arquivo txt com as coordenadas. O conteúdo do arquivo é o seguinte:
 ```
 ***Life Bar*****
 x:"P1.x" - y:"P1.y"
@@ -47,7 +47,7 @@ x:"P2.x" - y:"P2.y"
 x:"P1.x" - y:"P1.y"
 x:"P2.x" - y:"P2.y"
 ```
-Another example<br>
+Outro exemplo<br>
 ```
 ***Life Bar*****
 x:"1193" - y:"138"
@@ -62,12 +62,12 @@ x:"1313" - y:"327"
 x:"1190" - y:"400"
 x:"1357" - y:"477"
 ```
-That is the pattern, please don't change.<br>
+Esse é o padrão, por favor, não mude.<br>
 
-After all of these steps, you can check your coordinates with the button "Check Config Screen". If is ok, the button will be painted with green color.<br>
+Após todas essas etapas, você pode verificar suas coordenadas com o botão "Check Config Screen". Se estiver ok, o botão será pintado de verde.<br>
 
-## How to use?
-After the configuration, you can use. The way how this bot works is analyzing your screen, then the features will be work ***IF YOU KEEP ON GAME SCREEN***. You can change the screen, but the functionalities will be executed when the game screen be seeing.
+## Como usar?
+Após a configuração, você pode usar. A forma como este bot funciona é analisando sua tela, então os recursos funcionarão *** SE VOCÊ MANTER NA TELA DO JOGO ***. Você pode mudar a tela, mas as funcionalidades serão executadas quando a tela do jogo estiver aparecendo.
 
-## Warning
-If you're trying to use the bot, but always you get fail on the "Check Config Screen", you should try to cut the numbers of the your Tibia. As you can see, inside images folder, we have a lot of images that represents the numbers. Cut all of your numbers inside the tibia and try again. Just the numbers are needed.
+## Aviso
+Se você está tentando usar o bot, mas sempre consegue falhar na "Tela de Check Config", você deve tentar cortar os números do seu Tibia. Como você pode ver, dentro da pasta de imagens, temos várias imagens que representam os números. Corte todos os seus números dentro da tíbia e tente novamente. Apenas os números são necessários.
