@@ -27,7 +27,7 @@ It was tested with OtServers 12+. The OtServers allowed bots.<br>
 First of all, you need to configure your screen. For that, you need to set your coordinates from Life Bar, Mana Bar, Tools and Battle.<br>
 Click on "Config Screen" in the bot. After the click, a listener will be started and will save your coordinates when clicked with the left button mouse.<br> 
 ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/botRD.png)<br>
-Click in 2 points to cut an image. When finished the clicks, click with right button and the listener will be stopped and an image will be showed. If the image is right, copy the coordinates from pop-up message and save into "config_screen.txt". There are some images examples below to help you in the cutting.<br>
+Click in 2 points to cut an image. When finished the clicks, click with right button and the listener will be stopped and an image will be showed. If the image is right, copy the coordinates from pop-up message and save into "config_screen.txt". There are some images examples below to help you in the cutting. I recommend you to cut with space after the value of life and mana. This because as you up level, the numbers that represents your life and mana will increase. If the image is not enought to see all the numbers, the bot won't work.<br>
 ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/lifeRD.png)<br>
 ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/manaRD.png)<br>
 ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/toolsRD.png)<br>

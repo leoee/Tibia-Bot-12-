@@ -107,14 +107,26 @@ def configHeal(master, currentLife, currentMana):
 	keyLife70 = concur.master["keyPressCure70"].get().lower()
 	keyLife50 = concur.master["keyPressCure50"].get().lower()
 	manaPercentForHeal = concur.master["manaPercent"].get()
+	manaPercentForTrain = concur.master["manaPercentForTrain"].get()
 	keyPressMana = concur.master["keyPressCureMana"].get().lower()
+	keyPressTrainMana = concur.master["keyPressTrainMana"].get().lower()
 	
 	if (valueTotalLife.isdigit() == False or valueTotalMana.isdigit() == False):
 		return
 
+	if (currentLife > int(valueTotalLife)):
+		valueTotalLife = currentLife
+		concur.master["totalLife"].delete(0, END)
+		concur.master["totalLife"].insert(0, str(currentLife))
+
+	if (currentMana > int(valueTotalMana)):
+		valueTotalMana = currentMana
+		concur.master["totalMana"].delete(0, END)
+		concur.master["totalMana"].insert(0, str(currentMana))
+
 	currentLifePercent = (float(currentLife/int(valueTotalLife)) * 100)
 	currentManaPercent = (float(currentMana/int(valueTotalMana)) * 100)
-		
+
 	if (currentLifePercent <= 50 and keyLife50 != " "):
 		pyautogui.press(keyLife50)
 	elif (currentLifePercent <= 70 and keyLife70 != " "):
@@ -122,11 +134,14 @@ def configHeal(master, currentLife, currentMana):
 	elif (currentLifePercent <= 90 and keyLife90 != " "):
 		pyautogui.press(keyLife90)
 	
-	if (manaPercentForHeal.isdigit() == False):
+	if (manaPercentForHeal.isdigit() == False and manaPercentForTrain.isdigit() == False):
 		return
 
-	if (currentManaPercent <= int(manaPercentForHeal) and keyPressMana != " "):
+	if (manaPercentForHeal.isdigit() and currentManaPercent <= int(manaPercentForHeal) and keyPressMana != " "):
 		pyautogui.press(keyPressMana)
+
+	if (manaPercentForTrain.isdigit() and currentManaPercent > int(manaPercentForTrain) and keyPressTrainMana != " "):
+		pyautogui.press(keyPressTrainMana)
 
 def confirmIsTarget(image):
 	left = pyautogui.locateAll(path + '/images/left.png', image, grayscale=True, confidence=.85)
@@ -223,6 +238,7 @@ def controller(concur):
 		#if (mustAtk and spellAtk != " " and confirmIsTarget(isTarget)):
 		#	pyautogui.press(spellAtk)
 
+		master.title('Tibia Bot - Running - Life: ' + str(lifeValue) + ' // Mana: ' + str(manaValue))
 		configHeal(master, int(lifeValue), int(manaValue))
 
 def popupmsg(msg):
@@ -273,12 +289,9 @@ def confirmFieldsAreBeSeeing(master, itemsFromScreen):
 	im=pyautogui.screenshot()
 	life = im
 	mana = im
-	#isTarget = im
 	list = returnListPointsBar()
 	life = life.crop((int(list[0]), int(list[1]), int(list[2]), int(list[3])))
 	mana = mana.crop((int(list[4]), int(list[5]), int(list[6]), int(list[7])))
-	#isTarget = isTarget.crop((int(list[12]), int(list[13]), int(list[14]), int(list[15])))
-	
 	vector_life = {}
 	vector_mana = {}
 		
@@ -286,6 +299,8 @@ def confirmFieldsAreBeSeeing(master, itemsFromScreen):
 			
 	validIndexLife = 0
 	validIndexMana = 0
+	lifeValue = ""
+	manaValue = ""
 	
 	changeGeneratorToList(vector_life, vector_mana)
 	
@@ -293,20 +308,27 @@ def confirmFieldsAreBeSeeing(master, itemsFromScreen):
 		validIndexLife += (sum(x is not None for x in vector_life[i]))
 		validIndexMana += (sum(x is not None for x in vector_mana[i]))
 
+	lifeValue = convertNumbersToString(validIndexLife, vector_life, lifeValue)
+	manaValue = convertNumbersToString(validIndexMana, vector_mana, manaValue)
+
 	if (valueLife == "" or valueMana == ""):
 		popupmsg('Set total life and total mana')
 	if (validIndexLife != len(valueLife)):
 		popupmsg('Length total life does not match with your length from life bar.\n'+
-					'If your total life is right, please change your Life Bar points into config_screen.')
+					'If your total life is right, please change your Life Bar points into config_screen.\n'+
+					'Your life is ' + str(valueLife) + ' but the bot identify ' + str(lifeValue))
+		return
 	elif (validIndexMana != len(valueMana)):
 		popupmsg('Length total mana does not match with your length from mana bar.\n'+
-					'If your total mana is right, please change your Life Mana points into config_screen.')
+					'If your total mana is right, please change your Life Mana points into config_screen.\n'+
+					'Your mana is ' + str(valueMana) + ' but the bot identify ' + str(manaValue))
+		return
 	else:
 		for child_widget in children_widgets:
 			if child_widget.winfo_class() == 'Button':
 				if (str(child_widget) == ".!button2"):
 					child_widget.configure(bg="green")
-
+	master.title('Tibia Bot - Life: ' + str(lifeValue) + ' // Mana: ' + str(manaValue))
 def configScreen():
 	global shouldListener
 	shouldListener = True
@@ -315,7 +337,7 @@ def configScreen():
 if __name__ == '__main__':
 	firstTime = True
 	master = tk.Tk()
-	master.geometry("550x150")
+	master.geometry("570x170")
 	master.resizable(False, False)
 	master.title('TibiaBot - Stopped')
 		
@@ -414,13 +436,31 @@ if __name__ == '__main__':
 	  
 	keyPressCureMana.grid(row = 4, column = 3) 
 	keyPressCureMana.current()
+
+	tk.Label(master, 
+		text="When Mana >").grid(row = 5, column = 0)
+	
+	manaPercentForTrain = tk.Entry(master, width=6)	
+	manaPercentForTrain.grid(row=5, column=1)
+	
+	tk.Label(master, 
+		text="% use").grid(row = 5, column = 2)	
+	keyPressTrainMana = StringVar()
+	keyPressTrainMana = ttk.Combobox(master, width = 6, textvariable = keyPressTrainMana) 
+	  
+	keyPressTrainMana['values'] =  fKeys
+	  
+	keyPressTrainMana.grid(row = 5, column = 3) 
+	keyPressTrainMana.current()
 			
 	itemsFromScreen = {
 		"keyPressCure90": keyChoosenCure90,
 		"keyPressCure70": keyChoosenCure70,
 		"keyPressCure50": keyChoosenCure50,
 		"manaPercent": manaPercent,
+		"manaPercentForTrain": manaPercentForTrain, 
 		"keyPressCureMana": keyPressCureMana,
+		"keyPressTrainMana": keyPressTrainMana,
 		"eatFood": eatFood,
 		"keyPressFood": keyPressFood,
 		"totalLife": totalLife,
@@ -453,13 +493,13 @@ if __name__ == '__main__':
 										padx=4)
 
 	tk.Button(master, 
-			  text='Stop', command = lambda: stopBot(concur, master)).grid(row=5, 
+			  text='Stop', command = lambda: stopBot(concur, master)).grid(row=6, 
 														   column=4, 
 														   sticky=tk.W, 
 														   pady=4)
 
 	tk.Button(master, 
-			  text='Start', command = lambda: startBot(concur, master)).grid(row=5, 
+			  text='Start', command = lambda: startBot(concur, master)).grid(row=6, 
 														   column=3, 
 														   sticky=tk.W, 
 														   pady=4)
