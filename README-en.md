@@ -7,6 +7,9 @@ It was tested with OtServers 12+. The OtServers allowed bots.<br>
 - Auto Heal
 - Auto Speed
 - Auto Food
+- Auto Utamo
+- Auto Utito Tempo
+- Anti Idle
 
 ## Dependencies
 - Python 3.7+

@@ -1,5 +1,6 @@
 import json
 import logging
+import random
 import os
 import threading
 import pyautogui
@@ -176,10 +177,34 @@ def convertNumbersToString(validIndex, vector, currentValue):
 		currentValue += str(indexRemoved)
 		validIndex -= 1
 	return currentValue
+def useSpell(spell):
+	pyautogui.write(spell)
+	pyautogui.press('enter')
+	pyautogui.write(spell)
+	pyautogui.press('enter')
+	pyautogui.write(spell)
+	pyautogui.press('enter')
+
+
+def activeCharacter():
+	direction = random.randint(0, 4)
+	if (direction == 1):
+		pyautogui.hotkey('ctrl', 'up')
+	elif (direction == 2):
+		pyautogui.hotkey('ctrl', 'right')
+	elif(direction == 3):
+		pyautogui.hotkey('ctrl', 'down')
+	else:
+		pyautogui.hotkey('ctrl', 'left')
+
 
 def controller(concur):
+	FLAG_TIME_ANTI_IDLE = 0
+	FLAG_TIME_AUTO_SPELL = 0
 	time.sleep(1)
 	while (True):
+		FLAG_TIME_AUTO_SPELL += 1
+		FLAG_TIME_ANTI_IDLE += 1
 		if (concur.paused == True):
 			break
 		time.sleep(0.2)
@@ -205,6 +230,10 @@ def controller(concur):
 		lstHasHungry = list(hasHungry)
 		hasSpeed = pyautogui.locateAll(path + '/images/speed.png', food, grayscale=True, confidence=.75)
 		lstHasSpeed = list(hasSpeed)
+		hasUtamo = pyautogui.locateAll(path + '/images/utamo.png', food, grayscale=True, confidence=.75)
+		listHasUtamo = list(hasUtamo)
+		hasUtito = pyautogui.locateAll(path + '/images/utamo.png', food, grayscale=True, confidence=.75)
+		listHasUtito = list(hasUtito)
 		
 		identifyNumbers(life, mana, vector_life, vector_mana)
 		validIndexLife = 0
@@ -223,23 +252,42 @@ def controller(concur):
 		
 		mustEatFood = concur.master["eatFood"].get()
 		keyPressEatFood = concur.master["keyPressFood"].get().lower()
+		mustUseAutoSpell = concur.master["autoSpell"].get()
+		keyAutoSpell = concur.master["keyAutoSpell"].get().lower()
+		timeAutoSpell = concur.master["timeAutoSpell"].get()
 		mustUseHur = concur.master["autoRun"].get()
 		spellHur = concur.master["spellHur"].get().lower()
-		mustAtk = concur.master["autoSpellInTarget"].get()
-		spellAtk = concur.master["keyAutoAtk"].get().lower()
+		mustUseUtamo = concur.master["autoUtamo"].get()
+		mustUseUtito= concur.master["autoUtito"].get()
+		isAntiIdleOn= concur.master["antiIdle"].get()
 				
 		lifeValue = convertNumbersToString(validIndexLife, vector_life, lifeValue)
 		manaValue = convertNumbersToString(validIndexMana, vector_mana, manaValue)
-					
+
+		configHeal(master, int(lifeValue), int(manaValue))
+
 		if (len(lstHasHungry) != 0 and mustEatFood):
 			pyautogui.press(keyPressEatFood)
+
 		if (len(lstHasSpeed) == 0 and mustUseHur and spellHur != " "):
 			pyautogui.press(spellHur)
-		#if (mustAtk and spellAtk != " " and confirmIsTarget(isTarget)):
-		#	pyautogui.press(spellAtk)
 
+		if (len(listHasUtamo) == 0 and mustUseUtamo):
+			useSpell("utamo vita")
+
+		elif (len(listHasUtito) == 0 and mustUseUtito):
+			useSpell("utito tempo")
+
+		if (mustUseAutoSpell and keyAutoSpell != " " and timeAutoSpell <= (FLAG_TIME_AUTO_SPELL * 5)):
+			pyautogui.press(keyAutoSpell)
+			FLAG_TIME_AUTO_SPELL = 0
+
+		if (isAntiIdleOn and (60 < (FLAG_TIME_ANTI_IDLE * 5))):
+			activeCharacter()
+			FLAG_TIME_ANTI_IDLE = 0
+
+		print(isAntiIdleOn)
 		master.title('Tibia Bot - Running - Life: ' + str(lifeValue) + ' // Mana: ' + str(manaValue))
-		configHeal(master, int(lifeValue), int(manaValue))
 
 def popupmsg(msg):
 	popup = tk.Tk()
@@ -337,57 +385,70 @@ def configScreen():
 if __name__ == '__main__':
 	firstTime = True
 	master = tk.Tk()
-	master.geometry("570x170")
+	master.geometry("720x270")
 	master.resizable(False, False)
 	master.title('TibiaBot - Stopped')
 		
 	fKeys = ('F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 
-				'F9', 'F10', 'F11', 'F12', 'HOME', 'INSERT', 'DEL', 'NONE')
+				'F9', 'F10', 'F11', 'F12', 'HOME', 'INSERT', 'DEL')
 			
 	tk.Label(master, 
 			 text="Total Life").grid(row = 0)
 	tk.Label(master, 
 			 text="Total Mana").grid(row = 1)
+	tk.Label(master, 
+			 text="Time(s)").grid(row=5, column = 8)
 
 	totalLife = tk.Entry(master, width=7)
 	totalMana = tk.Entry(master, width=7)
+	timeAutoSpell = tk.Entry(master, width=7)
 	
 	totalLife.grid(row=0, column=1)
 	totalMana.grid(row=1, column=1)
+	timeAutoSpell.grid(row=5, column = 9)
 
-	keyPressHur = StringVar()
-	keyPressRun = ttk.Combobox(master, width = 6, textvariable = keyPressHur)
+	autoUtamo = IntVar()
+	Checkbutton(master, text="Auto Utamo Vita", variable=autoUtamo).grid(row=0, column = 6, sticky=W)
+
+	autoUtitoTempo = IntVar()
+	Checkbutton(master, text="Auto Utito Tempo", variable=autoUtitoTempo).grid(row=1, column = 6, sticky=W)
+
+	autoAntiIdle = IntVar()
+	Checkbutton(master, text="Anti Idle", variable=autoAntiIdle).grid(row=2, column = 6, sticky=W)
+
+	eatFood = IntVar()
+	Checkbutton(master, text="Eat Food", variable=eatFood).grid(row=3, column = 6, sticky=W)
+	
+	autoRun = IntVar()
+	Checkbutton(master, text="Auto Run", variable=autoRun).grid(row=4, column = 6, sticky=W)
+
+	autoSpell = IntVar()
+	Checkbutton(master, text="Auto Spell", variable=autoSpell).grid(row=5, column = 6, sticky=W)
+
+	textHur = StringVar()
+	keyPressRun = ttk.Combobox(master, width = 6, textvariable = textHur)
 
 	keyPressRun['values'] = fKeys
 	  
-	keyPressRun.grid(row = 0, column = 4, sticky=W) 
+	keyPressRun.grid(row = 4, column = 7, sticky=W) 
 	keyPressRun.current()	
-
-	eatFood = IntVar()
-	Checkbutton(master, text="Eat Food", variable=eatFood).grid(row=1, column = 3, sticky=W)
 	
-	autoRun = IntVar()
-	Checkbutton(master, text="Auto Run", variable=autoRun).grid(row=0, column = 3, sticky=W)
+	boxAutoSpell = StringVar()
+	keyAutoSpell = ttk.Combobox(master, width = 6, textvariable = boxAutoSpell)
 	
-	autoTarget = IntVar()
-	Checkbutton(master, text="Auto Target", variable=autoTarget).grid(row=0, column = 5, sticky=W)
-	
-	keyAtk = StringVar()
-	keyAutoAtk = ttk.Combobox(master, width = 4, textvariable = keyAtk)
-	
-	keyAutoAtk['values'] = fKeys 
+	keyAutoSpell['values'] = fKeys 
 	  
-	keyAutoAtk.grid(row = 0, column = 5, sticky=W, padx = 95) 
-	keyAutoAtk.current() 
+	keyAutoSpell.grid(row = 5, column = 7, sticky=W) 
+	keyAutoSpell.current() 
 
 	keyPressFood = StringVar()
-	keyChoosen = ttk.Combobox(master, width = 4, textvariable = keyPressFood)
+	keyChoosen = ttk.Combobox(master, width = 6, textvariable = keyPressFood)
 	
-	keyChoosen['values'] = fKeys 
+	keyChoosen['values'] = fKeys
 	  
-	keyChoosen.grid(row = 1, column = 4, sticky=W) 
-	keyChoosen.current(11) 	
-					 
+	keyChoosen.grid(row = 3, column = 7, sticky=W) 
+	keyChoosen.current()
+
 	tk.Label(master, 
 			text="Life 90%").grid(row = 3)
 			
@@ -400,57 +461,57 @@ if __name__ == '__main__':
 	keyChoosenCure90.current()
 	
 	tk.Label(master, 
-			text="Life 70%").grid(row = 3, column = 3)
+			text="Life 70%").grid(row = 4, column = 0)
 			
 	keyPressCure70 = StringVar()
 	keyChoosenCure70 = ttk.Combobox(master, width = 6, textvariable = keyPressCure70) 
 
 	keyChoosenCure70['values'] = fKeys
 	  
-	keyChoosenCure70.grid(row = 3, column = 4, sticky=W) 
+	keyChoosenCure70.grid(row = 4, column = 1, sticky=W) 
 	keyChoosenCure70.current()
 
 	tk.Label(master, 
-			text="Life 50%").grid(row = 3, column = 5, sticky=W)
+			text="Life 50%").grid(row = 5, column = 0)
 			
 	keyPressCure50 = StringVar()
 	keyChoosenCure50 = ttk.Combobox(master, width = 6, textvariable = keyPressCure50) 
 
 	keyChoosenCure50['values'] =  fKeys
 	  
-	keyChoosenCure50.grid(row = 3, column = 5, sticky=W, padx = 60) 
+	keyChoosenCure50.grid(row = 5, column = 1, sticky=W) 
 	keyChoosenCure50.current()
 	
 	tk.Label(master, 
-		text="When Mana <=").grid(row = 4, column = 0)
+		text="When Mana <").grid(row = 6, column = 0, sticky=W)
 	
 	manaPercent = tk.Entry(master, width=6)	
-	manaPercent.grid(row=4, column=1)
+	manaPercent.grid(row=6, column=1, sticky=W)
 	
 	tk.Label(master, 
-		text="% use").grid(row = 4, column = 2)	
+		text="% use").grid(row = 6, column = 2, sticky=W)	
 	keyPressCureMana = StringVar()
 	keyPressCureMana = ttk.Combobox(master, width = 6, textvariable = keyPressCureMana) 
 	  
 	keyPressCureMana['values'] =  fKeys
 	  
-	keyPressCureMana.grid(row = 4, column = 3) 
+	keyPressCureMana.grid(row = 6, column = 3) 
 	keyPressCureMana.current()
 
 	tk.Label(master, 
-		text="When Mana >").grid(row = 5, column = 0)
+		text="When Mana >").grid(row = 7, column = 0, sticky=W)
 	
 	manaPercentForTrain = tk.Entry(master, width=6)	
-	manaPercentForTrain.grid(row=5, column=1)
+	manaPercentForTrain.grid(row=7, column=1, sticky=W)
 	
 	tk.Label(master, 
-		text="% use").grid(row = 5, column = 2)	
+		text="% use").grid(row = 7, column = 2, sticky=E)	
 	keyPressTrainMana = StringVar()
 	keyPressTrainMana = ttk.Combobox(master, width = 6, textvariable = keyPressTrainMana) 
 	  
 	keyPressTrainMana['values'] =  fKeys
 	  
-	keyPressTrainMana.grid(row = 5, column = 3) 
+	keyPressTrainMana.grid(row = 7, column = 3) 
 	keyPressTrainMana.current()
 			
 	itemsFromScreen = {
@@ -467,8 +528,12 @@ if __name__ == '__main__':
 		"totalMana": totalMana,
 		"autoRun": autoRun,
 		"spellHur": keyPressRun,
-		"autoSpellInTarget": autoTarget,
-		"keyAutoAtk": keyAutoAtk
+		"autoSpell": boxAutoSpell,
+		"keyAutoSpell": keyAutoSpell,
+		"timeAutoSpell": timeAutoSpell,
+		"autoUtamo": autoUtamo,
+		"autoUtito": autoUtitoTempo,
+		"antiIdle": autoAntiIdle
 	}
 	
 	concur = Concur()
@@ -479,28 +544,28 @@ if __name__ == '__main__':
 	tk.Button(master, 
 			  text='Config Screen',
 			  activebackground='green',
-			  command=lambda: configScreen()).grid(row=4, 
-										column=5, 
+			  command=lambda: configScreen()).grid(row=0, 
+										column=4, 
 										sticky=W, 
 										pady=4)
 	tk.Button(master, 
 			  text='Check Config Screen',
 			  bg='red',
-			  command = lambda: confirmFieldsAreBeSeeing(master, itemsFromScreen)).grid(row=4, 
-										column=4, 
+			  command = lambda: confirmFieldsAreBeSeeing(master, itemsFromScreen)).grid(row=0, 
+										column=3, 
 										sticky=E, 
 										pady=4,
 										padx=4)
 
 	tk.Button(master, 
-			  text='Stop', command = lambda: stopBot(concur, master)).grid(row=6, 
-														   column=4, 
+			  text='Stop', command = lambda: stopBot(concur, master)).grid(row=8, 
+														   column=2, 
 														   sticky=tk.W, 
 														   pady=4)
 
 	tk.Button(master, 
-			  text='Start', command = lambda: startBot(concur, master)).grid(row=6, 
-														   column=3, 
+			  text='Start', command = lambda: startBot(concur, master)).grid(row=8, 
+														   column=1, 
 														   sticky=tk.W, 
 														   pady=4)
 
