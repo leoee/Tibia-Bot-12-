@@ -201,10 +201,12 @@ def activeCharacter():
 def controller(concur):
 	FLAG_TIME_ANTI_IDLE = 0
 	FLAG_TIME_AUTO_SPELL = 0
+	FLAG_TIME_AUTO_UTAMO = 0
 	time.sleep(1)
 	while (True):
 		FLAG_TIME_AUTO_SPELL += 1
 		FLAG_TIME_ANTI_IDLE += 1
+		FLAG_TIME_AUTO_UTAMO += 1
 		if (concur.paused == True):
 			break
 		time.sleep(0.2)
@@ -219,7 +221,7 @@ def controller(concur):
 		food = food.crop((int(listPoints[8]), int(listPoints[9]), int(listPoints[10]), int(listPoints[11])))
 		#isTarget = isTarget.crop((int(listPoints[12]), int(listPoints[13]), int(listPoints[14]), int(listPoints[15])))
 		
-		screenBot = pyautogui.locateAll('images/bot.png', im, grayscale=True, confidence=.80)
+		screenBot = pyautogui.locateAll('images/bot.png', im, grayscale=True, confidence=.70)
 		lstScreen = list(screenBot)
 		if (len(lstScreen) != 0):
 			continue
@@ -258,7 +260,9 @@ def controller(concur):
 		mustUseHur = concur.master["autoRun"].get()
 		spellHur = concur.master["spellHur"].get().lower()
 		mustUseUtamo = concur.master["autoUtamo"].get()
+		keyAutoUtamo = concur.master["keyUtamoVita"].get().lower()
 		mustUseUtito= concur.master["autoUtito"].get()
+		keyAutoUtito = concur.master["keyUtito"].get().lower()
 		isAntiIdleOn= concur.master["antiIdle"].get()
 				
 		lifeValue = convertNumbersToString(validIndexLife, vector_life, lifeValue)
@@ -272,21 +276,21 @@ def controller(concur):
 		if (len(lstHasSpeed) == 0 and mustUseHur and spellHur != " "):
 			pyautogui.press(spellHur)
 
-		if (len(listHasUtamo) == 0 and mustUseUtamo):
-			useSpell("utamo vita")
+		if (len(listHasUtamo) == 0 and keyAutoUtamo != "" and mustUseUtamo or (190 * 5) <= (FLAG_TIME_AUTO_UTAMO)):
+			pyautogui.press(keyAutoUtamo)
+			FLAG_TIME_AUTO_UTAMO = 0
 
-		elif (len(listHasUtito) == 0 and mustUseUtito):
-			useSpell("utito tempo")
+		elif (len(listHasUtito) == 0 and mustUseUtito and keyAutoUtito != " "):
+			pyautogui.press(keyAutoUtito)
 
-		if (mustUseAutoSpell and keyAutoSpell != " " and timeAutoSpell <= (FLAG_TIME_AUTO_SPELL * 5)):
+		elif (mustUseAutoSpell and keyAutoSpell != " " and timeAutoSpell * 5 <= FLAG_TIME_AUTO_SPELL):
 			pyautogui.press(keyAutoSpell)
 			FLAG_TIME_AUTO_SPELL = 0
 
-		if (isAntiIdleOn and (60 < (FLAG_TIME_ANTI_IDLE * 5))):
+		elif (isAntiIdleOn and (60 * 5) < FLAG_TIME_ANTI_IDLE):
 			activeCharacter()
 			FLAG_TIME_ANTI_IDLE = 0
 
-		print(isAntiIdleOn)
 		master.title('Tibia Bot - Running - Life: ' + str(lifeValue) + ' // Mana: ' + str(manaValue))
 
 def popupmsg(msg):
@@ -377,20 +381,16 @@ def confirmFieldsAreBeSeeing(master, itemsFromScreen):
 				if (str(child_widget) == ".!button2"):
 					child_widget.configure(bg="green")
 	master.title('Tibia Bot - Life: ' + str(lifeValue) + ' // Mana: ' + str(manaValue))
+
+
 def configScreen():
 	global shouldListener
 	shouldListener = True
 	listener.run()
-		
-if __name__ == '__main__':
-	firstTime = True
-	master = tk.Tk()
-	master.geometry("720x270")
-	master.resizable(False, False)
-	master.title('TibiaBot - Stopped')
-		
+
+def createSreen(concur):
 	fKeys = ('F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 
-				'F9', 'F10', 'F11', 'F12', 'HOME', 'INSERT', 'DEL')
+			'F9', 'F10', 'F11', 'F12', 'HOME', 'INSERT', 'DEL')
 			
 	tk.Label(master, 
 			 text="Total Life").grid(row = 0)
@@ -424,6 +424,22 @@ if __name__ == '__main__':
 
 	autoSpell = IntVar()
 	Checkbutton(master, text="Auto Spell", variable=autoSpell).grid(row=5, column = 6, sticky=W)
+
+	textUtamoVita = StringVar()
+	keyUtamoVita = ttk.Combobox(master, width = 6, textvariable = textUtamoVita)
+
+	keyUtamoVita['values'] = fKeys
+	  
+	keyUtamoVita.grid(row = 0, column = 7, sticky=W) 
+	keyUtamoVita.current()	
+
+	textUtitoTempo = StringVar()
+	keyUtitoTempo = ttk.Combobox(master, width = 6, textvariable = textUtitoTempo)
+
+	keyUtitoTempo['values'] = fKeys
+	  
+	keyUtitoTempo.grid(row = 1, column = 7, sticky=W) 
+	keyUtitoTempo.current()
 
 	textHur = StringVar()
 	keyPressRun = ttk.Combobox(master, width = 6, textvariable = textHur)
@@ -532,14 +548,13 @@ if __name__ == '__main__':
 		"keyAutoSpell": keyAutoSpell,
 		"timeAutoSpell": timeAutoSpell,
 		"autoUtamo": autoUtamo,
+		"keyUtamoVita": keyUtamoVita,
 		"autoUtito": autoUtitoTempo,
+		"keyUtito": keyUtitoTempo,
 		"antiIdle": autoAntiIdle
 	}
-	
-	concur = Concur()
+
 	concur.setMaster(itemsFromScreen)
-	concur.start()
-	concur.pause()
 
 	tk.Button(master, 
 			  text='Config Screen',
@@ -568,6 +583,20 @@ if __name__ == '__main__':
 														   column=1, 
 														   sticky=tk.W, 
 														   pady=4)
+
+
+if __name__ == '__main__':
+	firstTime = True
+	master = tk.Tk()
+	master.geometry("720x270")
+	master.resizable(False, False)
+	master.title('TibiaBot - Stopped')
+
+	concur = Concur()
+	createSreen(concur)
+	concur.start()
+	concur.pause()
+
 
 	tk.mainloop()
 	
