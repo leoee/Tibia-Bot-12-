@@ -10,6 +10,7 @@ Foi testado em OtServers com versões 12+. Os mesmos permitiam uso de bots.<br>
 - Auto Utamo
 - Auto Utito Tempo
 - Anti Idle
+- Auto SSA
 
 ## Dependências
 - Python 3.7+
