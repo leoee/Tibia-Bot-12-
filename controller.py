@@ -10,6 +10,7 @@ import tkinter as tk
 from tkinter import *
 from pynput.mouse import Listener as MouseListener
 from pynput import mouse
+from model.character import Character
 
 path = os.getcwd()
 
@@ -20,6 +21,7 @@ class Controller():
 	def __init__(self, concur, master):
 		self.master = master
 		self.concur = concur
+		self.character = Character(concur)
 
 	def returnListPointsBar(self):
 		file = open("config_screen.txt", "r")
@@ -43,52 +45,43 @@ class Controller():
 
 	def configHeal(self, master, mustEquipSSA, currentLife, currentMana):
 		concur = self.concur
-		valueTotalMana = concur.master["totalMana"].get()
-		valueTotalLife = concur.master["totalLife"].get()
-		keyLife90 = concur.master["keyPressCure90"].get().lower()
-		keyLife70 = concur.master["keyPressCure70"].get().lower()
-		keyLife50 = concur.master["keyPressCure50"].get().lower()
-		manaPercentForHeal = concur.master["manaPercent"].get()
-		manaPercentForTrain = concur.master["manaPercentForTrain"].get()
-		keyPressMana = concur.master["keyPressCureMana"].get().lower()
-		keyPressTrainMana = concur.master["keyPressTrainMana"].get().lower()
-		lifeToPullSSA = concur.master["lifeToPullSSA"].get()
-		keyToPullSSA = concur.master["keyToPullSSA"].get().lower()
+		self.character.setAllAttributes()
+		character = self.character
 		
-		if (valueTotalLife.isdigit() == False or valueTotalMana.isdigit() == False):
+		if (character.valueTotalLife.isdigit() == False or character.valueTotalMana.isdigit() == False):
 			return
 
-		if (currentLife > int(valueTotalLife)):
+		if (currentLife > int(character.valueTotalLife)):
 			valueTotalLife = currentLife
 			concur.master["totalLife"].delete(0, END)
 			concur.master["totalLife"].insert(0, str(currentLife))
 
-		if (currentMana > int(valueTotalMana)):
+		if (currentMana > int(character.valueTotalMana)):
 			valueTotalMana = currentMana
 			concur.master["totalMana"].delete(0, END)
 			concur.master["totalMana"].insert(0, str(currentMana))
 
-		currentLifePercent = (float(currentLife/int(valueTotalLife)) * 100)
-		currentManaPercent = (float(currentMana/int(valueTotalMana)) * 100)
+		currentLifePercent = (float(currentLife/int(character.valueTotalLife)) * 100)
+		currentManaPercent = (float(currentMana/int(character.valueTotalMana)) * 100)
 
-		if (currentLifePercent < int(lifeToPullSSA) and len(mustEquipSSA) == 0):
-			pyautogui.press(keyToPullSSA)
+		if (character.lifeToPullSSA.isdigit() and currentLifePercent < int(character.lifeToPullSSA) and len(mustEquipSSA) == 0):
+			pyautogui.press(character.keyToPullSSA)
 
-		if (currentLifePercent <= 50 and keyLife50 != " "):
-			pyautogui.press(keyLife50)
-		elif (currentLifePercent <= 70 and keyLife70 != " "):
-			pyautogui.press(keyLife70)
-		elif (currentLifePercent <= 90 and keyLife90 != " "):
-			pyautogui.press(keyLife90)
+		if (currentLifePercent <= 50 and character.keyLife50 != " "):
+			pyautogui.press(character.keyLife50)
+		elif (currentLifePercent <= 70 and character.keyLife70 != " "):
+			pyautogui.press(character.keyLife70)
+		elif (currentLifePercent <= 90 and character.keyLife90 != " "):
+			pyautogui.press(character.keyLife90)
 		
-		if (manaPercentForHeal.isdigit() == False and manaPercentForTrain.isdigit() == False):
+		if (character.manaPercentForHeal.isdigit() == False and character.manaPercentForTrain.isdigit() == False):
 			return
 
-		if (manaPercentForHeal.isdigit() and currentManaPercent <= int(manaPercentForHeal) and keyPressMana != " "):
-			pyautogui.press(keyPressMana)
+		if (character.manaPercentForHeal.isdigit() and currentManaPercent <= int(character.manaPercentForHeal) and character.keyPressMana != " "):
+			pyautogui.press(character.keyPressMana)
 
-		if (manaPercentForTrain.isdigit() and currentManaPercent > int(manaPercentForTrain) and keyPressTrainMana != " "):
-			pyautogui.press(keyPressTrainMana)
+		if (character.manaPercentForTrain.isdigit() and currentManaPercent > int(character.manaPercentForTrain) and character.keyPressTrainMana != " "):
+			pyautogui.press(character.keyPressTrainMana)
 
 	def confirmIsTarget(self, image):
 		left = pyautogui.locateAll(path + '/images/left.png', image, grayscale=True, confidence=.85)
@@ -159,7 +152,7 @@ class Controller():
 			FLAG_TIME_AUTO_UTAMO += 1
 			if (concur.paused == True):
 				break
-			time.sleep(0.2)
+			time.sleep(0.1)
 			im=pyautogui.screenshot()
 			life = im
 			mana = im
@@ -183,7 +176,7 @@ class Controller():
 			lstHasSpeed = list(hasSpeed)
 			hasUtamo = pyautogui.locateAll(path + '/images/utamo.png', food, grayscale=True, confidence=.75)
 			listHasUtamo = list(hasUtamo)
-			hasUtito = pyautogui.locateAll(path + '/images/utamo.png', food, grayscale=True, confidence=.75)
+			hasUtito = pyautogui.locateAll(path + '/images/utito.jpeg', food, grayscale=True, confidence=.75)
 			listHasUtito = list(hasUtito)
 			hasSSA = pyautogui.locateAll(path + '/images/ssa.png', im, grayscale=True, confidence=.90)
 			listHasSSA = list(hasSSA)
