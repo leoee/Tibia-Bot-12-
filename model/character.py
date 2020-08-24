@@ -13,7 +13,7 @@ class Character():
 		self.lifeToPullSSA = None
 		self.keyToPullSSA = None
 
-	def setAllAttributes(self):
+	def setAllAttributesRegardingHeal(self):
 		concur = self.concur
 		self.valueTotalMana = concur.master["totalMana"].get()
 		self.valueTotalLife = concur.master["totalLife"].get()

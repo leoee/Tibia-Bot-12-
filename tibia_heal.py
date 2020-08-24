@@ -145,7 +145,7 @@ def configScreen():
 
 def createSreen(concur, controller):
 	fKeys = ('F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 
-			'F9', 'F10', 'F11', 'F12', 'HOME', 'INSERT', 'DEL')
+			'F9', 'F10', 'F11', 'F12', 'HOME', 'INSERT', 'DEL', ' ')
 			
 	tk.Label(master, 
 			 text="Total Life").grid(row = 0)
@@ -362,7 +362,7 @@ def createSreen(concur, controller):
 if __name__ == '__main__':
 	firstTime = True
 	master = tk.Tk()
-	master.geometry("720x270")
+	master.geometry("750x300")
 	master.resizable(False, False)
 	master.title('TibiaBot - Stopped')
 

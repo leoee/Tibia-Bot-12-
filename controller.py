@@ -45,11 +45,30 @@ class Controller():
 
 	def configHeal(self, master, mustEquipSSA, currentLife, currentMana):
 		concur = self.concur
-		self.character.setAllAttributes()
+		self.character.setAllAttributesRegardingHeal()
 		character = self.character
 		
 		if (character.valueTotalLife.isdigit() == False or character.valueTotalMana.isdigit() == False):
 			return
+
+		currentLifePercent = (float(currentLife/int(character.valueTotalLife)) * 100)
+		currentManaPercent = (float(currentMana/int(character.valueTotalMana)) * 100)
+
+		if (character.lifeToPullSSA.isdigit() and currentLifePercent < int(character.lifeToPullSSA) and len(mustEquipSSA) == 0):
+			pyautogui.press(character.keyToPullSSA)
+
+		if (character.keyLife90 != " " and currentLifePercent <= 90 and currentLifePercent > 70):
+			pyautogui.press(character.keyLife90)
+		elif (character.keyLife70 != " " and currentLifePercent <= 70 and currentLifePercent > 50):
+			pyautogui.press(character.keyLife70)
+		elif (character.keyLife50 != " " and currentLifePercent <= 50):
+			pyautogui.press(character.keyLife50)
+
+		if (character.manaPercentForHeal.isdigit() and currentManaPercent <= int(character.manaPercentForHeal) and character.keyPressMana != " "):
+			pyautogui.press(character.keyPressMana)
+
+		if (character.manaPercentForTrain.isdigit() and currentManaPercent > int(character.manaPercentForTrain) and character.keyPressTrainMana != " "):
+			pyautogui.press(character.keyPressTrainMana)
 
 		if (currentLife > int(character.valueTotalLife)):
 			valueTotalLife = currentLife
@@ -60,28 +79,6 @@ class Controller():
 			valueTotalMana = currentMana
 			concur.master["totalMana"].delete(0, END)
 			concur.master["totalMana"].insert(0, str(currentMana))
-
-		currentLifePercent = (float(currentLife/int(character.valueTotalLife)) * 100)
-		currentManaPercent = (float(currentMana/int(character.valueTotalMana)) * 100)
-
-		if (character.lifeToPullSSA.isdigit() and currentLifePercent < int(character.lifeToPullSSA) and len(mustEquipSSA) == 0):
-			pyautogui.press(character.keyToPullSSA)
-
-		if (currentLifePercent <= 50 and character.keyLife50 != " "):
-			pyautogui.press(character.keyLife50)
-		elif (currentLifePercent <= 70 and character.keyLife70 != " "):
-			pyautogui.press(character.keyLife70)
-		elif (currentLifePercent <= 90 and character.keyLife90 != " "):
-			pyautogui.press(character.keyLife90)
-		
-		if (character.manaPercentForHeal.isdigit() == False and character.manaPercentForTrain.isdigit() == False):
-			return
-
-		if (character.manaPercentForHeal.isdigit() and currentManaPercent <= int(character.manaPercentForHeal) and character.keyPressMana != " "):
-			pyautogui.press(character.keyPressMana)
-
-		if (character.manaPercentForTrain.isdigit() and currentManaPercent > int(character.manaPercentForTrain) and character.keyPressTrainMana != " "):
-			pyautogui.press(character.keyPressTrainMana)
 
 	def confirmIsTarget(self, image):
 		left = pyautogui.locateAll(path + '/images/left.png', image, grayscale=True, confidence=.85)
@@ -152,35 +149,25 @@ class Controller():
 			FLAG_TIME_AUTO_UTAMO += 1
 			if (concur.paused == True):
 				break
-			time.sleep(0.1)
+			#time.sleep(0.1)
 			im=pyautogui.screenshot()
 			life = im
 			mana = im
-			food = im
-			isTarget = im
 			listPoints = self.returnListPointsBar()
 			life = life.crop((int(listPoints[0]), int(listPoints[1]), int(listPoints[2]), int(listPoints[3])))
 			mana = mana.crop((int(listPoints[4]), int(listPoints[5]), int(listPoints[6]), int(listPoints[7])))
-			food = food.crop((int(listPoints[8]), int(listPoints[9]), int(listPoints[10]), int(listPoints[11])))
-			#isTarget = isTarget.crop((int(listPoints[12]), int(listPoints[13]), int(listPoints[14]), int(listPoints[15])))
-			
+
 			screenBot = pyautogui.locateAll('images/bot.png', im, grayscale=True, confidence=.70)
 			lstScreen = list(screenBot)
+			hasSSA = pyautogui.locateAll(path + '/images/ssa.png', im, grayscale=True, confidence=.90)
+			listHasSSA = list(hasSSA)
+
+			if (len(lstScreen) != 0):
+				continue
 
 			vector_life = {}
 			vector_mana = {}
-			
-			hasHungry = pyautogui.locateAll(path + '/images/food.png', food, grayscale=True, confidence=.75)
-			lstHasHungry = list(hasHungry)
-			hasSpeed = pyautogui.locateAll(path + '/images/speed.png', food, grayscale=True, confidence=.75)
-			lstHasSpeed = list(hasSpeed)
-			hasUtamo = pyautogui.locateAll(path + '/images/utamo.png', food, grayscale=True, confidence=.75)
-			listHasUtamo = list(hasUtamo)
-			hasUtito = pyautogui.locateAll(path + '/images/utito.jpeg', food, grayscale=True, confidence=.75)
-			listHasUtito = list(hasUtito)
-			hasSSA = pyautogui.locateAll(path + '/images/ssa.png', im, grayscale=True, confidence=.90)
-			listHasSSA = list(hasSSA)
-			
+
 			self.identifyNumbers(life, mana, vector_life, vector_mana)
 			validIndexLife = 0
 			validIndexMana = 0
@@ -195,6 +182,25 @@ class Controller():
 				
 			if (validIndexLife == validIndexMana and validIndexMana == 0):
 				continue;
+
+			lifeValue = self.convertNumbersToString(validIndexLife, vector_life, lifeValue)
+			manaValue = self.convertNumbersToString(validIndexMana, vector_mana, manaValue)
+
+			self.master.title('Tibia Bot - Running - Life: ' + str(lifeValue) + ' // Mana: ' + str(manaValue))
+			self.configHeal(concur.master, listHasSSA, int(lifeValue), int(manaValue))
+
+			food = im
+			food = food.crop((int(listPoints[8]), int(listPoints[9]), int(listPoints[10]), int(listPoints[11])))
+			#isTarget = isTarget.crop((int(listPoints[12]), int(listPoints[13]), int(listPoints[14]), int(listPoints[15])))
+
+			hasHungry = pyautogui.locateAll(path + '/images/food.png', food, grayscale=True, confidence=.75)
+			lstHasHungry = list(hasHungry)
+			hasSpeed = pyautogui.locateAll(path + '/images/speed.png', food, grayscale=True, confidence=.75)
+			lstHasSpeed = list(hasSpeed)
+			hasUtamo = pyautogui.locateAll(path + '/images/utamo.png', food, grayscale=True, confidence=.75)
+			listHasUtamo = list(hasUtamo)
+			hasUtito = pyautogui.locateAll(path + '/images/utito.jpeg', food, grayscale=True, confidence=.75)
+			listHasUtito = list(hasUtito)
 			
 			mustEatFood = concur.master["eatFood"].get()
 			keyPressEatFood = concur.master["keyPressFood"].get().lower()
@@ -208,15 +214,6 @@ class Controller():
 			mustUseUtito= concur.master["autoUtito"].get()
 			keyAutoUtito = concur.master["keyUtito"].get().lower()
 			isAntiIdleOn= concur.master["antiIdle"].get()
-					
-			lifeValue = self.convertNumbersToString(validIndexLife, vector_life, lifeValue)
-			manaValue = self.convertNumbersToString(validIndexMana, vector_mana, manaValue)
-
-			self.master.title('Tibia Bot - Running - Life: ' + str(lifeValue) + ' // Mana: ' + str(manaValue))
-			self.configHeal(concur.master, listHasSSA, int(lifeValue), int(manaValue))
-
-			if (len(lstScreen) != 0):
-				continue
 
 			if (len(lstHasHungry) != 0 and mustEatFood):
 				pyautogui.press(keyPressEatFood)
@@ -231,9 +228,9 @@ class Controller():
 			elif (len(listHasUtito) == 0 and mustUseUtito and keyAutoUtito != " "):
 				pyautogui.press(keyAutoUtito)
 
-			elif (mustUseAutoSpell and keyAutoSpell != " " and timeAutoSpell * 5 <= FLAG_TIME_AUTO_SPELL):
-				pyautogui.press(keyAutoSpell)
-				FLAG_TIME_AUTO_SPELL = 0
+			#elif (mustUseAutoSpell and keyAutoSpell != " " and timeAutoSpell * 5 <= FLAG_TIME_AUTO_SPELL):
+			#	pyautogui.press(keyAutoSpell)
+			#	FLAG_TIME_AUTO_SPELL = 0
 
 			elif (isAntiIdleOn and (60 * 5) < FLAG_TIME_ANTI_IDLE):
 				self.activeAntiIdle()
