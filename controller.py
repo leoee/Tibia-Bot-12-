@@ -93,8 +93,8 @@ class Controller():
 
 	def identifyNumbers(self, imgLife, imgMana, vector_life, vector_mana):
 		for x in range(0, 10):
-			vector_life[x] =  pyautogui.locateAll(path + '/images/' + str(x) + '.png', imgLife, grayscale=True, confidence=.90)
-			vector_mana[x] =  pyautogui.locateAll(path + '/images/' + str(x) + '.png', imgMana, grayscale=True, confidence=.90)
+			vector_life[x] =  pyautogui.locateAll(path + '/images/' + str(x) + '.png', imgLife, grayscale=True, confidence=.95)
+			vector_mana[x] =  pyautogui.locateAll(path + '/images/' + str(x) + '.png', imgMana, grayscale=True, confidence=.95)
 
 	def convertNumbersToString(self, validIndex, vector, currentValue):
 		while(validIndex):

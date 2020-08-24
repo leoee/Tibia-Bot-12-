@@ -3,7 +3,6 @@ import logging
 import random
 import os
 import pyautogui
-import pyscreenshot as ImageGrab
 import sys
 import tkinter as tk
 from tkinter import *
