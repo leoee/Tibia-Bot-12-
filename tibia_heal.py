@@ -44,8 +44,8 @@ def on_click(x, y, button, pressed):
 				P2 = [x, y]
 				configIndex = 0
 
-with MouseListener(on_move=on_move, on_click=on_click) as listener:
-	listener.join()
+with MouseListener(on_move=on_move, on_click=on_click) as mouseListener:
+	mouseListener.join()
 
 def popupmsg(msg):
 	popup = tk.Tk()
@@ -139,8 +139,10 @@ def checkIfLifeAndManaBarAreBeSeeing(master, controller, itemsFromScreen):
 
 def configScreen():
 	global shouldListener
+	if (shouldListener):
+		return
 	shouldListener = True
-	listener.run()
+	mouseListener.run()
 
 def createSreen(concur, controller):
 	fKeys = ('F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 
@@ -357,7 +359,6 @@ def createSreen(concur, controller):
 														   sticky=tk.W, 
 														   pady=4)
 
-
 if __name__ == '__main__':
 	firstTime = True
 	master = tk.Tk()
@@ -366,12 +367,12 @@ if __name__ == '__main__':
 	master.title('TibiaBot - Stopped')
 
 	concur = Concur(master)
-	controller = Controller(master, concur)
-	createSreen(concur, controller)
+
+	#controller = Controller(master, concur, keyListener)
+	createSreen(concur, concur.controller)
 	concur.start()
 	concur.pause()
 
-
-
 	tk.mainloop()
+	pyautogui.press('end')
 	

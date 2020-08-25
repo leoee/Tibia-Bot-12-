@@ -18,10 +18,11 @@ class Controller():
 	master = None
 	concur = None
 
-	def __init__(self, concur, master):
+	def __init__(self, concur, master, keyListener):
 		self.master = master
 		self.concur = concur
 		self.character = Character(concur)
+		self.keyListener = keyListener
 
 	def returnListPointsBar(self):
 		file = open("config_screen.txt", "r")
@@ -163,8 +164,11 @@ class Controller():
 			listHasSSA = list(hasSSA)
 
 			if (len(lstScreen) != 0):
+				self.keyListener.stop()
 				continue
 
+			if (self.keyListener.running == False):
+				self.keyListener.resume()
 			vector_life = {}
 			vector_mana = {}
 

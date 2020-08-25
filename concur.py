@@ -1,6 +1,8 @@
+from key_listener import KeyListener
 import threading
 import time
 from controller import Controller
+
 
 class Concur(threading.Thread):
 	def __init__(self, master):
@@ -10,7 +12,9 @@ class Concur(threading.Thread):
 		self.daemon = True
 		self.paused = True
 		self.state = threading.Condition()
-		self.controller = Controller(self, self.master)
+		self.keyListener = KeyListener(self.master, self)
+		self.keyListener.start()
+		self.controller = Controller(self, self.master, self.keyListener)
 
 	def setMaster(self, master):
 		self.master = master
@@ -22,7 +26,7 @@ class Concur(threading.Thread):
 				if self.paused:
 					self.state.wait()
 			self.controller.core()
-			time.sleep(.1)
+			#time.sleep(.1)
 			self.iterations += 1
 
 	def resume(self):
