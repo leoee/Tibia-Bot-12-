@@ -73,5 +73,11 @@ After all of these steps, you can check your coordinates with the button "Check 
 ## How to use?
 After the configuration, you can use. The way how this bot works is analyzing your screen, then the features will be work ***IF YOU KEEP ON GAME SCREEN***. You can change the screen, but the functionalities will be executed when the game screen be seeing.
 
+- You must config your total life and mana with the length of your life/mana. Then, the bot will identify which
+is your real life/mana. When you up your level, the values will be updated automatically.
+- You can use "Insert" to start and stop the bot.
+- You can use "End" to close the bot anytime.
+
+
 ## Warning
 If you're trying to use the bot, but always you get fail on the "Check Config Screen", you should try to cut the numbers of the your Tibia. As you can see, inside images folder, we have a lot of images that represents the numbers. Cut all of your numbers inside the tibia and try again. Just the numbers are needed.
