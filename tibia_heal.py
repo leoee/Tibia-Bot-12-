@@ -310,7 +310,7 @@ def createSreen(concur, controller):
 	text_life_sio = StringVar()
 	life_to_sio = ttk.Combobox(master, width = 4, textvariable = text_life_sio)
 
-	life_to_sio['values'] = ('90%', '70%', '50%')
+	life_to_sio['values'] = ('90%', '70%', '50%', ' ')
 	  
 	life_to_sio.grid(row = 7, column = 8, sticky=E) 
 	life_to_sio.current()	
@@ -405,5 +405,5 @@ if __name__ == '__main__':
 	concur.pause()
 
 	tk.mainloop()
-	pyautogui.press('end')
+	pyautogui.press('delete')
 	

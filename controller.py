@@ -145,6 +145,7 @@ class Controller():
 			pyautogui.hotkey('ctrl', 'left')
 
 	def check_sio_bar(self):
+		#self.already_checked = False
 		listPoints = self.returnListPointsBar()
 		self.autoSio = pyautogui.screenshot()
 		self.autoSio = self.autoSio.crop((int(listPoints[12]), int(listPoints[13]), int(listPoints[14]), int(listPoints[15])))
