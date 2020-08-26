@@ -15,18 +15,16 @@ class KeyListener(Thread):
 		return 
 
 	def on_release(self, key):
-		if key == Key.end:
+		if key == Key.delete:
 			self.master.quit()
-			self.concur.pause()
-			exit()
 			return False
 		elif key == Key.insert and self.botIsRunning:
 			children_widgets = self.master.winfo_children()
 			for child_widget in children_widgets:
 				if child_widget.winfo_class() == 'Button':
-					if (str(child_widget) == ".!button4"):
+					if (str(child_widget) == ".!button5"):
 						child_widget.configure(bg="red")
-					elif (str(child_widget) == ".!button3"):
+					elif (str(child_widget) == ".!button4"):
 						child_widget.configure(bg="green")
 			self.botIsRunning = False
 			self.concur.pause()
@@ -36,9 +34,9 @@ class KeyListener(Thread):
 			children_widgets = self.master.winfo_children()
 			for child_widget in children_widgets:
 				if child_widget.winfo_class() == 'Button':
-					if (str(child_widget) == ".!button4"):
+					if (str(child_widget) == ".!button5"):
 						child_widget.configure(bg="green")
-					elif (str(child_widget) == ".!button3"):
+					elif (str(child_widget) == ".!button4"):
 						child_widget.configure(bg="red")
 			self.concur.resume()
 			self.botIsRunning = True

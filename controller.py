@@ -8,6 +8,7 @@ import pyscreenshot as ImageGrab
 import sys
 import tkinter as tk
 from tkinter import *
+import numpy
 from pynput.mouse import Listener as MouseListener
 from pynput import mouse
 from model.character import Character
@@ -23,6 +24,13 @@ class Controller():
 		self.concur = concur
 		self.character = Character(concur)
 		self.keyListener = keyListener
+		self.x1 = 0
+		self.x2 = 0
+		self.y1 = 0
+		self.y2 = 0
+		self.already_checked = False
+		self.autoSio = None
+		self.np_im = None
 
 	def returnListPointsBar(self):
 		file = open("config_screen.txt", "r")
@@ -136,7 +144,30 @@ class Controller():
 		else:
 			pyautogui.hotkey('ctrl', 'left')
 
+	def check_sio_bar(self):
+		listPoints = self.returnListPointsBar()
+		self.autoSio = pyautogui.screenshot()
+		self.autoSio = self.autoSio.crop((int(listPoints[12]), int(listPoints[13]), int(listPoints[14]), int(listPoints[15])))
+		hasLifeBarSio = pyautogui.locateAll(path + '/images/sio.png', self.autoSio, grayscale=True, confidence=.95)
+		listLifeBarSio = list(hasLifeBarSio)
 
+		if (len(listLifeBarSio) != 0 and self.already_checked == False):
+			self.already_checked = True
+			x1 = listLifeBarSio[0][0] + 8
+			y1 = listLifeBarSio[0][1]
+			x2 = listLifeBarSio[0][2] + x1 + 1
+			y2 = listLifeBarSio[0][3] + y1
+
+			self.x1 = x1
+			self.x2 = x2
+			self.y1 = y1
+			self.y2 = y2
+
+			children_widgets = self.master.winfo_children()
+			for child_widget in children_widgets:
+				if child_widget.winfo_class() == 'Button':
+					if (str(child_widget) == ".!button"):
+						child_widget.configure(bg="green")
 
 	def core(self):
 		concur = self.concur
@@ -150,7 +181,7 @@ class Controller():
 			FLAG_TIME_AUTO_UTAMO += 1
 			if (concur.paused == True):
 				break
-			#time.sleep(0.1)
+
 			im=pyautogui.screenshot()
 			life = im
 			mana = im
@@ -195,7 +226,6 @@ class Controller():
 
 			food = im
 			food = food.crop((int(listPoints[8]), int(listPoints[9]), int(listPoints[10]), int(listPoints[11])))
-			#isTarget = isTarget.crop((int(listPoints[12]), int(listPoints[13]), int(listPoints[14]), int(listPoints[15])))
 
 			hasHungry = pyautogui.locateAll(path + '/images/food.png', food, grayscale=True, confidence=.75)
 			lstHasHungry = list(hasHungry)
@@ -205,7 +235,7 @@ class Controller():
 			listHasUtamo = list(hasUtamo)
 			hasUtito = pyautogui.locateAll(path + '/images/utito.jpeg', food, grayscale=True, confidence=.75)
 			listHasUtito = list(hasUtito)
-			
+
 			mustEatFood = concur.master["eatFood"].get()
 			keyPressEatFood = concur.master["keyPressFood"].get().lower()
 			mustUseAutoSpell = concur.master["autoSpell"].get()
@@ -218,6 +248,48 @@ class Controller():
 			mustUseUtito= concur.master["autoUtito"].get()
 			keyAutoUtito = concur.master["keyUtito"].get().lower()
 			isAntiIdleOn= concur.master["antiIdle"].get()
+			life_to_use_sio = concur.master["lifeToUseSio"].get()
+			key_sio = concur.master["keyForSio"].get().lower()
+
+
+			self.check_sio_bar()
+			if (self.already_checked):
+				x_gap = int(listPoints[12])
+				y_gap = int(listPoints[13])
+				self.autoSio = self.autoSio.crop((int(self.x1), int(self.y1), int(self.x2), int(self.y2)))
+				self.np_im = numpy.array(self.autoSio)
+				blue, green, red = self.np_im[..., 0], self.np_im[..., 1], self.np_im[..., 2]
+
+				total = int(self.x2- self.x1 + self.y2 - self.y1)
+				cont_life = 0
+				cont_blue = 0
+				cont_green = 0
+				cont_red = 0
+				for pixel in blue:
+					for i in range(len(pixel)):
+						if (pixel[i] <= 70 and pixel[i] != 0):
+							cont_blue += 1
+				for pixel in red:
+					for i in range(len(pixel)):
+						if (pixel[i] <= 70 and pixel[i] != 0):
+							cont_red += 1
+				for pixel in green:
+					for i in range(len(pixel)):
+						if (pixel[i] <= 70 and pixel[i] != 0):
+							cont_green += 1
+
+				cont_life = int((cont_blue + cont_green + cont_red)/3)
+
+				if (key_sio != ' ' and life_to_use_sio != ' '):
+					if (life_to_use_sio == '90%' and cont_life >= 10):
+						pyautogui.press(key_sio)
+						cont_life = 0
+					elif (life_to_use_sio == '70%' and cont_life >= 60):
+						pyautogui.press(key_sio)
+						cont_life = 0
+					elif (life_to_use_sio == '50%' and cont_life >= 80):
+						pyautogui.press(key_sio)
+						cont_life = 0						
 
 			if (len(lstHasHungry) != 0 and mustEatFood):
 				pyautogui.press(keyPressEatFood)

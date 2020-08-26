@@ -11,6 +11,7 @@ Foi testado em OtServers com versões 12+. Os mesmos permitiam uso de bots.<br>
 - Auto Utito Tempo
 - Anti Idle
 - Auto SSA
+- Auto Sio (90%, 70% e 50%)
 
 ## Dependências
 - Python 3.7+
@@ -47,7 +48,7 @@ x:"P2.x" - y:"P2.y"
 ***Tools*****
 x:"P1.x" - y:"P1.y"
 x:"P2.x" - y:"P2.y"
-***Battle*****
+***Party List*****
 x:"P1.x" - y:"P1.y"
 x:"P2.x" - y:"P2.y"
 ```
@@ -62,7 +63,7 @@ x:"1357" - y:"167"
 ***Tools*****
 x:"1197" - y:"310"
 x:"1313" - y:"327"
-***Battle*****
+***Party List*****
 x:"1190" - y:"400"
 x:"1357" - y:"477"
 ```
@@ -75,7 +76,7 @@ Após a configuração, você pode usar. A forma como este bot funciona é anali
 
 - Você deve configurar seu total de vida e total de mana com a quantidade de números que tem sua vida/mana. Com isto, o bot irá identificar qual sua real vida/mana. Sempre que upar, ele irá atualizar também.
 - Você pode usar o "Insert" para iniciar e pausar o bot quando quiser.
-- Você pode usar o "End" para fechar todo o bot a qualquer momento.
+- Você pode usar o "Delete" para fechar todo o bot a qualquer momento.
 
 ## Aviso
 Se você está tentando usar o bot, mas sempre consegue falhar na "Tela de Check Config", você deve tentar cortar os números do seu Tibia. Como você pode ver, dentro da pasta de imagens, temos várias imagens que representam os números. Corte todos os seus números dentro da tíbia e tente novamente. Apenas os números são necessários.

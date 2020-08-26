@@ -11,6 +11,7 @@ It was tested with OtServers 12+. The OtServers allowed bots.<br>
 - Auto Utito Tempo
 - Anti Idle
 - Auto SSA
+- Auto Sio (90%, 70% and 50%)
 
 ## Dependencies
 - Python 3.7+
@@ -47,7 +48,7 @@ x:"P2.x" - y:"P2.y"
 ***Tools*****
 x:"P1.x" - y:"P1.y"
 x:"P2.x" - y:"P2.y"
-***Battle*****
+***Party List*****
 x:"P1.x" - y:"P1.y"
 x:"P2.x" - y:"P2.y"
 ```
@@ -62,7 +63,7 @@ x:"1357" - y:"167"
 ***Tools*****
 x:"1197" - y:"310"
 x:"1313" - y:"327"
-***Battle*****
+***Party List*****
 x:"1190" - y:"400"
 x:"1357" - y:"477"
 ```
@@ -76,7 +77,7 @@ After the configuration, you can use. The way how this bot works is analyzing yo
 - You must config your total life and mana with the length of your life/mana. Then, the bot will identify which
 is your real life/mana. When you up your level, the values will be updated automatically.
 - You can use "Insert" to start and stop the bot.
-- You can use "End" to close the bot anytime.
+- You can use "Delete" to close the bot anytime.
 
 
 ## Warning

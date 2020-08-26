@@ -60,9 +60,9 @@ def stopBot(concur, master):
 	children_widgets = master.winfo_children()
 	for child_widget in children_widgets:
 		if child_widget.winfo_class() == 'Button':
-			if (str(child_widget) == ".!button4"):
+			if (str(child_widget) == ".!button5"):
 				child_widget.configure(bg="red")
-			elif (str(child_widget) == ".!button3"):
+			elif (str(child_widget) == ".!button4"):
 				child_widget.configure(bg="green")
 	master.title('TibiaBot - Stopped')
 	concur.pause()
@@ -75,9 +75,9 @@ def startBot(concur, master):
 	children_widgets = master.winfo_children()
 	for child_widget in children_widgets:
 		if child_widget.winfo_class() == 'Button':
-			if (str(child_widget) == ".!button4"):
+			if (str(child_widget) == ".!button5"):
 				child_widget.configure(bg="green")
-			elif (str(child_widget) == ".!button3"):
+			elif (str(child_widget) == ".!button4"):
 				child_widget.configure(bg="red")
 	valueTotalMana = concur.master["totalMana"].get()
 	valueTotalLife = concur.master["totalLife"].get()
@@ -132,7 +132,7 @@ def checkIfLifeAndManaBarAreBeSeeing(master, controller, itemsFromScreen):
 	else:
 		for child_widget in children_widgets:
 			if child_widget.winfo_class() == 'Button':
-				if (str(child_widget) == ".!button2"):
+				if (str(child_widget) == ".!button3"):
 					child_widget.configure(bg="green")
 	master.title('Tibia Bot - Life: ' + str(lifeValue) + ' // Mana: ' + str(manaValue))
 
@@ -154,14 +154,18 @@ def createSreen(concur, controller):
 			 text="Total Mana").grid(row = 1)
 	tk.Label(master, 
 			 text="Time(s)").grid(row=5, column = 8)
+	tk.Label(master, 
+			 text="Life sio(%)").grid(row=7, column = 7)
 
 	totalLife = tk.Entry(master, width=7)
 	totalMana = tk.Entry(master, width=7)
 	timeAutoSpell = tk.Entry(master, width=7)
+	#life_for_sio = tk.Entry(master, width=4)
 	
 	totalLife.grid(row=0, column=1)
 	totalMana.grid(row=1, column=1)
 	timeAutoSpell.grid(row=5, column = 9)
+	#life_for_sio.grid(row=7, column = 8)
 
 	autoUtamo = IntVar()
 	Checkbutton(master, text="Auto Utamo Vita", variable=autoUtamo).grid(row=0, column = 6, sticky=W)
@@ -302,6 +306,23 @@ def createSreen(concur, controller):
 	  
 	keyToPullSSA.grid(row = 6, column = 9) 
 	keyToPullSSA.current()
+
+	text_life_sio = StringVar()
+	life_to_sio = ttk.Combobox(master, width = 4, textvariable = text_life_sio)
+
+	life_to_sio['values'] = ('90%', '70%', '50%')
+	  
+	life_to_sio.grid(row = 7, column = 8, sticky=E) 
+	life_to_sio.current()	
+
+
+	text_life_sio = StringVar()
+	key_sio = ttk.Combobox(master, width = 6, textvariable = text_life_sio)
+
+	key_sio['values'] = fKeys
+	  
+	key_sio.grid(row = 7, column = 9, sticky=W) 
+	key_sio.current()	
 			
 	itemsFromScreen = {
 		"keyPressCure90": keyChoosenCure90,
@@ -326,10 +347,20 @@ def createSreen(concur, controller):
 		"keyUtito": keyUtitoTempo,
 		"antiIdle": autoAntiIdle,
 		"lifeToPullSSA": lifeToPullSSA,
-		"keyToPullSSA": keyToPullSSA
+		"keyToPullSSA": keyToPullSSA,
+		"lifeToUseSio": life_to_sio,
+		"keyForSio": key_sio
 	}
 
 	concur.setMaster(itemsFromScreen)
+
+	tk.Button(master, 
+			  text='Check Party List',
+			  activebackground='green',
+			  command=lambda: controller.check_sio_bar()).grid(row=7, 
+										column=6, 
+										sticky=W, 
+										pady=4)
 
 	tk.Button(master, 
 			  text='Config Screen',
