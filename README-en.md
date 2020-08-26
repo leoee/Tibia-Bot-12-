@@ -69,7 +69,7 @@ x:"1357" - y:"477"
 ```
 That is the pattern, please don't change.<br>
 
-After all of these steps, you can check your coordinates with the button "Check Config Screen". If is ok, the button will be painted with green color.<br>
+After all of these steps, you can check your coordinates with the button "Check Config Screen". If is ok, the button will be painted with green color. I recommend you see the topic ***Warning*** below<br>
 
 ## How to use?
 After the configuration, you can use. The way how this bot works is analyzing your screen, then the features will be work ***IF YOU KEEP ON GAME SCREEN***. You can change the screen, but the functionalities will be executed when the game screen be seeing.
@@ -78,6 +78,9 @@ After the configuration, you can use. The way how this bot works is analyzing yo
 is your real life/mana. When you up your level, the values will be updated automatically.
 - You can use "Insert" to start and stop the bot.
 - You can use "Delete" to close the bot anytime.
+- For Auto sio works, you need to open Party List and filter by the ***ONLY*** person who you want to cure. Fill all the life bar of this person and click on "Check Party List". In this moment, make sure the person life is 100% before use the button. After that, you the bot identify the life bar the button will be printed to green color and you're able to use this funcionality. Also make sure you added the location on the config_screen file.
+- For functionalities that doesn't have any checkbox to active, you just need to choose a empty hotkey to deactivate the functionality.
+- Auto SSA must have a hotkey that equip the amulet to work.
 
 
 ## Warning

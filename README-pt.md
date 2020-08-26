@@ -69,7 +69,7 @@ x:"1357" - y:"477"
 ```
 Esse é o padrão, por favor, não mude.<br>
 
-Após todas essas etapas, você pode verificar suas coordenadas com o botão "Check Config Screen". Se estiver ok, o botão será pintado de verde.<br>
+Após todas essas etapas, você pode verificar suas coordenadas com o botão "Check Config Screen". Se estiver ok, o botão será pintado de verde. Recomendo que você analise o tópico ***Aviso*** abaixo.<br>
 
 ## Como usar?
 Após a configuração, você pode usar. A forma como este bot funciona é analisando sua tela, então os recursos funcionarão *** SE VOCÊ MANTER NA TELA DO JOGO ***. Você pode mudar a tela, mas as funcionalidades serão executadas quando a tela do jogo estiver aparecendo.
@@ -77,6 +77,9 @@ Após a configuração, você pode usar. A forma como este bot funciona é anali
 - Você deve configurar seu total de vida e total de mana com a quantidade de números que tem sua vida/mana. Com isto, o bot irá identificar qual sua real vida/mana. Sempre que upar, ele irá atualizar também.
 - Você pode usar o "Insert" para iniciar e pausar o bot quando quiser.
 - Você pode usar o "Delete" para fechar todo o bot a qualquer momento.
+- Para que o auto sio funcione, você deve abrir o Party list e filtrar pela ***ÚNICA*** pessoa que você deseja curar. Encha a vida da pessoal e clique em "Check Party List". Neste ponto, é importante que a vida da pessoa esteja em 100% para usar o botão. Caso seja identificado, o botão ficará verde e você está apto para usar a funcionalidade. Certifique-se de ter adicionado a localização do Party List no arquivo config_screen.txt.
+- Para as funcionalidades que não possuem uma caixa de seleção para ativar, basta colocar a hotkey em branco para não executar a funcionalidade.
+- Auto SSA deve ter um hotkey associadas que equipe o SSA.
 
 ## Aviso
 Se você está tentando usar o bot, mas sempre consegue falhar na "Tela de Check Config", você deve tentar cortar os números do seu Tibia. Como você pode ver, dentro da pasta de imagens, temos várias imagens que representam os números. Corte todos os seus números dentro da tíbia e tente novamente. Apenas os números são necessários.
