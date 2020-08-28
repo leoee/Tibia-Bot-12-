@@ -36,7 +36,8 @@ Clique em 2 pontos para cortar uma imagem. Ao finalizar os cliques, clique com o
 ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/lifeRD.png)<br>
 ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/manaRD.png)<br>
 ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/toolsRD.png)<br>
-![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/battleRD.png)<br>
+![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/partyRD.png)<br>
+![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/equipmentRD.png)<br>
 No projeto, existe um arquivo txt com as coordenadas. O conteúdo do arquivo é o seguinte:
 ```
 ***Life Bar*****
@@ -46,6 +47,9 @@ x:"P2.x" - y:"P2.y"
 x:"P1.x" - y:"P1.y"
 x:"P2.x" - y:"P2.y"
 ***Tools*****
+x:"P1.x" - y:"P1.y"
+x:"P2.x" - y:"P2.y"
+***Equipments*****
 x:"P1.x" - y:"P1.y"
 x:"P2.x" - y:"P2.y"
 ***Party List*****
@@ -63,6 +67,9 @@ x:"1357" - y:"167"
 ***Tools*****
 x:"1197" - y:"310"
 x:"1313" - y:"327"
+***Equipments*****
+x:"1194" - y:"168"
+x:"1307" - y:"324"
 ***Party List*****
 x:"1190" - y:"400"
 x:"1357" - y:"477"
@@ -77,7 +84,7 @@ Após a configuração, você pode usar. A forma como este bot funciona é anali
 - Você deve configurar seu total de vida e total de mana com a quantidade de números que tem sua vida/mana. Com isto, o bot irá identificar qual sua real vida/mana. Sempre que upar, ele irá atualizar também.
 - Você pode usar o "Insert" para iniciar e pausar o bot quando quiser.
 - Você pode usar o "Delete" para fechar todo o bot a qualquer momento.
-- Para que o auto sio funcione, você deve abrir o Party list e filtrar pela ***ÚNICA*** pessoa que você deseja curar. Encha a vida da pessoal e clique em "Check Party List". Neste ponto, é importante que a vida da pessoa esteja em 100% para usar o botão. Caso seja identificado, o botão ficará verde e você está apto para usar a funcionalidade. Certifique-se de ter adicionado a localização do Party List no arquivo config_screen.txt.
+- Para que o Auto Sio funcione, você deve abrir o Party list e filtrar pela ***ÚNICA*** pessoa que você deseja curar. Encha a vida da pessoal e clique em "Check Party List". Neste ponto, é importante que a vida da pessoa esteja em 100% para usar o botão. Caso seja identificado, o botão ficará verde e você está apto para usar a funcionalidade. Certifique-se de ter adicionado a localização do Party List no arquivo config_screen.txt.
 - Para as funcionalidades que não possuem uma caixa de seleção para ativar, basta colocar a hotkey em branco para não executar a funcionalidade.
 - Auto SSA deve ter um hotkey associadas que equipe o SSA.
 

@@ -38,7 +38,7 @@ class Controller():
 		list = []
 		indexPrevious = 0
 		indexNext = 0
-		for i in range (16):
+		for i in range (20):
 			value = ""
 			indexPrevious = contents.index('"', indexNext + 1)
 			indexNext = contents.index('"', indexPrevious + 1)
@@ -148,7 +148,8 @@ class Controller():
 		#self.already_checked = False
 		listPoints = self.returnListPointsBar()
 		self.autoSio = pyautogui.screenshot()
-		self.autoSio = self.autoSio.crop((int(listPoints[12]), int(listPoints[13]), int(listPoints[14]), int(listPoints[15])))
+		self.autoSio = self.autoSio.crop((int(listPoints[16]), int(listPoints[17]), int(listPoints[18]), int(listPoints[19])))
+		#self.autoSio = self.autoSio.crop((int(listPoints[12]), int(listPoints[13]), int(listPoints[14]), int(listPoints[15])))
 		hasLifeBarSio = pyautogui.locateAll(path + '/images/sio.png', self.autoSio, grayscale=True, confidence=.95)
 		listLifeBarSio = list(hasLifeBarSio)
 
@@ -186,13 +187,15 @@ class Controller():
 			im=pyautogui.screenshot()
 			life = im
 			mana = im
+			equipment = im
 			listPoints = self.returnListPointsBar()
 			life = life.crop((int(listPoints[0]), int(listPoints[1]), int(listPoints[2]), int(listPoints[3])))
 			mana = mana.crop((int(listPoints[4]), int(listPoints[5]), int(listPoints[6]), int(listPoints[7])))
+			equipment = equipment.crop((int(listPoints[12]), int(listPoints[13]), int(listPoints[14]), int(listPoints[15])))
 
 			screenBot = pyautogui.locateAll('images/bot.png', im, grayscale=True, confidence=.70)
 			lstScreen = list(screenBot)
-			hasSSA = pyautogui.locateAll(path + '/images/ssa.png', im, grayscale=True, confidence=.90)
+			hasSSA = pyautogui.locateAll(path + '/images/ssa.png', equipment, grayscale=True, confidence=.90)
 			listHasSSA = list(hasSSA)
 
 			if (len(lstScreen) != 0):
@@ -252,9 +255,8 @@ class Controller():
 			life_to_use_sio = concur.master["lifeToUseSio"].get()
 			key_sio = concur.master["keyForSio"].get().lower()
 
-
-			self.check_sio_bar()
 			if (self.already_checked):
+				self.check_sio_bar()
 				x_gap = int(listPoints[12])
 				y_gap = int(listPoints[13])
 				self.autoSio = self.autoSio.crop((int(self.x1), int(self.y1), int(self.x2), int(self.y2)))

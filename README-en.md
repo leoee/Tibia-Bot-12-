@@ -36,9 +36,11 @@ Click in 2 points to cut an image. When finished the clicks, click with right bu
 ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/lifeRD.png)<br>
 ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/manaRD.png)<br>
 ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/toolsRD.png)<br>
+![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/equipmentRD.png)<br>
 ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/battleRD.png)<br>
 In the project, there is a txt file with the coordinates. The content file is the following:
 ```
+***Life Bar*****
 ***Life Bar*****
 x:"P1.x" - y:"P1.y"
 x:"P2.x" - y:"P2.y"
@@ -48,11 +50,14 @@ x:"P2.x" - y:"P2.y"
 ***Tools*****
 x:"P1.x" - y:"P1.y"
 x:"P2.x" - y:"P2.y"
+***Equipments*****
+x:"P1.x" - y:"P1.y"
+x:"P2.x" - y:"P2.y"
 ***Party List*****
 x:"P1.x" - y:"P1.y"
 x:"P2.x" - y:"P2.y"
 ```
-Another example<br>
+Outro exemplo<br>
 ```
 ***Life Bar*****
 x:"1193" - y:"138"
@@ -63,6 +68,9 @@ x:"1357" - y:"167"
 ***Tools*****
 x:"1197" - y:"310"
 x:"1313" - y:"327"
+***Equipments*****
+x:"1194" - y:"168"
+x:"1307" - y:"324"
 ***Party List*****
 x:"1190" - y:"400"
 x:"1357" - y:"477"
