@@ -12,6 +12,11 @@ class Character():
 		self.keyPressTrainMana = None
 		self.lifeToPullSSA = None
 		self.keyToPullSSA = None
+		self.value_to_pull_ring = None
+		self.key_to_pull_ring = None
+		self.bar_to_pull_ring = None
+		self.ring_type = None
+
 
 	def setAllAttributesRegardingHeal(self):
 		concur = self.concur
@@ -26,4 +31,9 @@ class Character():
 		self.keyPressTrainMana = concur.master["keyPressTrainMana"].get().lower()
 		self.lifeToPullSSA = concur.master["lifeToPullSSA"].get()
 		self.keyToPullSSA = concur.master["keyToPullSSA"].get().lower()
+		self.bar_to_pull_ring = concur.master["barToPullRing"].get()
+		self.value_to_pull_ring = concur.master["valueToPullRing"].get()
+		self.key_to_pull_ring = concur.master["keyToPullRing"].get().lower()
+		self.ring_type = concur.master["ringType"].get()
+
 	

@@ -11,6 +11,7 @@ Foi testado em OtServers com versões 12+. Os mesmos permitiam uso de bots.<br>
 - Auto Utito Tempo
 - Anti Idle
 - Auto SSA
+- Auto Equip Ring (Might and Energy)
 - Auto Sio (90%, 70% e 50%)
 
 ## Dependências
@@ -87,6 +88,8 @@ Após a configuração, você pode usar. A forma como este bot funciona é anali
 - Para que o Auto Sio funcione, você deve abrir o Party list e filtrar pela ***ÚNICA*** pessoa que você deseja curar. Encha a vida da pessoal e clique em "Check Party List". Neste ponto, é importante que a vida da pessoa esteja em 100% para usar o botão. Caso seja identificado, o botão ficará verde e você está apto para usar a funcionalidade. Certifique-se de ter adicionado a localização do Party List no arquivo config_screen.txt.
 - Para as funcionalidades que não possuem uma caixa de seleção para ativar, basta colocar a hotkey em branco para não executar a funcionalidade.
 - Auto SSA deve ter um hotkey associadas que equipe o SSA.
+- Auto Equip Ring deve também possuir hotkey associadas que equipam o ring (Might ou Energy).
+- Em caso de Auto SSA e Auto Equip estiverem configurados, o tibia não permite subir os 2 ao mesmo tempo, portanto a prioridade será SSA.
 
 ## Aviso
 Se você está tentando usar o bot, mas sempre consegue falhar na "Tela de Check Config", você deve tentar cortar os números do seu Tibia. Como você pode ver, dentro da pasta de imagens, temos várias imagens que representam os números. Corte todos os seus números dentro da tíbia e tente novamente. Apenas os números são necessários.

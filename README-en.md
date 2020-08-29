@@ -11,6 +11,7 @@ It was tested with OtServers 12+. The OtServers allowed bots.<br>
 - Auto Utito Tempo
 - Anti Idle
 - Auto SSA
+- Auto Equip Ring (Might and Energy)
 - Auto Sio (90%, 70% and 50%)
 
 ## Dependencies
@@ -89,6 +90,8 @@ is your real life/mana. When you up your level, the values will be updated autom
 - For Auto sio works, you need to open Party List and filter by the ***ONLY*** person who you want to cure. Fill all the life bar of this person and click on "Check Party List". In this moment, make sure the person life is 100% before use the button. After that, you the bot identify the life bar the button will be printed to green color and you're able to use this funcionality. Also make sure you added the location on the config_screen file.
 - For functionalities that doesn't have any checkbox to active, you just need to choose a empty hotkey to deactivate the functionality.
 - Auto SSA must have a hotkey that equip the amulet to work.
+- Auto Equip Ring also must have a hotkey that equip the ring to work.
+- In case Auto SSA and Auto Equip Ring are configured, by default Tibia doesn't allow to equip both on the same time, therefore the priority will be Auto SSA.
 
 
 ## Warning

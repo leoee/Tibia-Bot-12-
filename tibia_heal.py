@@ -146,7 +146,8 @@ def configScreen():
 
 def createSreen(concur, controller):
 	fKeys = ('F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 
-			'F9', 'F10', 'F11', 'F12', 'HOME', 'INSERT', 'DEL', ' ')
+			'F9', 'F10', 'F11', 'F12', '1', '2', '3', '4'
+				, '5', '6', '7', '8', '9', '0', ' ')
 			
 	tk.Label(master, 
 			 text="Total Life").grid(row = 0)
@@ -155,17 +156,18 @@ def createSreen(concur, controller):
 	tk.Label(master, 
 			 text="Time(s)").grid(row=5, column = 8)
 	tk.Label(master, 
-			 text="Life sio(%)").grid(row=7, column = 7)
+			 text="Life sio(%)").grid(row=8, column = 7)
+	tk.Label(master, 
+			 text="Auto Ring when").grid(row=7, column = 6)
+
 
 	totalLife = tk.Entry(master, width=7)
 	totalMana = tk.Entry(master, width=7)
 	timeAutoSpell = tk.Entry(master, width=7)
-	#life_for_sio = tk.Entry(master, width=4)
 	
 	totalLife.grid(row=0, column=1)
 	totalMana.grid(row=1, column=1)
 	timeAutoSpell.grid(row=5, column = 9)
-	#life_for_sio.grid(row=7, column = 8)
 
 	autoUtamo = IntVar()
 	Checkbutton(master, text="Auto Utamo Vita", variable=autoUtamo).grid(row=0, column = 6, sticky=W)
@@ -298,30 +300,66 @@ def createSreen(concur, controller):
 	lifeToPullSSA.grid(row = 6, column=7, sticky=W)
 	
 	tk.Label(master, 
-		text="% use").grid(row = 6, column = 8, sticky=W)	
+		text="% use").grid(row = 6, column = 8, sticky=W)
+
 	keyToPullSSA = StringVar()
-	keyToPullSSA = ttk.Combobox(master, width = 6, textvariable = keyToPullSSA) 
+	keyToPullSSA = ttk.Combobox(master, width = 3, textvariable = keyToPullSSA) 
 	  
 	keyToPullSSA['values'] =  fKeys
 	  
 	keyToPullSSA.grid(row = 6, column = 9) 
 	keyToPullSSA.current()
 
+	bar_to_pull_ring = StringVar()
+	bar_to_pull_ring = ttk.Combobox(master, width = 6, textvariable = bar_to_pull_ring) 
+	  
+	bar_to_pull_ring['values'] =  ('MANA', 'LIFE')
+	  
+	bar_to_pull_ring.grid(row = 7, column = 7) 
+	bar_to_pull_ring.current()
+
+	value_to_pull_ring = tk.Entry(master, width = 4)	
+	value_to_pull_ring.grid(row = 7, column=8)
+
+	tk.Label(master, 
+		text="% use").grid(row = 7, column = 9)
+
+	key_auto_ring = StringVar()
+	key_auto_ring = ttk.Combobox(master, width = 3, textvariable = key_auto_ring)
+
+	key_auto_ring['values'] = fKeys
+	  
+	key_auto_ring.grid(row = 7, column = 10, sticky=W) 
+	key_auto_ring.current()
+
+	tk.Label(master, 
+		text="Ring").grid(row = 7, column = 11, sticky=W)
+
+	ring_type = StringVar()
+	ring_type = ttk.Combobox(master, width = 5, textvariable = ring_type)
+
+	ring_type['values'] = ('Might', 'Energy')
+	  
+	ring_type.grid(row = 7, column = 12, sticky=W) 
+	ring_type.current()
+
 	text_life_sio = StringVar()
 	life_to_sio = ttk.Combobox(master, width = 4, textvariable = text_life_sio)
 
 	life_to_sio['values'] = ('90%', '70%', '50%', ' ')
 	  
-	life_to_sio.grid(row = 7, column = 8, sticky=E) 
+	life_to_sio.grid(row = 8, column = 8, sticky=E) 
 	life_to_sio.current()	
 
+	tk.Label(master, 
+		text="use").grid(row = 8, column = 9)
 
 	text_life_sio = StringVar()
-	key_sio = ttk.Combobox(master, width = 6, textvariable = text_life_sio)
+	key_sio = ttk.Combobox(master, width = 3, textvariable = text_life_sio)
 
 	key_sio['values'] = fKeys
 	  
-	key_sio.grid(row = 7, column = 9, sticky=W) 
+	key_sio.grid(row = 8, column = 10, sticky=W) 
 	key_sio.current()	
 			
 	itemsFromScreen = {
@@ -349,7 +387,11 @@ def createSreen(concur, controller):
 		"lifeToPullSSA": lifeToPullSSA,
 		"keyToPullSSA": keyToPullSSA,
 		"lifeToUseSio": life_to_sio,
-		"keyForSio": key_sio
+		"keyForSio": key_sio,
+		"barToPullRing": bar_to_pull_ring,
+		"valueToPullRing": value_to_pull_ring,
+		"keyToPullRing": key_auto_ring,
+		"ringType": ring_type	
 	}
 
 	concur.setMaster(itemsFromScreen)
@@ -357,7 +399,7 @@ def createSreen(concur, controller):
 	tk.Button(master, 
 			  text='Check Party List',
 			  activebackground='green',
-			  command=lambda: controller.check_sio_bar()).grid(row=7, 
+			  command=lambda: controller.check_sio_bar()).grid(row=8, 
 										column=6, 
 										sticky=W, 
 										pady=4)
@@ -393,7 +435,7 @@ def createSreen(concur, controller):
 if __name__ == '__main__':
 	firstTime = True
 	master = tk.Tk()
-	master.geometry("750x300")
+	master.geometry("800x300")
 	master.resizable(False, False)
 	master.title('TibiaBot - Stopped')
 

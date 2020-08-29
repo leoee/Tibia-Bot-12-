@@ -52,7 +52,7 @@ class Controller():
 			vector_life[i] = list(vector_life[i])
 			vector_mana[i] = list(vector_mana[i])
 
-	def configHeal(self, master, mustEquipSSA, currentLife, currentMana):
+	def configHeal(self, master, mustEquipSSA, must_equip_energy, must_equip_might, currentLife, currentMana):
 		concur = self.concur
 		self.character.setAllAttributesRegardingHeal()
 		character = self.character
@@ -63,9 +63,6 @@ class Controller():
 		currentLifePercent = (float(currentLife/int(character.valueTotalLife)) * 100)
 		currentManaPercent = (float(currentMana/int(character.valueTotalMana)) * 100)
 
-		if (character.lifeToPullSSA.isdigit() and currentLifePercent < int(character.lifeToPullSSA) and len(mustEquipSSA) == 0):
-			pyautogui.press(character.keyToPullSSA)
-
 		if (character.keyLife90 != " " and currentLifePercent <= 90 and currentLifePercent > 70):
 			pyautogui.press(character.keyLife90)
 		elif (character.keyLife70 != " " and currentLifePercent <= 70 and currentLifePercent > 50):
@@ -75,6 +72,24 @@ class Controller():
 
 		if (character.manaPercentForHeal.isdigit() and currentManaPercent <= int(character.manaPercentForHeal) and character.keyPressMana != " "):
 			pyautogui.press(character.keyPressMana)
+
+		if (character.lifeToPullSSA.isdigit() and currentLifePercent < int(character.lifeToPullSSA) and len(mustEquipSSA) == 0):
+			pyautogui.press(character.keyToPullSSA)
+
+		if (character.value_to_pull_ring.isdigit() and character.key_to_pull_ring != ' ' and character.ring_type != ' '):
+			if (character.bar_to_pull_ring == 'MANA' and int(character.value_to_pull_ring) >= currentManaPercent):
+				if (character.ring_type == 'Might' and len(must_equip_might) == 0):
+					pyautogui.press(character.key_to_pull_ring)
+				elif (character.ring_type == 'Energy' and len(must_equip_energy) == 0):
+					pyautogui.press(character.key_to_pull_ring)
+			if (character.bar_to_pull_ring == 'LIFE' and int(character.value_to_pull_ring) >= currentLifePercent):
+				if (character.ring_type == 'Might' and len(must_equip_might) == 0):
+					pyautogui.press(character.key_to_pull_ring)
+				elif (character.ring_type == 'Energy' and len(must_equip_energy) == 0):
+					pyautogui.press(character.key_to_pull_ring)
+			elif (character.bar_to_pull_ring == 'LIFE'):
+				if (character.ring_type == 'Energy' and len(must_equip_energy) != 0):
+					pyautogui.press(character.key_to_pull_ring)		
 
 		if (character.manaPercentForTrain.isdigit() and currentManaPercent > int(character.manaPercentForTrain) and character.keyPressTrainMana != " "):
 			pyautogui.press(character.keyPressTrainMana)
@@ -197,6 +212,10 @@ class Controller():
 			lstScreen = list(screenBot)
 			hasSSA = pyautogui.locateAll(path + '/images/ssa.png', equipment, grayscale=True, confidence=.90)
 			listHasSSA = list(hasSSA)
+			has_energy_ring = pyautogui.locateAll(path + '/images/energy_ring.png', equipment, grayscale=True, confidence=.90)
+			list_has_energy_ring = list(has_energy_ring)
+			has_might_ring = pyautogui.locateAll(path + '/images/might_ring.png', equipment, grayscale=True, confidence=.90)
+			list_has_might_ring = list(has_might_ring)
 
 			if (len(lstScreen) != 0):
 				self.keyListener.stop()
@@ -226,7 +245,7 @@ class Controller():
 			manaValue = self.convertNumbersToString(validIndexMana, vector_mana, manaValue)
 
 			self.master.title('Tibia Bot - Running - Life: ' + str(lifeValue) + ' // Mana: ' + str(manaValue))
-			self.configHeal(concur.master, listHasSSA, int(lifeValue), int(manaValue))
+			self.configHeal(concur.master, listHasSSA, list_has_energy_ring, list_has_might_ring, int(lifeValue), int(manaValue))
 
 			food = im
 			food = food.crop((int(listPoints[8]), int(listPoints[9]), int(listPoints[10]), int(listPoints[11])))
