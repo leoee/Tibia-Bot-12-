@@ -57,6 +57,7 @@ def popupmsg(msg):
 	popup.mainloop()
 
 def stopBot(concur, master):
+	concur.keyListener.botIsRunning = False
 	children_widgets = master.winfo_children()
 	for child_widget in children_widgets:
 		if child_widget.winfo_class() == 'Button':
@@ -72,6 +73,7 @@ def loadConfig(a, b):
 	print(b.get())
 	
 def startBot(concur, master):
+	concur.keyListener.botIsRunning = True
 	children_widgets = master.winfo_children()
 	for child_widget in children_widgets:
 		if child_widget.winfo_class() == 'Button':
