@@ -16,13 +16,13 @@ from model.character import Character
 path = os.getcwd()
 
 class Controller():
-	master = None
-	concur = None
+	screen_manager = None
+	bot_manager = None
 
-	def __init__(self, concur, master, keyListener):
-		self.master = master
-		self.concur = concur
-		self.character = Character(concur)
+	def __init__(self, bot_manager, screen_manager, keyListener):
+		self.screen_manager = screen_manager
+		self.bot_manager = bot_manager
+		self.character = Character(bot_manager)
 		self.keyListener = keyListener
 		self.x1 = 0
 		self.x2 = 0
@@ -52,29 +52,29 @@ class Controller():
 			vector_life[i] = list(vector_life[i])
 			vector_mana[i] = list(vector_mana[i])
 
-	def config_heal(self, master, mustEquipSSA, must_equip_energy, must_equip_might, currentLife, currentMana):
-		concur = self.concur
-		self.character.setAllAttributesRegardingHeal()
+	def config_heal(self, screen_manager, mustEquipSSA, must_equip_energy, must_equip_might, currentLife, currentMana):
+		bot_manager = self.bot_manager
+		self.character.set_all_attributes_about_character()
 		character = self.character
 		
-		if (character.valueTotalLife.isdigit() == False or character.valueTotalMana.isdigit() == False):
+		if (character.value_total_life.isdigit() == False or character.value_total_mana.isdigit() == False):
 			return
 
-		currentLifePercent = (float(currentLife/int(character.valueTotalLife)) * 100)
-		currentManaPercent = (float(currentMana/int(character.valueTotalMana)) * 100)
+		currentLifePercent = (float(currentLife/int(character.value_total_life)) * 100)
+		currentManaPercent = (float(currentMana/int(character.value_total_mana)) * 100)
 
-		if (character.keyLife90 != " " and currentLifePercent <= 90 and currentLifePercent > 70):
-			pyautogui.press(character.keyLife90)
-		elif (character.keyLife70 != " " and currentLifePercent <= 70 and currentLifePercent > 50):
-			pyautogui.press(character.keyLife70)
-		elif (character.keyLife50 != " " and currentLifePercent <= 50):
-			pyautogui.press(character.keyLife50)
+		if (character.key_to_press_when_life_90 != " " and currentLifePercent <= 90 and currentLifePercent > 70):
+			pyautogui.press(character.key_to_press_when_life_90)
+		elif (character.key_to_press_when_life_70 != " " and currentLifePercent <= 70 and currentLifePercent > 50):
+			pyautogui.press(character.key_to_press_when_life_70)
+		elif (character.key_to_press_when_life_50 != " " and currentLifePercent <= 50):
+			pyautogui.press(character.key_to_press_when_life_50)
 
-		if (character.manaPercentForHeal.isdigit() and currentManaPercent <= int(character.manaPercentForHeal) and character.keyPressMana != " "):
-			pyautogui.press(character.keyPressMana)
+		if (character.mana_percent_to_cure.isdigit() and currentManaPercent <= int(character.mana_percent_to_cure) and character.key_to_press_healing_mana != " "):
+			pyautogui.press(character.key_to_press_healing_mana)
 
-		if (character.lifeToPullSSA.isdigit() and currentLifePercent < int(character.lifeToPullSSA) and len(mustEquipSSA) == 0):
-			pyautogui.press(character.keyToPullSSA)
+		if (character.life_to_pull_ssa.isdigit() and currentLifePercent < int(character.life_to_pull_ssa) and len(mustEquipSSA) == 0):
+			pyautogui.press(character.key_to_press_pulling_ssa)
 
 		if (character.value_to_pull_ring.isdigit() and character.key_to_pull_ring != ' ' and character.ring_type != ' '):
 			if (character.bar_to_pull_ring == 'MANA' and int(character.value_to_pull_ring) >= currentManaPercent):
@@ -91,18 +91,18 @@ class Controller():
 				if (character.ring_type == 'Energy' and len(must_equip_energy) != 0):
 					pyautogui.press(character.key_to_pull_ring)		
 
-		if (character.manaPercentForTrain.isdigit() and currentManaPercent > int(character.manaPercentForTrain) and character.keyPressTrainMana != " "):
-			pyautogui.press(character.keyPressTrainMana)
+		if (character.mana_percent_to_train.isdigit() and currentManaPercent > int(character.mana_percent_to_train) and character.key_to_press_training_mana != " "):
+			pyautogui.press(character.key_to_press_training_mana)
 
-		if (currentLife > int(character.valueTotalLife)):
-			valueTotalLife = currentLife
-			concur.master["totalLife"].delete(0, END)
-			concur.master["totalLife"].insert(0, str(currentLife))
+		if (currentLife > int(character.value_total_life)):
+			value_total_life = currentLife
+			bot_manager.screen_manager["totalLife"].delete(0, END)
+			bot_manager.screen_manager["totalLife"].insert(0, str(currentLife))
 
-		if (currentMana > int(character.valueTotalMana)):
-			valueTotalMana = currentMana
-			concur.master["totalMana"].delete(0, END)
-			concur.master["totalMana"].insert(0, str(currentMana))
+		if (currentMana > int(character.value_total_mana)):
+			value_total_mana = currentMana
+			bot_manager.screen_manager["totalMana"].delete(0, END)
+			bot_manager.screen_manager["totalMana"].insert(0, str(currentMana))
 
 	def confirm_is_targeted(self, image):
 		left = pyautogui.locateAll(path + '/images/left.png', image, grayscale=True, confidence=.85)
@@ -180,14 +180,14 @@ class Controller():
 			self.y1 = y1
 			self.y2 = y2
 
-			children_widgets = self.master.winfo_children()
+			children_widgets = self.screen_manager.winfo_children()
 			for child_widget in children_widgets:
 				if child_widget.winfo_class() == 'Button':
 					if (str(child_widget) == ".!button"):
 						child_widget.configure(bg="green")
 
 	def core(self):
-		concur = self.concur
+		bot_manager = self.bot_manager
 		FLAG_TIME_ANTI_IDLE = 0
 		FLAG_TIME_AUTO_SPELL = 0
 		FLAG_TIME_AUTO_UTAMO = 0
@@ -196,7 +196,7 @@ class Controller():
 			FLAG_TIME_AUTO_SPELL += 1
 			FLAG_TIME_ANTI_IDLE += 1
 			FLAG_TIME_AUTO_UTAMO += 1
-			if (concur.paused == True):
+			if (bot_manager.paused == True):
 				break
 
 			im=pyautogui.screenshot()
@@ -244,8 +244,8 @@ class Controller():
 			lifeValue = self.convert_numbers_to_string(validIndexLife, vector_life, lifeValue)
 			manaValue = self.convert_numbers_to_string(validIndexMana, vector_mana, manaValue)
 
-			self.master.title('Tibia Bot - Running - Life: ' + str(lifeValue) + ' // Mana: ' + str(manaValue))
-			self.config_heal(concur.master, listHasSSA, list_has_energy_ring, list_has_might_ring, int(lifeValue), int(manaValue))
+			self.screen_manager.title('Tibia Bot - Running - Life: ' + str(lifeValue) + ' // Mana: ' + str(manaValue))
+			self.config_heal(bot_manager.screen_manager, listHasSSA, list_has_energy_ring, list_has_might_ring, int(lifeValue), int(manaValue))
 
 			food = im
 			food = food.crop((int(listPoints[8]), int(listPoints[9]), int(listPoints[10]), int(listPoints[11])))
@@ -259,20 +259,20 @@ class Controller():
 			hasUtito = pyautogui.locateAll(path + '/images/utito.jpeg', food, grayscale=True, confidence=.75)
 			listHasUtito = list(hasUtito)
 
-			mustEatFood = concur.master["eatFood"].get()
-			keyPressEatFood = concur.master["keyPressFood"].get().lower()
-			mustUseAutoSpell = concur.master["autoSpell"].get()
-			keyAutoSpell = concur.master["keyAutoSpell"].get().lower()
-			timeAutoSpell = concur.master["timeAutoSpell"].get()
-			mustUseHur = concur.master["autoRun"].get()
-			spellHur = concur.master["spellHur"].get().lower()
-			mustUseUtamo = concur.master["autoUtamo"].get()
-			keyAutoUtamo = concur.master["keyUtamoVita"].get().lower()
-			mustUseUtito= concur.master["autoUtito"].get()
-			keyAutoUtito = concur.master["keyUtito"].get().lower()
-			isAntiIdleOn= concur.master["antiIdle"].get()
-			life_to_use_sio = concur.master["lifeToUseSio"].get()
-			key_sio = concur.master["keyForSio"].get().lower()
+			mustEatFood = bot_manager.screen_manager["eatFood"].get()
+			keyPressEatFood = bot_manager.screen_manager["keyPressFood"].get().lower()
+			mustUseAutoSpell = bot_manager.screen_manager["autoSpell"].get()
+			keyAutoSpell = bot_manager.screen_manager["keyAutoSpell"].get().lower()
+			timeAutoSpell = bot_manager.screen_manager["timeAutoSpell"].get()
+			mustUseHur = bot_manager.screen_manager["autoRun"].get()
+			spellHur = bot_manager.screen_manager["spellHur"].get().lower()
+			mustUseUtamo = bot_manager.screen_manager["autoUtamo"].get()
+			keyAutoUtamo = bot_manager.screen_manager["keyUtamoVita"].get().lower()
+			mustUseUtito= bot_manager.screen_manager["autoUtito"].get()
+			keyAutoUtito = bot_manager.screen_manager["keyUtito"].get().lower()
+			isAntiIdleOn= bot_manager.screen_manager["antiIdle"].get()
+			life_to_use_sio = bot_manager.screen_manager["lifeToUseSio"].get()
+			key_sio = bot_manager.screen_manager["keyForSio"].get().lower()
 
 			if (self.already_checked):
 				self.check_sio_bar()

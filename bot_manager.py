@@ -4,20 +4,20 @@ import time
 from controller import Controller
 
 
-class Concur(threading.Thread):
-	def __init__(self, master):
-		super(Concur, self).__init__()
+class BotManager(threading.Thread):
+	def __init__(self, screen_manager):
+		super(BotManager, self).__init__()
 		self.iterations = 0
-		self.master = master
+		self.screen_manager = screen_manager
 		self.daemon = True
 		self.paused = True
 		self.state = threading.Condition()
-		self.keyListener = KeyListener(self.master, self)
+		self.keyListener = KeyListener(self.screen_manager, self)
 		self.keyListener.start()
-		self.controller = Controller(self, self.master, self.keyListener)
+		self.controller = Controller(self, self.screen_manager, self.keyListener)
 
-	def setMaster(self, master):
-		self.master = master
+	def set_screen_manager(self, screen_manager):
+		self.screen_manager = screen_manager
 
 	def run(self):
 		self.resume()
