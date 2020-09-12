@@ -20,16 +20,19 @@ shouldListener = False
 def check_config_screen():
 	im=pyautogui.screenshot()
 	im = im.crop((int(P1[0]), int(P1[1]), int(P2[0]), int(P2[1])))
+
 	im.show()
 	create_popup_message('Please, confirm if the following points are valids\n P1' + str(P1) + ', P2' + str(P2))
 
 def on_move(x, y):
 	global firstTime
+
 	if (firstTime == False):
 		return False
 
 def on_click(x, y, button, pressed):
 	global shouldListener
+
 	if pressed:
 		if (button == mouse.Button.right and shouldListener):
 			shouldListener = False
@@ -37,6 +40,7 @@ def on_click(x, y, button, pressed):
 			return False
 		else:
 			global configIndex, P1, P2
+
 			if (configIndex == 0):
 				P1 = [x, y]
 				configIndex = 1
@@ -59,12 +63,14 @@ def create_popup_message(msg):
 def stop_bot(bot_manager, screen):
 	bot_manager.keyListener.bot_is_running = False
 	children_widgets = screen.winfo_children()
+
 	for child_widget in children_widgets:
 		if child_widget.winfo_class() == 'Button':
 			if (str(child_widget) == ".!button5"):
 				child_widget.configure(bg="red")
 			elif (str(child_widget) == ".!button4"):
 				child_widget.configure(bg="green")
+
 	screen.title('TibiaBot - Stopped')
 	bot_manager.pause()
 
@@ -75,12 +81,14 @@ def loadConfig(a, b):
 def start_bot(bot_manager, screen):
 	bot_manager.keyListener.bot_is_running = True
 	children_widgets = screen.winfo_children()
+
 	for child_widget in children_widgets:
 		if child_widget.winfo_class() == 'Button':
 			if (str(child_widget) == ".!button5"):
 				child_widget.configure(bg="green")
 			elif (str(child_widget) == ".!button4"):
 				child_widget.configure(bg="red")
+
 	value_total_mana = bot_manager.screen["totalMana"].get()
 	value_total_life = bot_manager.screen["totalLife"].get()
 	
@@ -121,6 +129,7 @@ def validate_bars_of_screen(screen, controller, itemsFromScreen):
 
 	if (valueLife == "" or valueMana == ""):
 		create_popup_message('Set total life and total mana')
+
 	if (validIndexLife != len(valueLife)):
 		create_popup_message('Length total life does not match with your length from life bar.\n'+
 					'If your total life is right, please change your Life Bar points into config_screen.\n'+
@@ -136,8 +145,8 @@ def validate_bars_of_screen(screen, controller, itemsFromScreen):
 			if child_widget.winfo_class() == 'Button':
 				if (str(child_widget) == ".!button3"):
 					child_widget.configure(bg="green")
-	screen.title('Tibia Bot - Life: ' + str(lifeValue) + ' // Mana: ' + str(manaValue))
 
+	screen.title('Tibia Bot - Life: ' + str(lifeValue) + ' // Mana: ' + str(manaValue))
 
 def config_screen():
 	global shouldListener

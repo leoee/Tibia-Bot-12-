@@ -199,7 +199,7 @@ class Actuator():
 			if (bot_manager.paused == True):
 				break
 
-			im=pyautogui.screenshot()
+			im = pyautogui.screenshot()
 			life = im
 			mana = im
 			equipment = im
@@ -223,10 +223,12 @@ class Actuator():
 
 			if (self.keyListener.running == False):
 				self.keyListener.resume()
+
 			vector_life = {}
 			vector_mana = {}
 
 			self.identify_numbers_on_image(life, mana, vector_life, vector_mana)
+
 			validIndexLife = 0
 			validIndexMana = 0
 			lifeValue = ""
@@ -276,8 +278,7 @@ class Actuator():
 
 			if (self.already_checked):
 				self.check_sio_bar()
-				x_gap = int(listPoints[12])
-				y_gap = int(listPoints[13])
+
 				self.autoSio = self.autoSio.crop((int(self.x1), int(self.y1), int(self.x2), int(self.y2)))
 				self.np_im = numpy.array(self.autoSio)
 				blue, green, red = self.np_im[..., 0], self.np_im[..., 1], self.np_im[..., 2]
@@ -287,6 +288,7 @@ class Actuator():
 				cont_blue = 0
 				cont_green = 0
 				cont_red = 0
+
 				for pixel in blue:
 					for i in range(len(pixel)):
 						if (pixel[i] <= 70 and pixel[i] != 0):
