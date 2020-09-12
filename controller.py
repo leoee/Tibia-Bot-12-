@@ -32,7 +32,7 @@ class Controller():
 		self.autoSio = None
 		self.np_im = None
 
-	def returnListPointsBar(self):
+	def get_list_of_points_bar(self):
 		file = open("config_screen.txt", "r")
 		contents = file.read()
 		list = []
@@ -47,12 +47,12 @@ class Controller():
 			list.append(value)
 		return list
 
-	def changeGeneratorToList(self, vector_life, vector_mana):
+	def change_generator_to_list(self, vector_life, vector_mana):
 		for i in range(0, 10):
 			vector_life[i] = list(vector_life[i])
 			vector_mana[i] = list(vector_mana[i])
 
-	def configHeal(self, master, mustEquipSSA, must_equip_energy, must_equip_might, currentLife, currentMana):
+	def config_heal(self, master, mustEquipSSA, must_equip_energy, must_equip_might, currentLife, currentMana):
 		concur = self.concur
 		self.character.setAllAttributesRegardingHeal()
 		character = self.character
@@ -104,7 +104,7 @@ class Controller():
 			concur.master["totalMana"].delete(0, END)
 			concur.master["totalMana"].insert(0, str(currentMana))
 
-	def confirmIsTarget(self, image):
+	def confirm_is_targeted(self, image):
 		left = pyautogui.locateAll(path + '/images/left.png', image, grayscale=True, confidence=.85)
 		right = pyautogui.locateAll(path + '/images/right.png', image, grayscale=True, confidence=.85)
 		top = pyautogui.locateAll(path + '/images/top.png', image, grayscale=True, confidence=.85)
@@ -115,12 +115,12 @@ class Controller():
 
 		return False
 
-	def identifyNumbers(self, imgLife, imgMana, vector_life, vector_mana):
+	def identify_numbers_on_image(self, imgLife, imgMana, vector_life, vector_mana):
 		for x in range(0, 10):
 			vector_life[x] =  pyautogui.locateAll(path + '/images/' + str(x) + '.png', imgLife, grayscale=True, confidence=.95)
 			vector_mana[x] =  pyautogui.locateAll(path + '/images/' + str(x) + '.png', imgMana, grayscale=True, confidence=.95)
 
-	def convertNumbersToString(self, validIndex, vector, currentValue):
+	def convert_numbers_to_string(self, validIndex, vector, currentValue):
 		while(validIndex):
 			max = 2000
 			indexRemoved = 0
@@ -139,7 +139,7 @@ class Controller():
 		return currentValue
 
 
-	def useSpell(self, spell):
+	def use_spell(self, spell):
 		pyautogui.write(spell)
 		pyautogui.press('enter')
 		pyautogui.write(spell)
@@ -148,7 +148,7 @@ class Controller():
 		pyautogui.press('enter')
 
 
-	def activeAntiIdle(self):
+	def active_anti_idle(self):
 		direction = random.randint(0, 4)
 		if (direction == 1):
 			pyautogui.hotkey('ctrl', 'up')
@@ -161,7 +161,7 @@ class Controller():
 
 	def check_sio_bar(self):
 		#self.already_checked = False
-		listPoints = self.returnListPointsBar()
+		listPoints = self.get_list_of_points_bar()
 		self.autoSio = pyautogui.screenshot()
 		self.autoSio = self.autoSio.crop((int(listPoints[16]), int(listPoints[17]), int(listPoints[18]), int(listPoints[19])))
 		#self.autoSio = self.autoSio.crop((int(listPoints[12]), int(listPoints[13]), int(listPoints[14]), int(listPoints[15])))
@@ -203,7 +203,7 @@ class Controller():
 			life = im
 			mana = im
 			equipment = im
-			listPoints = self.returnListPointsBar()
+			listPoints = self.get_list_of_points_bar()
 			life = life.crop((int(listPoints[0]), int(listPoints[1]), int(listPoints[2]), int(listPoints[3])))
 			mana = mana.crop((int(listPoints[4]), int(listPoints[5]), int(listPoints[6]), int(listPoints[7])))
 			equipment = equipment.crop((int(listPoints[12]), int(listPoints[13]), int(listPoints[14]), int(listPoints[15])))
@@ -226,13 +226,13 @@ class Controller():
 			vector_life = {}
 			vector_mana = {}
 
-			self.identifyNumbers(life, mana, vector_life, vector_mana)
+			self.identify_numbers_on_image(life, mana, vector_life, vector_mana)
 			validIndexLife = 0
 			validIndexMana = 0
 			lifeValue = ""
 			manaValue = ""
 					
-			self.changeGeneratorToList(vector_life, vector_mana)
+			self.change_generator_to_list(vector_life, vector_mana)
 			
 			for i in range(0, 10):
 				validIndexLife += (sum(x is not None for x in vector_life[i]))
@@ -241,11 +241,11 @@ class Controller():
 			if (validIndexLife == validIndexMana and validIndexMana == 0):
 				continue;
 
-			lifeValue = self.convertNumbersToString(validIndexLife, vector_life, lifeValue)
-			manaValue = self.convertNumbersToString(validIndexMana, vector_mana, manaValue)
+			lifeValue = self.convert_numbers_to_string(validIndexLife, vector_life, lifeValue)
+			manaValue = self.convert_numbers_to_string(validIndexMana, vector_mana, manaValue)
 
 			self.master.title('Tibia Bot - Running - Life: ' + str(lifeValue) + ' // Mana: ' + str(manaValue))
-			self.configHeal(concur.master, listHasSSA, list_has_energy_ring, list_has_might_ring, int(lifeValue), int(manaValue))
+			self.config_heal(concur.master, listHasSSA, list_has_energy_ring, list_has_might_ring, int(lifeValue), int(manaValue))
 
 			food = im
 			food = food.crop((int(listPoints[8]), int(listPoints[9]), int(listPoints[10]), int(listPoints[11])))
@@ -331,5 +331,5 @@ class Controller():
 			#	FLAG_TIME_AUTO_SPELL = 0
 
 			elif (isAntiIdleOn and (60 * 5) < FLAG_TIME_ANTI_IDLE):
-				self.activeAntiIdle()
+				self.active_anti_idle()
 				FLAG_TIME_ANTI_IDLE = 0

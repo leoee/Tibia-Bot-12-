@@ -26,7 +26,6 @@ class Concur(threading.Thread):
 				if self.paused:
 					self.state.wait()
 			self.controller.core()
-			#time.sleep(.1)
 			self.iterations += 1
 
 	def resume(self):

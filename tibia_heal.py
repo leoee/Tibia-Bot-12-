@@ -17,11 +17,11 @@ P2 = 0
 firstTime = False
 shouldListener = False
 
-def checkConfigScreen():
+def check_config_screen():
 	im=pyautogui.screenshot()
 	im = im.crop((int(P1[0]), int(P1[1]), int(P2[0]), int(P2[1])))
 	im.show()
-	popupmsg('Please, confirm if the following points are valids\n P1' + str(P1) + ', P2' + str(P2))
+	create_popup_message('Please, confirm if the following points are valids\n P1' + str(P1) + ', P2' + str(P2))
 
 def on_move(x, y):
 	global firstTime
@@ -33,7 +33,7 @@ def on_click(x, y, button, pressed):
 	if pressed:
 		if (button == mouse.Button.right and shouldListener):
 			shouldListener = False
-			checkConfigScreen()
+			check_config_screen()
 			return False
 		else:
 			global configIndex, P1, P2
@@ -47,7 +47,7 @@ def on_click(x, y, button, pressed):
 with MouseListener(on_move=on_move, on_click=on_click) as mouseListener:
 	mouseListener.join()
 
-def popupmsg(msg):
+def create_popup_message(msg):
 	popup = tk.Tk()
 	popup.wm_title("Warning")
 	label = ttk.Label(popup, text=msg, font=("Verdana", 8))
@@ -56,7 +56,7 @@ def popupmsg(msg):
 	B2.pack()
 	popup.mainloop()
 
-def stopBot(concur, master):
+def stop_bot(concur, master):
 	concur.keyListener.botIsRunning = False
 	children_widgets = master.winfo_children()
 	for child_widget in children_widgets:
@@ -72,7 +72,7 @@ def loadConfig(a, b):
 	print(a.get())
 	print(b.get())
 	
-def startBot(concur, master):
+def start_bot(concur, master):
 	concur.keyListener.botIsRunning = True
 	children_widgets = master.winfo_children()
 	for child_widget in children_widgets:
@@ -85,49 +85,49 @@ def startBot(concur, master):
 	valueTotalLife = concur.master["totalLife"].get()
 	
 	if (valueTotalLife.isdigit() == False or valueTotalMana.isdigit() == False):
-		popupmsg('Configure Total Life and Total Mana')
+		create_popup_message('Configure Total Life and Total Mana')
 	else:
 		concur.resume()
 		master.title('TibiaBot - Running')
 
-def checkIfLifeAndManaBarAreBeSeeing(master, controller, itemsFromScreen):
+def validate_bars_of_screen(master, controller, itemsFromScreen):
 	children_widgets = master.winfo_children()
 	valueLife = itemsFromScreen["totalLife"].get()
 	valueMana = itemsFromScreen["totalMana"].get()
 	im=pyautogui.screenshot()
 	life = im
 	mana = im
-	list = controller.returnListPointsBar()
+	list = controller.get_list_of_points_bar()
 	life = life.crop((int(list[0]), int(list[1]), int(list[2]), int(list[3])))
 	mana = mana.crop((int(list[4]), int(list[5]), int(list[6]), int(list[7])))
 	vector_life = {}
 	vector_mana = {}
 		
-	controller.identifyNumbers(life, mana, vector_life, vector_mana)
+	controller.identify_numbers_on_image(life, mana, vector_life, vector_mana)
 			
 	validIndexLife = 0
 	validIndexMana = 0
 	lifeValue = ""
 	manaValue = ""
 	
-	controller.changeGeneratorToList(vector_life, vector_mana)
+	controller.change_generator_to_list(vector_life, vector_mana)
 	
 	for i in range(0, 10):
 		validIndexLife += (sum(x is not None for x in vector_life[i]))
 		validIndexMana += (sum(x is not None for x in vector_mana[i]))
 
-	lifeValue = controller.convertNumbersToString(validIndexLife, vector_life, lifeValue)
-	manaValue = controller.convertNumbersToString(validIndexMana, vector_mana, manaValue)
+	lifeValue = controller.convert_numbers_to_string(validIndexLife, vector_life, lifeValue)
+	manaValue = controller.convert_numbers_to_string(validIndexMana, vector_mana, manaValue)
 
 	if (valueLife == "" or valueMana == ""):
-		popupmsg('Set total life and total mana')
+		create_popup_message('Set total life and total mana')
 	if (validIndexLife != len(valueLife)):
-		popupmsg('Length total life does not match with your length from life bar.\n'+
+		create_popup_message('Length total life does not match with your length from life bar.\n'+
 					'If your total life is right, please change your Life Bar points into config_screen.\n'+
 					'Your life is ' + str(valueLife) + ' but the bot identify ' + str(lifeValue))
 		return
 	elif (validIndexMana != len(valueMana)):
-		popupmsg('Length total mana does not match with your length from mana bar.\n'+
+		create_popup_message('Length total mana does not match with your length from mana bar.\n'+
 					'If your total mana is right, please change your Life Mana points into config_screen.\n'+
 					'Your mana is ' + str(valueMana) + ' but the bot identify ' + str(manaValue))
 		return
@@ -139,14 +139,14 @@ def checkIfLifeAndManaBarAreBeSeeing(master, controller, itemsFromScreen):
 	master.title('Tibia Bot - Life: ' + str(lifeValue) + ' // Mana: ' + str(manaValue))
 
 
-def configScreen():
+def config_screen():
 	global shouldListener
 	if (shouldListener):
 		return
 	shouldListener = True
 	mouseListener.run()
 
-def createSreen(concur, controller):
+def create_screen(concur, controller):
 	fKeys = ('F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 
 			'F9', 'F10', 'F11', 'F12', '1', '2', '3', '4'
 				, '5', '6', '7', '8', '9', '0', ' ')
@@ -409,27 +409,27 @@ def createSreen(concur, controller):
 	tk.Button(master, 
 			  text='Config Screen',
 			  activebackground='green',
-			  command=lambda: configScreen()).grid(row=0, 
+			  command=lambda: config_screen()).grid(row=0, 
 										column=4, 
 										sticky=W, 
 										pady=4)
 	tk.Button(master, 
 			  text='Check Config Screen',
 			  bg='red',
-			  command = lambda: checkIfLifeAndManaBarAreBeSeeing(master, controller, itemsFromScreen)).grid(row=0, 
+			  command = lambda: validate_bars_of_screen(master, controller, itemsFromScreen)).grid(row=0, 
 										column=3, 
 										sticky=E, 
 										pady=4,
 										padx=4)
 
 	tk.Button(master, 
-			  text='Stop', command = lambda: stopBot(concur, master)).grid(row=8, 
+			  text='Stop', command = lambda: stop_bot(concur, master)).grid(row=8, 
 														   column=2, 
 														   sticky=tk.W, 
 														   pady=4)
 
 	tk.Button(master, 
-			  text='Start', command = lambda: startBot(concur, master)).grid(row=8, 
+			  text='Start', command = lambda: start_bot(concur, master)).grid(row=8, 
 														   column=1, 
 														   sticky=tk.W, 
 														   pady=4)
@@ -444,7 +444,7 @@ if __name__ == '__main__':
 	concur = Concur(master)
 
 	#controller = Controller(master, concur, keyListener)
-	createSreen(concur, concur.controller)
+	create_screen(concur, concur.controller)
 	concur.start()
 	concur.pause()
 
