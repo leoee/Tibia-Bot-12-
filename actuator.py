@@ -15,12 +15,12 @@ from model.character import Character
 
 path = os.getcwd()
 
-class Controller():
-	screen_manager = None
+class Actuator():
+	screen = None
 	bot_manager = None
 
-	def __init__(self, bot_manager, screen_manager, keyListener):
-		self.screen_manager = screen_manager
+	def __init__(self, bot_manager, screen, keyListener):
+		self.screen = screen
 		self.bot_manager = bot_manager
 		self.character = Character(bot_manager)
 		self.keyListener = keyListener
@@ -52,7 +52,7 @@ class Controller():
 			vector_life[i] = list(vector_life[i])
 			vector_mana[i] = list(vector_mana[i])
 
-	def config_heal(self, screen_manager, mustEquipSSA, must_equip_energy, must_equip_might, currentLife, currentMana):
+	def config_heal(self, screen, mustEquipSSA, must_equip_energy, must_equip_might, currentLife, currentMana):
 		bot_manager = self.bot_manager
 		self.character.set_all_attributes_about_character()
 		character = self.character
@@ -96,13 +96,13 @@ class Controller():
 
 		if (currentLife > int(character.value_total_life)):
 			value_total_life = currentLife
-			bot_manager.screen_manager["totalLife"].delete(0, END)
-			bot_manager.screen_manager["totalLife"].insert(0, str(currentLife))
+			bot_manager.screen["totalLife"].delete(0, END)
+			bot_manager.screen["totalLife"].insert(0, str(currentLife))
 
 		if (currentMana > int(character.value_total_mana)):
 			value_total_mana = currentMana
-			bot_manager.screen_manager["totalMana"].delete(0, END)
-			bot_manager.screen_manager["totalMana"].insert(0, str(currentMana))
+			bot_manager.screen["totalMana"].delete(0, END)
+			bot_manager.screen["totalMana"].insert(0, str(currentMana))
 
 	def confirm_is_targeted(self, image):
 		left = pyautogui.locateAll(path + '/images/left.png', image, grayscale=True, confidence=.85)
@@ -138,7 +138,6 @@ class Controller():
 			validIndex -= 1
 		return currentValue
 
-
 	def use_spell(self, spell):
 		pyautogui.write(spell)
 		pyautogui.press('enter')
@@ -146,7 +145,6 @@ class Controller():
 		pyautogui.press('enter')
 		pyautogui.write(spell)
 		pyautogui.press('enter')
-
 
 	def active_anti_idle(self):
 		direction = random.randint(0, 4)
@@ -180,7 +178,7 @@ class Controller():
 			self.y1 = y1
 			self.y2 = y2
 
-			children_widgets = self.screen_manager.winfo_children()
+			children_widgets = self.screen.winfo_children()
 			for child_widget in children_widgets:
 				if child_widget.winfo_class() == 'Button':
 					if (str(child_widget) == ".!button"):
@@ -192,10 +190,12 @@ class Controller():
 		FLAG_TIME_AUTO_SPELL = 0
 		FLAG_TIME_AUTO_UTAMO = 0
 		time.sleep(1)
+
 		while (True):
 			FLAG_TIME_AUTO_SPELL += 1
 			FLAG_TIME_ANTI_IDLE += 1
 			FLAG_TIME_AUTO_UTAMO += 1
+
 			if (bot_manager.paused == True):
 				break
 
@@ -244,8 +244,8 @@ class Controller():
 			lifeValue = self.convert_numbers_to_string(validIndexLife, vector_life, lifeValue)
 			manaValue = self.convert_numbers_to_string(validIndexMana, vector_mana, manaValue)
 
-			self.screen_manager.title('Tibia Bot - Running - Life: ' + str(lifeValue) + ' // Mana: ' + str(manaValue))
-			self.config_heal(bot_manager.screen_manager, listHasSSA, list_has_energy_ring, list_has_might_ring, int(lifeValue), int(manaValue))
+			self.screen.title('Tibia Bot - Running - Life: ' + str(lifeValue) + ' // Mana: ' + str(manaValue))
+			self.config_heal(bot_manager.screen, listHasSSA, list_has_energy_ring, list_has_might_ring, int(lifeValue), int(manaValue))
 
 			food = im
 			food = food.crop((int(listPoints[8]), int(listPoints[9]), int(listPoints[10]), int(listPoints[11])))
@@ -259,20 +259,20 @@ class Controller():
 			hasUtito = pyautogui.locateAll(path + '/images/utito.jpeg', food, grayscale=True, confidence=.75)
 			listHasUtito = list(hasUtito)
 
-			mustEatFood = bot_manager.screen_manager["eatFood"].get()
-			keyPressEatFood = bot_manager.screen_manager["keyPressFood"].get().lower()
-			mustUseAutoSpell = bot_manager.screen_manager["autoSpell"].get()
-			keyAutoSpell = bot_manager.screen_manager["keyAutoSpell"].get().lower()
-			timeAutoSpell = bot_manager.screen_manager["timeAutoSpell"].get()
-			mustUseHur = bot_manager.screen_manager["autoRun"].get()
-			spellHur = bot_manager.screen_manager["spellHur"].get().lower()
-			mustUseUtamo = bot_manager.screen_manager["autoUtamo"].get()
-			keyAutoUtamo = bot_manager.screen_manager["keyUtamoVita"].get().lower()
-			mustUseUtito= bot_manager.screen_manager["autoUtito"].get()
-			keyAutoUtito = bot_manager.screen_manager["keyUtito"].get().lower()
-			isAntiIdleOn= bot_manager.screen_manager["antiIdle"].get()
-			life_to_use_sio = bot_manager.screen_manager["lifeToUseSio"].get()
-			key_sio = bot_manager.screen_manager["keyForSio"].get().lower()
+			mustEatFood = bot_manager.screen["eatFood"].get()
+			keyPressEatFood = bot_manager.screen["keyPressFood"].get().lower()
+			mustUseAutoSpell = bot_manager.screen["autoSpell"].get()
+			keyAutoSpell = bot_manager.screen["keyAutoSpell"].get().lower()
+			timeAutoSpell = bot_manager.screen["timeAutoSpell"].get()
+			mustUseHur = bot_manager.screen["autoRun"].get()
+			spellHur = bot_manager.screen["spellHur"].get().lower()
+			mustUseUtamo = bot_manager.screen["autoUtamo"].get()
+			keyAutoUtamo = bot_manager.screen["keyUtamoVita"].get().lower()
+			mustUseUtito= bot_manager.screen["autoUtito"].get()
+			keyAutoUtito = bot_manager.screen["keyUtito"].get().lower()
+			isAntiIdleOn= bot_manager.screen["antiIdle"].get()
+			life_to_use_sio = bot_manager.screen["lifeToUseSio"].get()
+			key_sio = bot_manager.screen["keyForSio"].get().lower()
 
 			if (self.already_checked):
 				self.check_sio_bar()

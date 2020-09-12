@@ -1,23 +1,24 @@
 from key_listener import KeyListener
 import threading
 import time
-from controller import Controller
+from actuator import Actuator
 
 
 class BotManager(threading.Thread):
-	def __init__(self, screen_manager):
+	def __init__(self, screen):
 		super(BotManager, self).__init__()
+
 		self.iterations = 0
-		self.screen_manager = screen_manager
+		self.screen = screen
 		self.daemon = True
 		self.paused = True
 		self.state = threading.Condition()
-		self.keyListener = KeyListener(self.screen_manager, self)
+		self.keyListener = KeyListener(self.screen, self)
 		self.keyListener.start()
-		self.controller = Controller(self, self.screen_manager, self.keyListener)
+		self.controller = Actuator(self, self.screen, self.keyListener)
 
-	def set_screen_manager(self, screen_manager):
-		self.screen_manager = screen_manager
+	def set_screen(self, screen):
+		self.screen = screen
 
 	def run(self):
 		self.resume()

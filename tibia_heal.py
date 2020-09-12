@@ -9,7 +9,7 @@ from tkinter import *
 from pynput.mouse import Listener as MouseListener
 from pynput import mouse
 from bot_manager import BotManager
-from controller import Controller
+from actuator import Actuator
 
 configIndex = 0
 P1 = 0
@@ -56,42 +56,42 @@ def create_popup_message(msg):
 	B2.pack()
 	popup.mainloop()
 
-def stop_bot(bot_manager, screen_manager):
+def stop_bot(bot_manager, screen):
 	bot_manager.keyListener.bot_is_running = False
-	children_widgets = screen_manager.winfo_children()
+	children_widgets = screen.winfo_children()
 	for child_widget in children_widgets:
 		if child_widget.winfo_class() == 'Button':
 			if (str(child_widget) == ".!button5"):
 				child_widget.configure(bg="red")
 			elif (str(child_widget) == ".!button4"):
 				child_widget.configure(bg="green")
-	screen_manager.title('TibiaBot - Stopped')
+	screen.title('TibiaBot - Stopped')
 	bot_manager.pause()
 
 def loadConfig(a, b):
 	print(a.get())
 	print(b.get())
 	
-def start_bot(bot_manager, screen_manager):
+def start_bot(bot_manager, screen):
 	bot_manager.keyListener.bot_is_running = True
-	children_widgets = screen_manager.winfo_children()
+	children_widgets = screen.winfo_children()
 	for child_widget in children_widgets:
 		if child_widget.winfo_class() == 'Button':
 			if (str(child_widget) == ".!button5"):
 				child_widget.configure(bg="green")
 			elif (str(child_widget) == ".!button4"):
 				child_widget.configure(bg="red")
-	value_total_mana = bot_manager.screen_manager["totalMana"].get()
-	value_total_life = bot_manager.screen_manager["totalLife"].get()
+	value_total_mana = bot_manager.screen["totalMana"].get()
+	value_total_life = bot_manager.screen["totalLife"].get()
 	
 	if (value_total_life.isdigit() == False or value_total_mana.isdigit() == False):
 		create_popup_message('Configure Total Life and Total Mana')
 	else:
 		bot_manager.resume()
-		screen_manager.title('TibiaBot - Running')
+		screen.title('TibiaBot - Running')
 
-def validate_bars_of_screen(screen_manager, controller, itemsFromScreen):
-	children_widgets = screen_manager.winfo_children()
+def validate_bars_of_screen(screen, controller, itemsFromScreen):
+	children_widgets = screen.winfo_children()
 	valueLife = itemsFromScreen["totalLife"].get()
 	valueMana = itemsFromScreen["totalMana"].get()
 	im=pyautogui.screenshot()
@@ -136,7 +136,7 @@ def validate_bars_of_screen(screen_manager, controller, itemsFromScreen):
 			if child_widget.winfo_class() == 'Button':
 				if (str(child_widget) == ".!button3"):
 					child_widget.configure(bg="green")
-	screen_manager.title('Tibia Bot - Life: ' + str(lifeValue) + ' // Mana: ' + str(manaValue))
+	screen.title('Tibia Bot - Life: ' + str(lifeValue) + ' // Mana: ' + str(manaValue))
 
 
 def config_screen():
@@ -151,46 +151,46 @@ def create_screen(bot_manager, controller):
 			'F9', 'F10', 'F11', 'F12', '1', '2', '3', '4'
 				, '5', '6', '7', '8', '9', '0', ' ')
 			
-	tk.Label(screen_manager, 
+	tk.Label(screen, 
 			 text="Total Life").grid(row = 0)
-	tk.Label(screen_manager, 
+	tk.Label(screen, 
 			 text="Total Mana").grid(row = 1)
-	tk.Label(screen_manager, 
+	tk.Label(screen, 
 			 text="Time(s)").grid(row=5, column = 8)
-	tk.Label(screen_manager, 
+	tk.Label(screen, 
 			 text="Life sio(%)").grid(row=8, column = 7)
-	tk.Label(screen_manager, 
+	tk.Label(screen, 
 			 text="Auto Ring when").grid(row=7, column = 6)
 
 
-	totalLife = tk.Entry(screen_manager, width=7)
-	totalMana = tk.Entry(screen_manager, width=7)
-	timeAutoSpell = tk.Entry(screen_manager, width=7)
+	totalLife = tk.Entry(screen, width=7)
+	totalMana = tk.Entry(screen, width=7)
+	timeAutoSpell = tk.Entry(screen, width=7)
 	
 	totalLife.grid(row=0, column=1)
 	totalMana.grid(row=1, column=1)
 	timeAutoSpell.grid(row=5, column = 9)
 
 	autoUtamo = IntVar()
-	Checkbutton(screen_manager, text="Auto Utamo Vita", variable=autoUtamo).grid(row=0, column = 6, sticky=W)
+	Checkbutton(screen, text="Auto Utamo Vita", variable=autoUtamo).grid(row=0, column = 6, sticky=W)
 
 	autoUtitoTempo = IntVar()
-	Checkbutton(screen_manager, text="Auto Utito Tempo", variable=autoUtitoTempo).grid(row=1, column = 6, sticky=W)
+	Checkbutton(screen, text="Auto Utito Tempo", variable=autoUtitoTempo).grid(row=1, column = 6, sticky=W)
 
 	autoAntiIdle = IntVar()
-	Checkbutton(screen_manager, text="Anti Idle", variable=autoAntiIdle).grid(row=2, column = 6, sticky=W)
+	Checkbutton(screen, text="Anti Idle", variable=autoAntiIdle).grid(row=2, column = 6, sticky=W)
 
 	eatFood = IntVar()
-	Checkbutton(screen_manager, text="Eat Food", variable=eatFood).grid(row=3, column = 6, sticky=W)
+	Checkbutton(screen, text="Eat Food", variable=eatFood).grid(row=3, column = 6, sticky=W)
 	
 	autoRun = IntVar()
-	Checkbutton(screen_manager, text="Auto Run", variable=autoRun).grid(row=4, column = 6, sticky=W)
+	Checkbutton(screen, text="Auto Run", variable=autoRun).grid(row=4, column = 6, sticky=W)
 
 	autoSpell = IntVar()
-	Checkbutton(screen_manager, text="Auto Spell", variable=autoSpell).grid(row=5, column = 6, sticky=W)
+	Checkbutton(screen, text="Auto Spell", variable=autoSpell).grid(row=5, column = 6, sticky=W)
 
 	textUtamoVita = StringVar()
-	keyUtamoVita = ttk.Combobox(screen_manager, width = 6, textvariable = textUtamoVita)
+	keyUtamoVita = ttk.Combobox(screen, width = 6, textvariable = textUtamoVita)
 
 	keyUtamoVita['values'] = fKeys
 	  
@@ -198,7 +198,7 @@ def create_screen(bot_manager, controller):
 	keyUtamoVita.current()	
 
 	textUtitoTempo = StringVar()
-	keyUtitoTempo = ttk.Combobox(screen_manager, width = 6, textvariable = textUtitoTempo)
+	keyUtitoTempo = ttk.Combobox(screen, width = 6, textvariable = textUtitoTempo)
 
 	keyUtitoTempo['values'] = fKeys
 	  
@@ -206,7 +206,7 @@ def create_screen(bot_manager, controller):
 	keyUtitoTempo.current()
 
 	textHur = StringVar()
-	keyPressRun = ttk.Combobox(screen_manager, width = 6, textvariable = textHur)
+	keyPressRun = ttk.Combobox(screen, width = 6, textvariable = textHur)
 
 	keyPressRun['values'] = fKeys
 	  
@@ -214,7 +214,7 @@ def create_screen(bot_manager, controller):
 	keyPressRun.current()	
 	
 	boxAutoSpell = StringVar()
-	keyAutoSpell = ttk.Combobox(screen_manager, width = 6, textvariable = boxAutoSpell)
+	keyAutoSpell = ttk.Combobox(screen, width = 6, textvariable = boxAutoSpell)
 	
 	keyAutoSpell['values'] = fKeys 
 	  
@@ -222,72 +222,72 @@ def create_screen(bot_manager, controller):
 	keyAutoSpell.current() 
 
 	keyPressFood = StringVar()
-	keyChoosen = ttk.Combobox(screen_manager, width = 6, textvariable = keyPressFood)
+	keyChoosen = ttk.Combobox(screen, width = 6, textvariable = keyPressFood)
 	
 	keyChoosen['values'] = fKeys
 	  
 	keyChoosen.grid(row = 3, column = 7, sticky=W) 
 	keyChoosen.current()
 
-	tk.Label(screen_manager, 
+	tk.Label(screen, 
 			text="Life 90%").grid(row = 3)
 			
 	keyPressCure90 = StringVar()
-	keyChoosenCure90 = ttk.Combobox(screen_manager, width = 6, textvariable = keyPressCure90)
+	keyChoosenCure90 = ttk.Combobox(screen, width = 6, textvariable = keyPressCure90)
 	
 	keyChoosenCure90['values'] = fKeys
 	  
 	keyChoosenCure90.grid(row = 3, column = 1, sticky=W) 
 	keyChoosenCure90.current()
 	
-	tk.Label(screen_manager, 
+	tk.Label(screen, 
 			text="Life 70%").grid(row = 4, column = 0)
 			
 	keyPressCure70 = StringVar()
-	keyChoosenCure70 = ttk.Combobox(screen_manager, width = 6, textvariable = keyPressCure70) 
+	keyChoosenCure70 = ttk.Combobox(screen, width = 6, textvariable = keyPressCure70) 
 
 	keyChoosenCure70['values'] = fKeys
 	  
 	keyChoosenCure70.grid(row = 4, column = 1, sticky=W) 
 	keyChoosenCure70.current()
 
-	tk.Label(screen_manager, 
+	tk.Label(screen, 
 			text="Life 50%").grid(row = 5, column = 0)
 			
 	keyPressCure50 = StringVar()
-	keyChoosenCure50 = ttk.Combobox(screen_manager, width = 6, textvariable = keyPressCure50) 
+	keyChoosenCure50 = ttk.Combobox(screen, width = 6, textvariable = keyPressCure50) 
 
 	keyChoosenCure50['values'] =  fKeys
 	  
 	keyChoosenCure50.grid(row = 5, column = 1, sticky=W) 
 	keyChoosenCure50.current()
 	
-	tk.Label(screen_manager, 
+	tk.Label(screen, 
 		text="When Mana <").grid(row = 6, column = 0, sticky=W)
 	
-	manaPercent = tk.Entry(screen_manager, width=6)	
+	manaPercent = tk.Entry(screen, width=6)	
 	manaPercent.grid(row=6, column=1, sticky=W)
 	
-	tk.Label(screen_manager, 
+	tk.Label(screen, 
 		text="% use").grid(row = 6, column = 2, sticky=W)	
 	keyPressCureMana = StringVar()
-	keyPressCureMana = ttk.Combobox(screen_manager, width = 6, textvariable = keyPressCureMana) 
+	keyPressCureMana = ttk.Combobox(screen, width = 6, textvariable = keyPressCureMana) 
 	  
 	keyPressCureMana['values'] =  fKeys
 	  
 	keyPressCureMana.grid(row = 6, column = 3) 
 	keyPressCureMana.current()
 
-	tk.Label(screen_manager, 
+	tk.Label(screen, 
 		text="When Mana >").grid(row = 7, column = 0, sticky=W)
 	
-	mana_percent_to_train = tk.Entry(screen_manager, width=6)	
+	mana_percent_to_train = tk.Entry(screen, width=6)	
 	mana_percent_to_train.grid(row=7, column=1, sticky=W)
 	
-	tk.Label(screen_manager, 
+	tk.Label(screen, 
 		text="% use").grid(row = 7, column = 2, sticky=E)	
 	key_to_press_training_mana = StringVar()
-	key_to_press_training_mana = ttk.Combobox(screen_manager, width = 6, textvariable = key_to_press_training_mana) 
+	key_to_press_training_mana = ttk.Combobox(screen, width = 6, textvariable = key_to_press_training_mana) 
 	  
 	key_to_press_training_mana['values'] =  fKeys
 	  
@@ -295,17 +295,17 @@ def create_screen(bot_manager, controller):
 	key_to_press_training_mana.current()
 
 
-	tk.Label(screen_manager, 
+	tk.Label(screen, 
 		text="Auto SSA when Life <").grid(row = 6, column = 6, sticky=W)
 	
-	life_to_pull_ssa = tk.Entry(screen_manager, width = 4)	
+	life_to_pull_ssa = tk.Entry(screen, width = 4)	
 	life_to_pull_ssa.grid(row = 6, column=7, sticky=W)
 	
-	tk.Label(screen_manager, 
+	tk.Label(screen, 
 		text="% use").grid(row = 6, column = 8, sticky=W)
 
 	key_to_press_pulling_ssa = StringVar()
-	key_to_press_pulling_ssa = ttk.Combobox(screen_manager, width = 3, textvariable = key_to_press_pulling_ssa) 
+	key_to_press_pulling_ssa = ttk.Combobox(screen, width = 3, textvariable = key_to_press_pulling_ssa) 
 	  
 	key_to_press_pulling_ssa['values'] =  fKeys
 	  
@@ -313,32 +313,32 @@ def create_screen(bot_manager, controller):
 	key_to_press_pulling_ssa.current()
 
 	bar_to_pull_ring = StringVar()
-	bar_to_pull_ring = ttk.Combobox(screen_manager, width = 6, textvariable = bar_to_pull_ring) 
+	bar_to_pull_ring = ttk.Combobox(screen, width = 6, textvariable = bar_to_pull_ring) 
 	  
 	bar_to_pull_ring['values'] =  ('MANA', 'LIFE')
 	  
 	bar_to_pull_ring.grid(row = 7, column = 7) 
 	bar_to_pull_ring.current()
 
-	value_to_pull_ring = tk.Entry(screen_manager, width = 4)	
+	value_to_pull_ring = tk.Entry(screen, width = 4)	
 	value_to_pull_ring.grid(row = 7, column=8)
 
-	tk.Label(screen_manager, 
+	tk.Label(screen, 
 		text="% use").grid(row = 7, column = 9)
 
 	key_auto_ring = StringVar()
-	key_auto_ring = ttk.Combobox(screen_manager, width = 3, textvariable = key_auto_ring)
+	key_auto_ring = ttk.Combobox(screen, width = 3, textvariable = key_auto_ring)
 
 	key_auto_ring['values'] = fKeys
 	  
 	key_auto_ring.grid(row = 7, column = 10, sticky=W) 
 	key_auto_ring.current()
 
-	tk.Label(screen_manager, 
+	tk.Label(screen, 
 		text="Ring").grid(row = 7, column = 11, sticky=W)
 
 	ring_type = StringVar()
-	ring_type = ttk.Combobox(screen_manager, width = 5, textvariable = ring_type)
+	ring_type = ttk.Combobox(screen, width = 5, textvariable = ring_type)
 
 	ring_type['values'] = ('Might', 'Energy')
 	  
@@ -346,18 +346,18 @@ def create_screen(bot_manager, controller):
 	ring_type.current()
 
 	text_life_sio = StringVar()
-	life_to_sio = ttk.Combobox(screen_manager, width = 4, textvariable = text_life_sio)
+	life_to_sio = ttk.Combobox(screen, width = 4, textvariable = text_life_sio)
 
 	life_to_sio['values'] = ('90%', '70%', '50%', ' ')
 	  
 	life_to_sio.grid(row = 8, column = 8, sticky=E) 
 	life_to_sio.current()	
 
-	tk.Label(screen_manager, 
+	tk.Label(screen, 
 		text="use").grid(row = 8, column = 9)
 
 	text_life_sio = StringVar()
-	key_sio = ttk.Combobox(screen_manager, width = 3, textvariable = text_life_sio)
+	key_sio = ttk.Combobox(screen, width = 3, textvariable = text_life_sio)
 
 	key_sio['values'] = fKeys
 	  
@@ -396,9 +396,9 @@ def create_screen(bot_manager, controller):
 		"ringType": ring_type	
 	}
 
-	bot_manager.set_screen_manager(itemsFromScreen)
+	bot_manager.set_screen(itemsFromScreen)
 
-	tk.Button(screen_manager, 
+	tk.Button(screen, 
 			  text='Check Party List',
 			  activebackground='green',
 			  command=lambda: controller.check_sio_bar()).grid(row=8, 
@@ -406,44 +406,44 @@ def create_screen(bot_manager, controller):
 										sticky=W, 
 										pady=4)
 
-	tk.Button(screen_manager, 
+	tk.Button(screen, 
 			  text='Config Screen',
 			  activebackground='green',
 			  command=lambda: config_screen()).grid(row=0, 
 										column=4, 
 										sticky=W, 
 										pady=4)
-	tk.Button(screen_manager, 
+	tk.Button(screen, 
 			  text='Check Config Screen',
 			  bg='red',
-			  command = lambda: validate_bars_of_screen(screen_manager, controller, itemsFromScreen)).grid(row=0, 
+			  command = lambda: validate_bars_of_screen(screen, controller, itemsFromScreen)).grid(row=0, 
 										column=3, 
 										sticky=E, 
 										pady=4,
 										padx=4)
 
-	tk.Button(screen_manager, 
-			  text='Stop', command = lambda: stop_bot(bot_manager, screen_manager)).grid(row=8, 
+	tk.Button(screen, 
+			  text='Stop', command = lambda: stop_bot(bot_manager, screen)).grid(row=8, 
 														   column=2, 
 														   sticky=tk.W, 
 														   pady=4)
 
-	tk.Button(screen_manager, 
-			  text='Start', command = lambda: start_bot(bot_manager, screen_manager)).grid(row=8, 
+	tk.Button(screen, 
+			  text='Start', command = lambda: start_bot(bot_manager, screen)).grid(row=8, 
 														   column=1, 
 														   sticky=tk.W, 
 														   pady=4)
 
 if __name__ == '__main__':
 	firstTime = True
-	screen_manager = tk.Tk()
-	screen_manager.geometry("800x300")
-	screen_manager.resizable(False, False)
-	screen_manager.title('TibiaBot - Stopped')
+	screen = tk.Tk()
+	screen.geometry("800x300")
+	screen.resizable(False, False)
+	screen.title('TibiaBot - Stopped')
 
-	bot_manager = BotManager(screen_manager)
+	bot_manager = BotManager(screen)
 
-	#controller = Controller(screen_manager, bot_manager, keyListener)
+	#controller = Actuator(screen, bot_manager, keyListener)
 	create_screen(bot_manager, bot_manager.controller)
 	bot_manager.start()
 	bot_manager.pause()
