@@ -32,13 +32,13 @@ Foi testado em OtServers com versões 12+. Os mesmos permitiam uso de bots.<br>
 ## Como configurar?
 Primeiro de tudo, você precisa configurar sua tela. Para isso, você precisa configurar as coordenadas da sua barra de vida, mana, ferramentas e batalhas.<br>
 Clique em "Config Screen" no bot. Depois de clicar, um ouvinte vai começar a salvar onde você clica com o botão esquerdo do mouse.<br> 
-![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/bot.png)<br>
+![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/bot.png)<br>
 Clique em 2 pontos para cortar uma imagem. Ao finalizar os cliques, clique com o botão direito e o ouvinte será parado e uma imagem será mostrada. Se a imagem estiver correta, copie as coordenadas da mensagem pop-up e salve em "config_screen.txt". Seguem alguns exemplos de imagens abaixo para ajudá-lo no corte. Eu recomendo que você corte com espaço após o valor da vida e mana. Isso porque conforme você sobe de nível, os números que representam sua vida e mana aumentam. Se a imagem não for suficiente para ver todos os números, o bot não funcionará.<br>
-![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/lifeRD.png)<br>
-![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/manaRD.png)<br>
-![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/toolsRD.png)<br>
-![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/partyRD.png)<br>
-![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/images/equipmentRD.png)<br>
+![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/lifeRD.png)<br>
+![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/manaRD.png)<br>
+![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/toolsRD.png)<br>
+![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/partyRD.png)<br>
+![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/equipmentRD.png)<br>
 No projeto, existe um arquivo txt com as coordenadas. O conteúdo do arquivo é o seguinte:
 ```
 ***Life Bar*****
