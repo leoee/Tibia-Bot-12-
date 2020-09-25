@@ -8,8 +8,8 @@ import tkinter as tk
 from tkinter import *
 from pynput.mouse import Listener as MouseListener
 from pynput import mouse
-from bot_manager import BotManager
-from actuator import Actuator
+from controllers.bot_manager import BotManager
+from controllers.actuator import Actuator
 
 configIndex = 0
 P1 = 0

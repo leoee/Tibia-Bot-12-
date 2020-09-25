@@ -1,7 +1,7 @@
-from key_listener import KeyListener
 import threading
 import time
-from actuator import Actuator
+from .key_listener import KeyListener
+from .actuator import Actuator
 
 
 class BotManager(threading.Thread):
