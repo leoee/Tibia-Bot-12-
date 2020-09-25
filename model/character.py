@@ -25,24 +25,24 @@ class Character():
 		self.set_character_support_attributes(bot_manager)
 
 	def set_character_life_attributes(self, bot_manager):
-		self.value_total_life = bot_manager.screen_manager["totalLife"].get()
-		self.key_to_press_when_life_90 = bot_manager.screen_manager["keyPressCure90"].get().lower()
-		self.key_to_press_when_life_70 = bot_manager.screen_manager["keyPressCure70"].get().lower()
-		self.key_to_press_when_life_50 = bot_manager.screen_manager["keyPressCure50"].get().lower()
+		self.value_total_life = bot_manager.screen["totalLife"].get()
+		self.key_to_press_when_life_90 = bot_manager.screen["keyPressCure90"].get().lower()
+		self.key_to_press_when_life_70 = bot_manager.screen["keyPressCure70"].get().lower()
+		self.key_to_press_when_life_50 = bot_manager.screen["keyPressCure50"].get().lower()
 
 	def set_character_mana_attributes(self, bot_manager):
-		self.value_total_mana = bot_manager.screen_manager["totalMana"].get()
-		self.mana_percent_to_cure = bot_manager.screen_manager["manaPercent"].get()
-		self.mana_percent_to_train = bot_manager.screen_manager["mana_percent_to_train"].get()
-		self.key_to_press_healing_mana = bot_manager.screen_manager["keyPressCureMana"].get().lower()
-		self.key_to_press_training_mana = bot_manager.screen_manager["key_to_press_training_mana"].get().lower()
+		self.value_total_mana = bot_manager.screen["totalMana"].get()
+		self.mana_percent_to_cure = bot_manager.screen["manaPercent"].get()
+		self.mana_percent_to_train = bot_manager.screen["mana_percent_to_train"].get()
+		self.key_to_press_healing_mana = bot_manager.screen["keyPressCureMana"].get().lower()
+		self.key_to_press_training_mana = bot_manager.screen["key_to_press_training_mana"].get().lower()
 
 	def set_character_support_attributes(self, bot_manager):
-		self.life_to_pull_ssa = bot_manager.screen_manager["life_to_pull_ssa"].get()
-		self.key_to_press_pulling_ssa = bot_manager.screen_manager["key_to_press_pulling_ssa"].get().lower()
-		self.bar_to_pull_ring = bot_manager.screen_manager["barToPullRing"].get()
-		self.value_to_pull_ring = bot_manager.screen_manager["valueToPullRing"].get()
-		self.key_to_pull_ring = bot_manager.screen_manager["keyToPullRing"].get().lower()
-		self.ring_type = bot_manager.screen_manager["ringType"].get()
+		self.life_to_pull_ssa = bot_manager.screen["life_to_pull_ssa"].get()
+		self.key_to_press_pulling_ssa = bot_manager.screen["key_to_press_pulling_ssa"].get().lower()
+		self.bar_to_pull_ring = bot_manager.screen["barToPullRing"].get()
+		self.value_to_pull_ring = bot_manager.screen["valueToPullRing"].get()
+		self.key_to_pull_ring = bot_manager.screen["keyToPullRing"].get().lower()
+		self.ring_type = bot_manager.screen["ringType"].get()
 
 	
