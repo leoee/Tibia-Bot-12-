@@ -249,7 +249,8 @@ class Actuator():
 			manaValue = self.convert_numbers_to_string(validIndexMana, vector_mana, manaValue)
 
 			self.screen.title('Tibia Bot - Running - Life: ' + str(lifeValue) + ' // Mana: ' + str(manaValue))
-			self.config_heal(bot_manager.screen, listHasSSA, list_has_energy_ring, list_has_might_ring, int(lifeValue), int(manaValue))
+			if (lifeValue.isnumeric() and manaValue.isnumeric()):
+				self.config_heal(bot_manager.screen, listHasSSA, list_has_energy_ring, list_has_might_ring, int(lifeValue), int(manaValue))
 
 			food = im
 			food = food.crop((int(listPoints[8]), int(listPoints[9]), int(listPoints[10]), int(listPoints[11])))
