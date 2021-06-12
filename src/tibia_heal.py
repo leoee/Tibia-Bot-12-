@@ -23,7 +23,6 @@ def check_config_screen():
 
 	im.show()
 	create_popup_message('Please, confirm if the following points are valids\n P1' + str(P1) + ', P2' + str(P2))
-
 def on_move(x, y):
 	global firstTime
 
@@ -32,14 +31,17 @@ def on_move(x, y):
 
 def on_click(x, y, button, pressed):
 	global shouldListener
+	global configIndex, P1, P2
 
 	if pressed:
 		if (button == mouse.Button.right and shouldListener):
 			shouldListener = False
 			check_config_screen()
+			P1 = 0
+			P2 = 0
+			configIndex = 0
 			return False
 		else:
-			global configIndex, P1, P2
 
 			if (configIndex == 0):
 				P1 = [x, y]
