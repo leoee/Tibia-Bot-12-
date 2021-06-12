@@ -38,7 +38,7 @@ Click in 2 points to cut an image. When finished the clicks, click with right bu
 ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/manaRD.png)<br>
 ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/toolsRD.png)<br>
 ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/equipmentRD.png)<br>
-![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/battleRD.png)<br>
+![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/partyListRD.png)<br>
 In the project, there is a txt file with the coordinates. The content file is the following:
 ```
 ***Life Bar*****

@@ -37,8 +37,8 @@ Clique em 2 pontos para cortar uma imagem. Ao finalizar os cliques, clique com o
 ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/lifeRD.png)<br>
 ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/manaRD.png)<br>
 ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/toolsRD.png)<br>
-![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/partyRD.png)<br>
 ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/equipmentRD.png)<br>
+![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/partyListRD.png)<br>
 No projeto, existe um arquivo txt com as coordenadas. O conteúdo do arquivo é o seguinte:
 ```
 ***Life Bar*****
