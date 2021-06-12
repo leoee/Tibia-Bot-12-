@@ -92,4 +92,5 @@ Após a configuração, você pode usar. A forma como este bot funciona é anali
 - Em caso de Auto SSA e Auto Equip estiverem configurados, o tibia não permite subir os 2 ao mesmo tempo, portanto a prioridade será SSA.
 
 ## Aviso
-Se você está tentando usar o bot, mas sempre consegue falhar na "Tela de Check Config", você deve tentar cortar os números do seu Tibia. Como você pode ver, dentro da pasta de imagens, temos várias imagens que representam os números. Corte todos os seus números dentro da tíbia e tente novamente. Apenas os números são necessários.
+Se você está tentando usar o bot, mas sempre consegue falhar na "Tela de Check Config", você deve tentar cortar os números do seu Tibia. Como você pode ver, dentro da pasta de imagens, temos várias imagens que representam os números. Corte todos os seus números dentro da tibia (da barra de vida e mana) e tente novamente. Apenas os números são necessários.
+Sempre quando usar "Check Config Screen" tenha certeza que todos os números estão sendo reconhecidos. Uma mensagem irá mostrar quais números estão sendo reconhecidos.

@@ -95,4 +95,5 @@ is your real life/mana. When you up your level, the values will be updated autom
 
 
 ## Warning
-If you're trying to use the bot, but always you get fail on the "Check Config Screen", you should try to cut the numbers of the your Tibia. As you can see, inside images folder, we have a lot of images that represents the numbers. Cut all of your numbers inside the tibia and try again. Just the numbers are needed.
+If you're trying to use the bot, but always you get fail on the "Check Config Screen", you should try to cut the numbers of the your Tibia. As you can see, inside images folder, we have a lot of images that represents the numbers. Cut all of your numbers inside the tibia (from life and mana bar) and try again. Just the numbers are needed.
+Always when using "Check Config Screen" make sure all numbers are being identified. A message will show which numbers can be identified.
