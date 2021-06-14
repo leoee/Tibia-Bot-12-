@@ -96,6 +96,7 @@ class Actuator():
 		if (character.mana_percent_to_train.isdigit() and currentManaPercent > int(character.mana_percent_to_train) and character.key_to_press_training_mana != " "):
 			pyautogui.press(character.key_to_press_training_mana)
 
+		# Auto update max Life/Mana
 		if (currentLife > int(character.value_total_life)):
 			value_total_life = currentLife
 			bot_manager.screen["totalLife"].delete(0, END)
@@ -170,6 +171,7 @@ class Actuator():
 
 		if (len(listLifeBarSio) != 0 and self.already_checked == False):
 			self.already_checked = True
+
 			x1 = listLifeBarSio[0][0] + 8
 			y1 = listLifeBarSio[0][1]
 			x2 = listLifeBarSio[0][2] + x1 + 1
@@ -201,19 +203,28 @@ class Actuator():
 			if (bot_manager.paused == True):
 				break
 
+			# Take screenshot
 			im = pyautogui.screenshot()
+			# Create copy of the screenshot
 			life = im
 			mana = im
 			equipment = im
+
+			# Cut screenshot according coordinates on the screen
 			listPoints = self.get_list_of_points_bar()
 			life = life.crop((int(listPoints[0]), int(listPoints[1]), int(listPoints[2]), int(listPoints[3])))
 			mana = mana.crop((int(listPoints[4]), int(listPoints[5]), int(listPoints[6]), int(listPoints[7])))
 			equipment = equipment.crop((int(listPoints[12]), int(listPoints[13]), int(listPoints[14]), int(listPoints[15])))
 
+			# Check if screen of the bot is active. This means user is configuring.
 			screenBot = pyautogui.locateAll(parent + '\src\images\\bot.png', im, grayscale=True, confidence=.70)
 			lstScreen = list(screenBot)
+
+			# Check if has SSA on the equipment.
 			hasSSA = pyautogui.locateAll(parent + '\src\images\ssa.png', equipment, grayscale=True, confidence=.90)
 			listHasSSA = list(hasSSA)
+
+			# Check if has energy or might ring on the equipment.
 			has_energy_ring = pyautogui.locateAll(parent + '\src\images\energy_ring.png', equipment, grayscale=True, confidence=.90)
 			list_has_energy_ring = list(has_energy_ring)
 			has_might_ring = pyautogui.locateAll(parent + '\src\images\might_ring.png', equipment, grayscale=True, confidence=.90)
@@ -229,13 +240,15 @@ class Actuator():
 			vector_life = {}
 			vector_mana = {}
 
+			# Passing cutted images to identify which numbers its being showed on the life/mana bar.
 			self.identify_numbers_on_image(life, mana, vector_life, vector_mana)
 
 			validIndexLife = 0
 			validIndexMana = 0
 			lifeValue = ""
 			manaValue = ""
-					
+
+			# Change generator returned from vector_life and vector_mana to list
 			self.change_generator_to_list(vector_life, vector_mana)
 			
 			for i in range(0, 10):
@@ -245,6 +258,7 @@ class Actuator():
 			if (validIndexLife == validIndexMana and validIndexMana == 0):
 				continue;
 
+			# Convert numbers from the screen to strings
 			lifeValue = self.convert_numbers_to_string(validIndexLife, vector_life, lifeValue)
 			manaValue = self.convert_numbers_to_string(validIndexMana, vector_mana, manaValue)
 
