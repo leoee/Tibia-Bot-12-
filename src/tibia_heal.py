@@ -23,6 +23,7 @@ def check_config_screen():
 
 	im.show()
 	create_popup_message('Please, confirm if the following points are valids\n P1' + str(P1) + ', P2' + str(P2))
+
 def on_move(x, y):
 	global firstTime
 
@@ -42,7 +43,6 @@ def on_click(x, y, button, pressed):
 			configIndex = 0
 			return False
 		else:
-
 			if (configIndex == 0):
 				P1 = [x, y]
 				configIndex = 1
@@ -58,8 +58,19 @@ def create_popup_message(msg):
 	popup.wm_title("Warning")
 	label = ttk.Label(popup, text=msg, font=("Verdana", 8))
 	label.pack(side="top", fill="x", pady=10)
-	B2 = ttk.Button(popup, text="Ok", command = popup.destroy)
+	B2 = ttk.Button(popup, text="Close", command = popup.destroy)
 	B2.pack()
+	popup.mainloop()
+
+def create_popup_message_config_screen(msg):
+	popup = tk.Tk()
+	popup.wm_title("Warning")
+	label = ttk.Label(popup, text=msg, font=("Verdana", 8))
+	label.pack(side="top", fill="x", pady=10)
+	B2 = ttk.Button(popup, text="Close", command = popup.destroy)
+	B2.pack()
+	B3 = ttk.Button(popup, text="Add", command = popup.destroy)
+	B3.pack()
 	popup.mainloop()
 
 def stop_bot(bot_manager, screen):
@@ -448,8 +459,6 @@ def create_screen(bot_manager, controller):
 if __name__ == '__main__':
 	firstTime = True
 	screen = tk.Tk()
-	screen.geometry("800x300")
-	screen.resizable(False, False)
 	screen.title('TibiaBot - Stopped')
 
 	bot_manager = BotManager(screen)
