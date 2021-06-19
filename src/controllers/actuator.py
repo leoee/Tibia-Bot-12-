@@ -54,26 +54,12 @@ class Actuator():
 			vector_life[i] = list(vector_life[i])
 			vector_mana[i] = list(vector_mana[i])
 
-	def config_heal(self, screen, mustEquipSSA, must_equip_energy, must_equip_might, currentLife, currentMana):
-		bot = self.bot
-		self.character.set_all_attributes_about_character()
-		character = self.character
-		
+	def self_equip_rings_and_amulets(self, screen, character, mustEquipSSA, must_equip_energy, must_equip_might, currentLife, currentMana):
 		if (character.value_total_life.isdigit() == False or character.value_total_mana.isdigit() == False):
 			return
 
 		currentLifePercent = (float(currentLife/int(character.value_total_life)) * 100)
 		currentManaPercent = (float(currentMana/int(character.value_total_mana)) * 100)
-
-		if (character.key_to_press_when_life_90 != " " and currentLifePercent <= 90 and currentLifePercent > 70):
-			pyautogui.press(character.key_to_press_when_life_90)
-		elif (character.key_to_press_when_life_70 != " " and currentLifePercent <= 70 and currentLifePercent > 50):
-			pyautogui.press(character.key_to_press_when_life_70)
-		elif (character.key_to_press_when_life_50 != " " and currentLifePercent <= 50):
-			pyautogui.press(character.key_to_press_when_life_50)
-
-		if (character.mana_percent_to_cure.isdigit() and currentManaPercent <= int(character.mana_percent_to_cure) and character.key_to_press_healing_mana != " "):
-			pyautogui.press(character.key_to_press_healing_mana)
 
 		if (character.life_to_pull_ssa.isdigit() and currentLifePercent < int(character.life_to_pull_ssa) and len(mustEquipSSA) == 0):
 			pyautogui.press(character.key_to_press_pulling_ssa)
@@ -91,7 +77,26 @@ class Actuator():
 					pyautogui.press(character.key_to_pull_ring)
 			elif (character.bar_to_pull_ring == 'LIFE'):
 				if (character.ring_type == 'Energy' and len(must_equip_energy) != 0):
-					pyautogui.press(character.key_to_pull_ring)		
+					pyautogui.press(character.key_to_pull_ring)
+
+	def self_heal(self, screen, character, mustEquipSSA, must_equip_energy, must_equip_might, currentLife, currentMana):
+		bot = self.bot
+		
+		if (character.value_total_life.isdigit() == False or character.value_total_mana.isdigit() == False):
+			return
+
+		currentLifePercent = (float(currentLife/int(character.value_total_life)) * 100)
+		currentManaPercent = (float(currentMana/int(character.value_total_mana)) * 100)
+
+		if (character.key_to_press_when_life_90 != " " and currentLifePercent <= 90 and currentLifePercent > 70):
+			pyautogui.press(character.key_to_press_when_life_90)
+		elif (character.key_to_press_when_life_70 != " " and currentLifePercent <= 70 and currentLifePercent > 50):
+			pyautogui.press(character.key_to_press_when_life_70)
+		elif (character.key_to_press_when_life_50 != " " and currentLifePercent <= 50):
+			pyautogui.press(character.key_to_press_when_life_50)
+
+		if (character.mana_percent_to_cure.isdigit() and currentManaPercent <= int(character.mana_percent_to_cure) and character.key_to_press_healing_mana != " "):
+			pyautogui.press(character.key_to_press_healing_mana)
 
 		if (character.mana_percent_to_train.isdigit() and currentManaPercent > int(character.mana_percent_to_train) and character.key_to_press_training_mana != " "):
 			pyautogui.press(character.key_to_press_training_mana)
@@ -161,11 +166,9 @@ class Actuator():
 			pyautogui.hotkey('ctrl', 'left')
 
 	def check_sio_bar(self):
-		#self.already_checked = False
 		listPoints = self.get_list_of_points_bar()
 		self.autoSio = pyautogui.screenshot()
 		self.autoSio = self.autoSio.crop((int(listPoints[16]), int(listPoints[17]), int(listPoints[18]), int(listPoints[19])))
-		#self.autoSio = self.autoSio.crop((int(listPoints[12]), int(listPoints[13]), int(listPoints[14]), int(listPoints[15])))
 		hasLifeBarSio = pyautogui.locateAll(parent + '\src\images\sio.png', self.autoSio, grayscale=True, confidence=.95)
 		listLifeBarSio = list(hasLifeBarSio)
 
@@ -264,7 +267,9 @@ class Actuator():
 
 			self.screen.title('Tibia Bot - Running - Life: ' + str(lifeValue) + ' // Mana: ' + str(manaValue))
 			if (lifeValue.isnumeric() and manaValue.isnumeric()):
-				self.config_heal(bot.screen, listHasSSA, list_has_energy_ring, list_has_might_ring, int(lifeValue), int(manaValue))
+				self.character.set_all_attributes_about_character()
+				self.self_heal(bot.screen, self.character, listHasSSA, list_has_energy_ring, list_has_might_ring, int(lifeValue), int(manaValue))
+				self.self_equip_rings_and_amulets(bot.screen, self.character, listHasSSA, list_has_energy_ring, list_has_might_ring, int(lifeValue), int(manaValue))
 
 			food = im
 			food = food.crop((int(listPoints[8]), int(listPoints[9]), int(listPoints[10]), int(listPoints[11])))
