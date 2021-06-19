@@ -4,9 +4,9 @@ from .key_listener import KeyListener
 from .actuator import Actuator
 
 
-class BotManager(threading.Thread):
+class Bot(threading.Thread):
 	def __init__(self, screen):
-		super(BotManager, self).__init__()
+		super(Bot, self).__init__()
 
 		self.iterations = 0
 		self.screen = screen

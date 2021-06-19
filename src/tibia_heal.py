@@ -8,7 +8,7 @@ import tkinter as tk
 from tkinter import *
 from pynput.mouse import Listener as MouseListener
 from pynput import mouse
-from controllers.bot_manager import BotManager
+from controllers.bot import Bot
 from controllers.actuator import Actuator
 
 configIndex = 0
@@ -73,8 +73,8 @@ def create_popup_message_config_screen(msg):
 	B3.pack()
 	popup.mainloop()
 
-def stop_bot(bot_manager, screen):
-	bot_manager.keyListener.bot_is_running = False
+def stop_bot(bot, screen):
+	bot.keyListener.bot_is_running = False
 	children_widgets = screen.winfo_children()
 
 	for child_widget in children_widgets:
@@ -85,14 +85,14 @@ def stop_bot(bot_manager, screen):
 				child_widget.configure(bg="green")
 
 	screen.title('TibiaBot - Stopped')
-	bot_manager.pause()
+	bot.pause()
 
 def loadConfig(a, b):
 	print(a.get())
 	print(b.get())
 	
-def start_bot(bot_manager, screen):
-	bot_manager.keyListener.bot_is_running = True
+def start_bot(bot, screen):
+	bot.keyListener.bot_is_running = True
 	children_widgets = screen.winfo_children()
 
 	for child_widget in children_widgets:
@@ -102,13 +102,13 @@ def start_bot(bot_manager, screen):
 			elif (str(child_widget) == ".!button4"):
 				child_widget.configure(bg="red")
 
-	value_total_mana = bot_manager.screen["totalMana"].get()
-	value_total_life = bot_manager.screen["totalLife"].get()
+	value_total_mana = bot.screen["totalMana"].get()
+	value_total_life = bot.screen["totalLife"].get()
 	
 	if (value_total_life.isdigit() == False or value_total_mana.isdigit() == False):
 		create_popup_message('Configure Total Life and Total Mana')
 	else:
-		bot_manager.resume()
+		bot.resume()
 		screen.title('TibiaBot - Running')
 
 def validate_bars_of_screen(screen, controller, itemsFromScreen):
@@ -168,7 +168,7 @@ def config_screen():
 	shouldListener = True
 	mouseListener.run()
 
-def create_screen(bot_manager, controller):
+def create_screen(bot, controller):
 	fKeys = ('F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 
 			'F9', 'F10', 'F11', 'F12', '1', '2', '3', '4'
 				, '5', '6', '7', '8', '9', '0', ' ')
@@ -418,7 +418,7 @@ def create_screen(bot_manager, controller):
 		"ringType": ring_type	
 	}
 
-	bot_manager.set_screen(itemsFromScreen)
+	bot.set_screen(itemsFromScreen)
 
 	tk.Button(screen, 
 			  text='Check Party List',
@@ -445,13 +445,13 @@ def create_screen(bot_manager, controller):
 										padx=4)
 
 	tk.Button(screen, 
-			  text='Stop', command = lambda: stop_bot(bot_manager, screen)).grid(row=8, 
+			  text='Stop', command = lambda: stop_bot(bot, screen)).grid(row=8, 
 														   column=2, 
 														   sticky=tk.W, 
 														   pady=4)
 
 	tk.Button(screen, 
-			  text='Start', command = lambda: start_bot(bot_manager, screen)).grid(row=8, 
+			  text='Start', command = lambda: start_bot(bot, screen)).grid(row=8, 
 														   column=1, 
 														   sticky=tk.W, 
 														   pady=4)
@@ -461,12 +461,12 @@ if __name__ == '__main__':
 	screen = tk.Tk()
 	screen.title('TibiaBot - Stopped')
 
-	bot_manager = BotManager(screen)
+	bot = Bot(screen)
 
-	#controller = Actuator(screen, bot_manager, keyListener)
-	create_screen(bot_manager, bot_manager.controller)
-	bot_manager.start()
-	bot_manager.pause()
+	#controller = Actuator(screen, bot, keyListener)
+	create_screen(bot, bot.controller)
+	bot.start()
+	bot.pause()
 
 	tk.mainloop()
 	pyautogui.press('delete')

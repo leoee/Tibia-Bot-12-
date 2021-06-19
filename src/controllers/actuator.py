@@ -19,12 +19,12 @@ parent = os.path.dirname(path)
 
 class Actuator():
 	screen = None
-	bot_manager = None
+	bot = None
 
-	def __init__(self, bot_manager, screen, keyListener):
+	def __init__(self, bot, screen, keyListener):
 		self.screen = screen
-		self.bot_manager = bot_manager
-		self.character = Character(bot_manager)
+		self.bot = bot
+		self.character = Character(bot)
 		self.keyListener = keyListener
 		self.x1 = 0
 		self.x2 = 0
@@ -55,7 +55,7 @@ class Actuator():
 			vector_mana[i] = list(vector_mana[i])
 
 	def config_heal(self, screen, mustEquipSSA, must_equip_energy, must_equip_might, currentLife, currentMana):
-		bot_manager = self.bot_manager
+		bot = self.bot
 		self.character.set_all_attributes_about_character()
 		character = self.character
 		
@@ -99,13 +99,13 @@ class Actuator():
 		# Auto update max Life/Mana
 		if (currentLife > int(character.value_total_life)):
 			value_total_life = currentLife
-			bot_manager.screen["totalLife"].delete(0, END)
-			bot_manager.screen["totalLife"].insert(0, str(currentLife))
+			bot.screen["totalLife"].delete(0, END)
+			bot.screen["totalLife"].insert(0, str(currentLife))
 
 		if (currentMana > int(character.value_total_mana)):
 			value_total_mana = currentMana
-			bot_manager.screen["totalMana"].delete(0, END)
-			bot_manager.screen["totalMana"].insert(0, str(currentMana))
+			bot.screen["totalMana"].delete(0, END)
+			bot.screen["totalMana"].insert(0, str(currentMana))
 
 	def confirm_is_targeted(self, image):
 		left = pyautogui.locateAll(parent + '\src\images\left.png', image, grayscale=True, confidence=.85)
@@ -189,7 +189,7 @@ class Actuator():
 						child_widget.configure(bg="green")
 
 	def core(self):
-		bot_manager = self.bot_manager
+		bot = self.bot
 		FLAG_TIME_ANTI_IDLE = 0
 		FLAG_TIME_AUTO_SPELL = 0
 		FLAG_TIME_AUTO_UTAMO = 0
@@ -200,7 +200,7 @@ class Actuator():
 			FLAG_TIME_ANTI_IDLE += 1
 			FLAG_TIME_AUTO_UTAMO += 1
 
-			if (bot_manager.paused == True):
+			if (bot.paused == True):
 				break
 
 			# Take screenshot
@@ -264,7 +264,7 @@ class Actuator():
 
 			self.screen.title('Tibia Bot - Running - Life: ' + str(lifeValue) + ' // Mana: ' + str(manaValue))
 			if (lifeValue.isnumeric() and manaValue.isnumeric()):
-				self.config_heal(bot_manager.screen, listHasSSA, list_has_energy_ring, list_has_might_ring, int(lifeValue), int(manaValue))
+				self.config_heal(bot.screen, listHasSSA, list_has_energy_ring, list_has_might_ring, int(lifeValue), int(manaValue))
 
 			food = im
 			food = food.crop((int(listPoints[8]), int(listPoints[9]), int(listPoints[10]), int(listPoints[11])))
@@ -278,20 +278,20 @@ class Actuator():
 			hasUtito = pyautogui.locateAll(parent + '\src\images\\utito.jpeg', food, grayscale=True, confidence=.75)
 			listHasUtito = list(hasUtito)
 
-			mustEatFood = bot_manager.screen["eatFood"].get()
-			keyPressEatFood = bot_manager.screen["keyPressFood"].get().lower()
-			mustUseAutoSpell = bot_manager.screen["autoSpell"].get()
-			keyAutoSpell = bot_manager.screen["keyAutoSpell"].get().lower()
-			timeAutoSpell = bot_manager.screen["timeAutoSpell"].get()
-			mustUseHur = bot_manager.screen["autoRun"].get()
-			spellHur = bot_manager.screen["spellHur"].get().lower()
-			mustUseUtamo = bot_manager.screen["autoUtamo"].get()
-			keyAutoUtamo = bot_manager.screen["keyUtamoVita"].get().lower()
-			mustUseUtito= bot_manager.screen["autoUtito"].get()
-			keyAutoUtito = bot_manager.screen["keyUtito"].get().lower()
-			isAntiIdleOn= bot_manager.screen["antiIdle"].get()
-			life_to_use_sio = bot_manager.screen["lifeToUseSio"].get()
-			key_sio = bot_manager.screen["keyForSio"].get().lower()
+			mustEatFood = bot.screen["eatFood"].get()
+			keyPressEatFood = bot.screen["keyPressFood"].get().lower()
+			mustUseAutoSpell = bot.screen["autoSpell"].get()
+			keyAutoSpell = bot.screen["keyAutoSpell"].get().lower()
+			timeAutoSpell = bot.screen["timeAutoSpell"].get()
+			mustUseHur = bot.screen["autoRun"].get()
+			spellHur = bot.screen["spellHur"].get().lower()
+			mustUseUtamo = bot.screen["autoUtamo"].get()
+			keyAutoUtamo = bot.screen["keyUtamoVita"].get().lower()
+			mustUseUtito= bot.screen["autoUtito"].get()
+			keyAutoUtito = bot.screen["keyUtito"].get().lower()
+			isAntiIdleOn= bot.screen["antiIdle"].get()
+			life_to_use_sio = bot.screen["lifeToUseSio"].get()
+			key_sio = bot.screen["keyForSio"].get().lower()
 
 			if (self.already_checked):
 				self.check_sio_bar()

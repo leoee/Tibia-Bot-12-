@@ -3,10 +3,10 @@ from threading import Thread
 import sys
 
 class KeyListener(Thread):
-	def __init__ (self, screen, bot_manager):
+	def __init__ (self, screen, bot):
 		Thread.__init__(self)
 		self.screen = screen
-		self.bot_manager = bot_manager
+		self.bot = bot
 		self.bot_is_running = False
 		self.running = True
 		self.keyboard = Listener()
@@ -27,7 +27,7 @@ class KeyListener(Thread):
 					elif (str(child_widget) == ".!button4"):
 						child_widget.configure(bg="green")
 			self.bot_is_running = False
-			self.bot_manager.pause()
+			self.bot.pause()
 			self.screen.title('TibiaBot - Stopped')
 			return True
 		elif key == Key.insert and self.bot_is_running == False:
@@ -38,7 +38,7 @@ class KeyListener(Thread):
 						child_widget.configure(bg="green")
 					elif (str(child_widget) == ".!button4"):
 						child_widget.configure(bg="red")
-			self.bot_manager.resume()
+			self.bot.resume()
 			self.bot_is_running = True
 			self.screen.title('TibiaBot - Running')
 			return True
