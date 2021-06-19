@@ -13,6 +13,8 @@ from pynput.mouse import Listener as MouseListener
 from pynput import mouse
 from model.character import Character
 
+# This class contains all logics and actions.
+
 path = os.getcwd()
 #a = os.path.dirname(os.path.abspath(__file__))
 parent = os.path.dirname(path)

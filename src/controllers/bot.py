@@ -3,6 +3,7 @@ import time
 from .key_listener import KeyListener
 from .actuator import Actuator
 
+# This class manage bot status: Running, Stopped. It also create a Actuator and KeyListener
 
 class Bot(threading.Thread):
 	def __init__(self, screen):

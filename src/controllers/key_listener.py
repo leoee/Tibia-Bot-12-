@@ -2,6 +2,8 @@ from pynput.keyboard import Key, Listener
 from threading import Thread
 import sys
 
+# This class is a listener of user actions and allow user to control some features with the keys.
+
 class KeyListener(Thread):
 	def __init__ (self, screen, bot):
 		Thread.__init__(self)
