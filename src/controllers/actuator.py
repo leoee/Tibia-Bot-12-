@@ -114,17 +114,6 @@ class Actuator():
 			bot.screen["totalMana"].delete(0, END)
 			bot.screen["totalMana"].insert(0, str(currentMana))
 
-	def confirm_is_targeted(self, image):
-		left = pyautogui.locateAll(parent + '\src\images\left.png', image, grayscale=True, confidence=.85)
-		right = pyautogui.locateAll(parent + '\src\images\right.png', image, grayscale=True, confidence=.85)
-		top = pyautogui.locateAll(parent + '\src\images\top.png', image, grayscale=True, confidence=.85)
-		bottom = pyautogui.locateAll(parent + '\src\images\bottom.png', image, grayscale=True, confidence=.85)
-			
-		if (left != None and right != None and top != None and bottom != None):
-			return True
-
-		return False
-
 	def identify_numbers_on_image(self, imgLife, imgMana, vector_life, vector_mana):
 		for x in range(0, 10):
 			vector_life[x] =  pyautogui.locateAll(parent + '\src\images\\' + str(x) + '.png', imgLife, grayscale=True, confidence=.95)
@@ -147,14 +136,6 @@ class Actuator():
 			currentValue += str(indexRemoved)
 			validIndex -= 1
 		return currentValue
-
-	def use_spell(self, spell):
-		pyautogui.write(spell)
-		pyautogui.press('enter')
-		pyautogui.write(spell)
-		pyautogui.press('enter')
-		pyautogui.write(spell)
-		pyautogui.press('enter')
 
 	def active_anti_idle(self):
 		direction = random.randint(0, 4)
@@ -192,6 +173,48 @@ class Actuator():
 				if child_widget.winfo_class() == 'Button':
 					if (str(child_widget) == ".!button"):
 						child_widget.configure(bg="green")
+
+	def auto_sio_partner(self, life_to_use_sio, key_sio):
+		self.check_sio_bar()
+
+		# Cut image on the party list
+		self.autoSio = self.autoSio.crop((int(self.x1), int(self.y1), int(self.x2), int(self.y2)))
+		self.np_im = numpy.array(self.autoSio)
+
+		# Get RGB value of the cutted image
+		blue, green, red = self.np_im[..., 0], self.np_im[..., 1], self.np_im[..., 2]
+
+		total = int(self.x2- self.x1 + self.y2 - self.y1)
+		cont_life = 0
+		cont_blue = 0
+		cont_green = 0
+		cont_red = 0
+
+		for pixel in blue:
+			for i in range(len(pixel)):
+				if (pixel[i] <= 70 and pixel[i] != 0):
+					cont_blue += 1
+		for pixel in red:
+			for i in range(len(pixel)):
+				if (pixel[i] <= 70 and pixel[i] != 0):
+					cont_red += 1
+		for pixel in green:
+			for i in range(len(pixel)):
+				if (pixel[i] <= 70 and pixel[i] != 0):
+					cont_green += 1
+
+		cont_life = int((cont_blue + cont_green + cont_red)/3)
+
+		if (key_sio != ' ' and life_to_use_sio != ' '):
+			if (life_to_use_sio == '90%' and cont_life >= 10):
+				pyautogui.press(key_sio)
+				cont_life = 0
+			elif (life_to_use_sio == '70%' and cont_life >= 60):
+				pyautogui.press(key_sio)
+				cont_life = 0
+			elif (life_to_use_sio == '50%' and cont_life >= 80):
+				pyautogui.press(key_sio)
+				cont_life = 0		
 
 	def core(self):
 		bot = self.bot
@@ -268,8 +291,8 @@ class Actuator():
 			manaValue = self.convert_numbers_to_string(validIndexMana, vector_mana, manaValue)
 
 			self.screen.title('Tibia Bot - Running - Life: ' + str(lifeValue) + ' // Mana: ' + str(manaValue))
+			self.character.set_all_attributes_about_character()
 			if (lifeValue.isnumeric() and manaValue.isnumeric()):
-				self.character.set_all_attributes_about_character()
 				self.self_heal(bot.screen, self.character, listHasSSA, list_has_energy_ring, list_has_might_ring, int(lifeValue), int(manaValue))
 				self.self_equip_rings_and_amulets(bot.screen, self.character, listHasSSA, list_has_energy_ring, list_has_might_ring, int(lifeValue), int(manaValue))
 
@@ -286,75 +309,28 @@ class Actuator():
 			listHasUtito = list(hasUtito)
 
 			mustEatFood = bot.screen["eatFood"].get()
-			keyPressEatFood = bot.screen["keyPressFood"].get().lower()
 			mustUseAutoSpell = bot.screen["autoSpell"].get()
-			keyAutoSpell = bot.screen["keyAutoSpell"].get().lower()
-			timeAutoSpell = bot.screen["timeAutoSpell"].get()
 			mustUseHur = bot.screen["autoRun"].get()
-			spellHur = bot.screen["spellHur"].get().lower()
 			mustUseUtamo = bot.screen["autoUtamo"].get()
-			keyAutoUtamo = bot.screen["keyUtamoVita"].get().lower()
 			mustUseUtito= bot.screen["autoUtito"].get()
-			keyAutoUtito = bot.screen["keyUtito"].get().lower()
 			isAntiIdleOn= bot.screen["antiIdle"].get()
 			life_to_use_sio = bot.screen["lifeToUseSio"].get()
-			key_sio = bot.screen["keyForSio"].get().lower()
 
 			if (self.already_checked):
-				self.check_sio_bar()
+				self.auto_sio_partner(life_to_use_sio, self.character.key_sio)	
 
-				self.autoSio = self.autoSio.crop((int(self.x1), int(self.y1), int(self.x2), int(self.y2)))
-				self.np_im = numpy.array(self.autoSio)
-				blue, green, red = self.np_im[..., 0], self.np_im[..., 1], self.np_im[..., 2]
+			if (len(lstHasHungry) != 0 and mustEatFood and self.character.key_eat_food != " "):
+				pyautogui.press(self.character.key_eat_food)
 
-				total = int(self.x2- self.x1 + self.y2 - self.y1)
-				cont_life = 0
-				cont_blue = 0
-				cont_green = 0
-				cont_red = 0
+			if (len(lstHasSpeed) == 0 and mustUseHur and self.character.key_spell_hur != " "):
+				pyautogui.press(self.character.key_spell_hur)
 
-				for pixel in blue:
-					for i in range(len(pixel)):
-						if (pixel[i] <= 70 and pixel[i] != 0):
-							cont_blue += 1
-				for pixel in red:
-					for i in range(len(pixel)):
-						if (pixel[i] <= 70 and pixel[i] != 0):
-							cont_red += 1
-				for pixel in green:
-					for i in range(len(pixel)):
-						if (pixel[i] <= 70 and pixel[i] != 0):
-							cont_green += 1
-
-				cont_life = int((cont_blue + cont_green + cont_red)/3)
-
-				if (key_sio != ' ' and life_to_use_sio != ' '):
-					if (life_to_use_sio == '90%' and cont_life >= 10):
-						pyautogui.press(key_sio)
-						cont_life = 0
-					elif (life_to_use_sio == '70%' and cont_life >= 60):
-						pyautogui.press(key_sio)
-						cont_life = 0
-					elif (life_to_use_sio == '50%' and cont_life >= 80):
-						pyautogui.press(key_sio)
-						cont_life = 0						
-
-			if (len(lstHasHungry) != 0 and mustEatFood):
-				pyautogui.press(keyPressEatFood)
-
-			if (len(lstHasSpeed) == 0 and mustUseHur and spellHur != " "):
-				pyautogui.press(spellHur)
-
-			if (len(listHasUtamo) == 0 and keyAutoUtamo != "" and mustUseUtamo or (190 * 5) <= (FLAG_TIME_AUTO_UTAMO)):
-				pyautogui.press(keyAutoUtamo)
+			if (len(listHasUtamo) == 0 and self.character.key_auto_utamo != "" and mustUseUtamo or (190 * 5) <= (FLAG_TIME_AUTO_UTAMO)):
+				pyautogui.press(self.character.key_auto_utamo)
 				FLAG_TIME_AUTO_UTAMO = 0
 
-			elif (len(listHasUtito) == 0 and mustUseUtito and keyAutoUtito != " "):
-				pyautogui.press(keyAutoUtito)
-
-			#elif (mustUseAutoSpell and keyAutoSpell != " " and timeAutoSpell * 5 <= FLAG_TIME_AUTO_SPELL):
-			#	pyautogui.press(keyAutoSpell)
-			#	FLAG_TIME_AUTO_SPELL = 0
+			elif (len(listHasUtito) == 0 and mustUseUtito and self.character.key_auto_utito != " "):
+				pyautogui.press(self.character.key_auto_utito)
 
 			elif (isAntiIdleOn and (60 * 5) < FLAG_TIME_ANTI_IDLE):
 				self.active_anti_idle()

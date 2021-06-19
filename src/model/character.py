@@ -16,6 +16,11 @@ class Character():
 		self.key_to_pull_ring = None
 		self.bar_to_pull_ring = None
 		self.ring_type = None
+		self.key_eat_food = None
+		self.key_spell_hur = None
+		self.key_auto_utamo = None
+		self.key_auto_utito = None
+		self.key_sio = None
 
 
 	def set_all_attributes_about_character(self):
@@ -44,5 +49,10 @@ class Character():
 		self.value_to_pull_ring = bot.screen["valueToPullRing"].get()
 		self.key_to_pull_ring = bot.screen["keyToPullRing"].get().lower()
 		self.ring_type = bot.screen["ringType"].get()
+		self.key_eat_food = bot.screen["keyPressFood"].get().lower()
+		self.key_spell_hur = bot.screen["spellHur"].get().lower()
+		self.key_auto_utamo = bot.screen["keyUtamoVita"].get().lower()
+		self.key_auto_utito = bot.screen["keyUtito"].get().lower()
+		self.key_sio = bot.screen["keyForSio"].get().lower()
 
 	
