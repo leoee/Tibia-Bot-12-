@@ -2,13 +2,11 @@ from pynput.keyboard import Key, Listener
 from threading import Thread
 import sys
 
-# This class is a listener of user actions and allow user to control some features with the keys.
-
 class KeyListener(Thread):
-	def __init__ (self, screen, bot):
+	def __init__ (self, screen, bot_manager):
 		Thread.__init__(self)
 		self.screen = screen
-		self.bot = bot
+		self.bot_manager = bot_manager
 		self.bot_is_running = False
 		self.running = True
 		self.keyboard = Listener()
@@ -29,7 +27,7 @@ class KeyListener(Thread):
 					elif (str(child_widget) == ".!button4"):
 						child_widget.configure(bg="green")
 			self.bot_is_running = False
-			self.bot.pause()
+			self.bot_manager.pause()
 			self.screen.title('TibiaBot - Stopped')
 			return True
 		elif key == Key.insert and self.bot_is_running == False:
@@ -40,7 +38,7 @@ class KeyListener(Thread):
 						child_widget.configure(bg="green")
 					elif (str(child_widget) == ".!button4"):
 						child_widget.configure(bg="red")
-			self.bot.resume()
+			self.bot_manager.resume()
 			self.bot_is_running = True
 			self.screen.title('TibiaBot - Running')
 			return True

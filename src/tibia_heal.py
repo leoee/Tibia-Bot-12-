@@ -8,7 +8,7 @@ import tkinter as tk
 from tkinter import *
 from pynput.mouse import Listener as MouseListener
 from pynput import mouse
-from controllers.bot import Bot
+from controllers.bot_manager import BotManager
 from controllers.actuator import Actuator
 
 configIndex = 0
@@ -23,7 +23,6 @@ def check_config_screen():
 
 	im.show()
 	create_popup_message('Please, confirm if the following points are valids\n P1' + str(P1) + ', P2' + str(P2))
-
 def on_move(x, y):
 	global firstTime
 
@@ -43,6 +42,7 @@ def on_click(x, y, button, pressed):
 			configIndex = 0
 			return False
 		else:
+
 			if (configIndex == 0):
 				P1 = [x, y]
 				configIndex = 1
@@ -58,23 +58,12 @@ def create_popup_message(msg):
 	popup.wm_title("Warning")
 	label = ttk.Label(popup, text=msg, font=("Verdana", 8))
 	label.pack(side="top", fill="x", pady=10)
-	B2 = ttk.Button(popup, text="Close", command = popup.destroy)
+	B2 = ttk.Button(popup, text="Ok", command = popup.destroy)
 	B2.pack()
 	popup.mainloop()
 
-def create_popup_message_config_screen(msg):
-	popup = tk.Tk()
-	popup.wm_title("Warning")
-	label = ttk.Label(popup, text=msg, font=("Verdana", 8))
-	label.pack(side="top", fill="x", pady=10)
-	B2 = ttk.Button(popup, text="Close", command = popup.destroy)
-	B2.pack()
-	B3 = ttk.Button(popup, text="Add", command = popup.destroy)
-	B3.pack()
-	popup.mainloop()
-
-def stop_bot(bot, screen):
-	bot.keyListener.bot_is_running = False
+def stop_bot(bot_manager, screen):
+	bot_manager.keyListener.bot_is_running = False
 	children_widgets = screen.winfo_children()
 
 	for child_widget in children_widgets:
@@ -85,14 +74,14 @@ def stop_bot(bot, screen):
 				child_widget.configure(bg="green")
 
 	screen.title('TibiaBot - Stopped')
-	bot.pause()
+	bot_manager.pause()
 
 def loadConfig(a, b):
 	print(a.get())
 	print(b.get())
 	
-def start_bot(bot, screen):
-	bot.keyListener.bot_is_running = True
+def start_bot(bot_manager, screen):
+	bot_manager.keyListener.bot_is_running = True
 	children_widgets = screen.winfo_children()
 
 	for child_widget in children_widgets:
@@ -102,13 +91,13 @@ def start_bot(bot, screen):
 			elif (str(child_widget) == ".!button4"):
 				child_widget.configure(bg="red")
 
-	value_total_mana = bot.screen["totalMana"].get()
-	value_total_life = bot.screen["totalLife"].get()
+	value_total_mana = bot_manager.screen["totalMana"].get()
+	value_total_life = bot_manager.screen["totalLife"].get()
 	
 	if (value_total_life.isdigit() == False or value_total_mana.isdigit() == False):
 		create_popup_message('Configure Total Life and Total Mana')
 	else:
-		bot.resume()
+		bot_manager.resume()
 		screen.title('TibiaBot - Running')
 
 def validate_bars_of_screen(screen, controller, itemsFromScreen):
@@ -168,7 +157,7 @@ def config_screen():
 	shouldListener = True
 	mouseListener.run()
 
-def create_screen(bot, controller):
+def create_screen(bot_manager, controller):
 	fKeys = ('F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 
 			'F9', 'F10', 'F11', 'F12', '1', '2', '3', '4'
 				, '5', '6', '7', '8', '9', '0', ' ')
@@ -418,7 +407,7 @@ def create_screen(bot, controller):
 		"ringType": ring_type	
 	}
 
-	bot.set_screen(itemsFromScreen)
+	bot_manager.set_screen(itemsFromScreen)
 
 	tk.Button(screen, 
 			  text='Check Party List',
@@ -445,13 +434,13 @@ def create_screen(bot, controller):
 										padx=4)
 
 	tk.Button(screen, 
-			  text='Stop', command = lambda: stop_bot(bot, screen)).grid(row=8, 
+			  text='Stop', command = lambda: stop_bot(bot_manager, screen)).grid(row=8, 
 														   column=2, 
 														   sticky=tk.W, 
 														   pady=4)
 
 	tk.Button(screen, 
-			  text='Start', command = lambda: start_bot(bot, screen)).grid(row=8, 
+			  text='Start', command = lambda: start_bot(bot_manager, screen)).grid(row=8, 
 														   column=1, 
 														   sticky=tk.W, 
 														   pady=4)
@@ -459,14 +448,16 @@ def create_screen(bot, controller):
 if __name__ == '__main__':
 	firstTime = True
 	screen = tk.Tk()
+	screen.geometry("800x300")
+	screen.resizable(False, False)
 	screen.title('TibiaBot - Stopped')
 
-	bot = Bot(screen)
+	bot_manager = BotManager(screen)
 
-	#controller = Actuator(screen, bot, keyListener)
-	create_screen(bot, bot.controller)
-	bot.start()
-	bot.pause()
+	#controller = Actuator(screen, bot_manager, keyListener)
+	create_screen(bot_manager, bot_manager.controller)
+	bot_manager.start()
+	bot_manager.pause()
 
 	tk.mainloop()
 	pyautogui.press('delete')
