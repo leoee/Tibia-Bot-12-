@@ -1,0 +1,14 @@
+{
+    "life": {
+        "left": 2386,
+        "top": 139,
+        "width": 119,
+        "height": 16
+    },
+    "mana": {
+        "left": 2386,
+        "top": 153,
+        "width": 120,
+        "height": 16
+    }
+}

@@ -9,6 +9,7 @@ import sys
 import tkinter as tk
 from tkinter import *
 import numpy
+import cv2
 from pynput.mouse import Listener as MouseListener
 from pynput import mouse
 from model.character import Character
@@ -33,6 +34,34 @@ class Actuator():
 		self.already_checked = False
 		self.autoSio = None
 		self.np_im = None
+
+	def count_pix_color(self, image, color):
+		# convert to HSV
+		hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+		h,s,v = cv2.split(hsv)
+
+		# create mask for blue color in hsv
+		# blue is 240 in range 0 to 360, so for opencv it would be 120
+		lower = None
+		upper = None
+
+		if color == 'RED':
+			lower = (100, 100, 100)
+			upper = (160, 255, 255)
+		elif color == 'BLUE':
+			lower = (0, 70, 50)
+			upper = (10, 255, 255)	
+		mask = cv2.inRange(hsv, lower, upper)
+
+		# count non-zero pixels in mask
+		count = numpy.count_nonzero(mask)
+		return count
+
+	def get_bar_locations(self):
+		with open(parent + '\src/bar_location.json', 'r') as openfile: 
+			locations = json.load(openfile)
+ 
+		return locations
 
 	def get_list_of_points_bar(self):
 		file = open(parent + "\src\conf\config_screen.txt", "r")
@@ -62,8 +91,10 @@ class Actuator():
 		if (character.value_total_life.isdigit() == False or character.value_total_mana.isdigit() == False):
 			return
 
-		currentLifePercent = (float(currentLife/int(character.value_total_life)) * 100)
-		currentManaPercent = (float(currentMana/int(character.value_total_mana)) * 100)
+		# currentLifePercent = (float(currentLife/int(character.value_total_life)) * 100)
+		# currentManaPercent = (float(currentMana/int(character.value_total_mana)) * 100)
+		currentLifePercent = currentLife
+		currentManaPercent = currentMana
 
 		if (character.key_to_press_when_life_90 != " " and currentLifePercent <= 90 and currentLifePercent > 70):
 			pyautogui.press(character.key_to_press_when_life_90)
@@ -71,6 +102,7 @@ class Actuator():
 			pyautogui.press(character.key_to_press_when_life_70)
 		elif (character.key_to_press_when_life_50 != " " and currentLifePercent <= 50):
 			pyautogui.press(character.key_to_press_when_life_50)
+		print(int(character.mana_percent_to_cure))
 
 		if (character.mana_percent_to_cure.isdigit() and currentManaPercent <= int(character.mana_percent_to_cure) and character.key_to_press_healing_mana != " "):
 			pyautogui.press(character.key_to_press_healing_mana)
@@ -117,29 +149,6 @@ class Actuator():
 			return True
 
 		return False
-
-	def identify_numbers_on_image(self, imgLife, imgMana, vector_life, vector_mana):
-		for x in range(0, 10):
-			vector_life[x] =  pyautogui.locateAll(parent + '\src\images\\' + str(x) + '.png', imgLife, grayscale=True, confidence=.95)
-			vector_mana[x] =  pyautogui.locateAll(parent + '\src\images\\' + str(x) + '.png', imgMana, grayscale=True, confidence=.95)
-
-	def convert_numbers_to_string(self, validIndex, vector, currentValue):
-		while(validIndex):
-			max = 2000
-			indexRemoved = 0
-			insideIndexRemove = 0
-			for value in vector:
-				if (vector[value] != None):
-					for valueIntoItem in vector[value]:
-						if (max > valueIntoItem[0]):
-							indexRemoved = value
-							insideIndexRemove = valueIntoItem
-							max = valueIntoItem[0]
-			if (insideIndexRemove != 0):
-				vector[indexRemoved].remove(insideIndexRemove)
-			currentValue += str(indexRemoved)
-			validIndex -= 1
-		return currentValue
 
 	def use_spell(self, spell):
 		pyautogui.write(spell)
@@ -205,15 +214,21 @@ class Actuator():
 
 			# Take screenshot
 			im = pyautogui.screenshot()
-			# Create copy of the screenshot
-			life = im
-			mana = im
 			equipment = im
 
 			# Cut screenshot according coordinates on the screen
 			listPoints = self.get_list_of_points_bar()
-			life = life.crop((int(listPoints[0]), int(listPoints[1]), int(listPoints[2]), int(listPoints[3])))
-			mana = mana.crop((int(listPoints[4]), int(listPoints[5]), int(listPoints[6]), int(listPoints[7])))
+			locations = self.get_bar_locations()
+			life_location = locations['life']
+			mana_location = locations['mana']
+
+			life = pyautogui.screenshot(region=(life_location['left'], life_location['top'], life_location['width'], life_location['height']))
+			total_red_pixels = self.count_pix_color(numpy.array(life), 'RED')
+
+			mana = pyautogui.screenshot(region=(mana_location['left'], mana_location['top'], mana_location['width'], mana_location['height']))
+			total_blue_pixels = self.count_pix_color(numpy.array(mana), 'BLUE')
+
+			# mana = mana.crop((int(listPoints[4]), int(listPoints[5]), int(listPoints[6]), int(listPoints[7])))
 			equipment = equipment.crop((int(listPoints[12]), int(listPoints[13]), int(listPoints[14]), int(listPoints[15])))
 
 			# Check if screen of the bot is active. This means user is configuring.
@@ -237,34 +252,26 @@ class Actuator():
 			if (self.keyListener.running == False):
 				self.keyListener.resume()
 
-			vector_life = {}
-			vector_mana = {}
+			lifeValue = 100
+			manaValue = 100
 
-			# Passing cutted images to identify which numbers its being showed on the life/mana bar.
-			self.identify_numbers_on_image(life, mana, vector_life, vector_mana)
+			if total_red_pixels < 600:
+				lifeValue = 50
+			elif total_red_pixels <= 750:
+				lifeValue = 70
+			elif total_red_pixels < 890:
+				lifeValue = 90
 
-			validIndexLife = 0
-			validIndexMana = 0
-			lifeValue = ""
-			manaValue = ""
+			if total_blue_pixels >= 340:
+				manaValue = 50
+			elif total_blue_pixels >= 235:
+				manaValue = 70
+			elif total_blue_pixels > 150:
+				manaValue = 90
 
-			# Change generator returned from vector_life and vector_mana to list
-			self.change_generator_to_list(vector_life, vector_mana)
-			
-			for i in range(0, 10):
-				validIndexLife += (sum(x is not None for x in vector_life[i]))
-				validIndexMana += (sum(x is not None for x in vector_mana[i]))
-				
-			if (validIndexLife == validIndexMana and validIndexMana == 0):
-				continue;
-
-			# Convert numbers from the screen to strings
-			lifeValue = self.convert_numbers_to_string(validIndexLife, vector_life, lifeValue)
-			manaValue = self.convert_numbers_to_string(validIndexMana, vector_mana, manaValue)
 
 			self.screen.title('Tibia Bot - Running - Life: ' + str(lifeValue) + ' // Mana: ' + str(manaValue))
-			if (lifeValue.isnumeric() and manaValue.isnumeric()):
-				self.config_heal(bot_manager.screen, listHasSSA, list_has_energy_ring, list_has_might_ring, int(lifeValue), int(manaValue))
+			self.config_heal(bot_manager.screen, listHasSSA, list_has_energy_ring, list_has_might_ring, int(lifeValue), int(manaValue))
 
 			food = im
 			food = food.crop((int(listPoints[8]), int(listPoints[9]), int(listPoints[10]), int(listPoints[11])))

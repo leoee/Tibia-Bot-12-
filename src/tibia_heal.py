@@ -17,42 +17,6 @@ P2 = 0
 firstTime = False
 shouldListener = False
 
-def check_config_screen():
-	im=pyautogui.screenshot()
-	im = im.crop((int(P1[0]), int(P1[1]), int(P2[0]), int(P2[1])))
-
-	im.show()
-	create_popup_message('Please, confirm if the following points are valids\n P1' + str(P1) + ', P2' + str(P2))
-def on_move(x, y):
-	global firstTime
-
-	if (firstTime == False):
-		return False
-
-def on_click(x, y, button, pressed):
-	global shouldListener
-	global configIndex, P1, P2
-
-	if pressed:
-		if (button == mouse.Button.right and shouldListener):
-			shouldListener = False
-			check_config_screen()
-			P1 = 0
-			P2 = 0
-			configIndex = 0
-			return False
-		else:
-
-			if (configIndex == 0):
-				P1 = [x, y]
-				configIndex = 1
-			elif (configIndex == 1):
-				P2 = [x, y]
-				configIndex = 0
-
-with MouseListener(on_move=on_move, on_click=on_click) as mouseListener:
-	mouseListener.join()
-
 def create_popup_message(msg):
 	popup = tk.Tk()
 	popup.wm_title("Warning")
@@ -82,23 +46,8 @@ def loadConfig(a, b):
 	
 def start_bot(bot_manager, screen):
 	bot_manager.keyListener.bot_is_running = True
-	children_widgets = screen.winfo_children()
-
-	for child_widget in children_widgets:
-		if child_widget.winfo_class() == 'Button':
-			if (str(child_widget) == ".!button5"):
-				child_widget.configure(bg="green")
-			elif (str(child_widget) == ".!button4"):
-				child_widget.configure(bg="red")
-
-	value_total_mana = bot_manager.screen["totalMana"].get()
-	value_total_life = bot_manager.screen["totalLife"].get()
-	
-	if (value_total_life.isdigit() == False or value_total_mana.isdigit() == False):
-		create_popup_message('Configure Total Life and Total Mana')
-	else:
-		bot_manager.resume()
-		screen.title('TibiaBot - Running')
+	bot_manager.resume()
+	screen.title('TibiaBot - Running')
 
 def validate_bars_of_screen(screen, controller, itemsFromScreen):
 	children_widgets = screen.winfo_children()
@@ -151,11 +100,28 @@ def validate_bars_of_screen(screen, controller, itemsFromScreen):
 	screen.title('Tibia Bot - Life: ' + str(lifeValue) + ' // Mana: ' + str(manaValue))
 
 def config_screen():
-	global shouldListener
-	if (shouldListener):
-		return
-	shouldListener = True
-	mouseListener.run()
+	location_life = pyautogui.locateOnScreen('images\\lifeBarFull.png', grayscale=True, confidence=.95)
+	location_mana = pyautogui.locateOnScreen('images\\manaBarFull.png', grayscale=True, confidence=.95)
+
+	locations = {
+		"life": {
+			"left": int(location_life[0]),
+			"top": int(location_life[1]),
+			"width": int(location_life[2]),
+			"height": int(location_life[3])
+		},
+		"mana": {
+			"left": int(location_mana[0]),
+			"top": int(location_mana[1]),
+			"width": int(location_mana[2]),
+			"height": int(location_mana[3])
+		}
+	}
+ 
+	json_object = json.dumps(locations, indent=4)
+	
+	with open("bar_location.json", "w") as outfile:
+			outfile.write(json_object)
 
 def create_screen(bot_manager, controller):
 	fKeys = ('F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 
