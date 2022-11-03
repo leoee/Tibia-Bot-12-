@@ -1,14 +1,14 @@
 {
     "life": {
-        "left": 2386,
-        "top": 139,
-        "width": 119,
-        "height": 16
+        "left": 1710,
+        "top": 179,
+        "width": 121,
+        "height": 13
     },
     "mana": {
-        "left": 2386,
-        "top": 153,
-        "width": 120,
-        "height": 16
+        "left": 1709,
+        "top": 195,
+        "width": 122,
+        "height": 12
     }
 }

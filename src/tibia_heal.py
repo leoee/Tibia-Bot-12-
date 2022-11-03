@@ -100,20 +100,20 @@ def validate_bars_of_screen(screen, controller, itemsFromScreen):
 	screen.title('Tibia Bot - Life: ' + str(lifeValue) + ' // Mana: ' + str(manaValue))
 
 def config_screen():
-	location_life = pyautogui.locateOnScreen('images\\lifeBarFull.png', grayscale=True, confidence=.95)
-	location_mana = pyautogui.locateOnScreen('images\\manaBarFull.png', grayscale=True, confidence=.95)
+	location_life = pyautogui.locateOnScreen('images\\lifeBarFull.png', confidence=.85)
+	location_mana = pyautogui.locateOnScreen('images\\manaBarFull.png', confidence=.85)
 
 	locations = {
 		"life": {
 			"left": int(location_life[0]),
 			"top": int(location_life[1]),
-			"width": int(location_life[2]),
+			"width": int(location_life[2] * 1.1),
 			"height": int(location_life[3])
 		},
 		"mana": {
 			"left": int(location_mana[0]),
 			"top": int(location_mana[1]),
-			"width": int(location_mana[2]),
+			"width": int(location_mana[2] * 1.1),
 			"height": int(location_mana[3])
 		}
 	}

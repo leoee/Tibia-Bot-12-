@@ -37,25 +37,46 @@ class Actuator():
 
 	def count_pix_color(self, image, color):
 		# convert to HSV
-		hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-		h,s,v = cv2.split(hsv)
-
-		# create mask for blue color in hsv
-		# blue is 240 in range 0 to 360, so for opencv it would be 120
-		lower = None
-		upper = None
+		# hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+		img_test = image
+		size = img_test.size
+		# h,s,v = cv2.split(hsv)
 
 		if color == 'RED':
-			lower = (100, 100, 100)
-			upper = (160, 255, 255)
+			print('entrou')
+			MIN = numpy.array([38, 58, 102], numpy.uint8)
+			MAX = numpy.array([99, 99, 102], numpy.uint8)
 		elif color == 'BLUE':
-			lower = (0, 70, 50)
-			upper = (10, 255, 255)	
-		mask = cv2.inRange(hsv, lower, upper)
+			MIN = numpy.array([38, 58, 102], numpy.uint8)
+			MAX = numpy.array([99, 99, 102], numpy.uint8)
+
+		dstr = cv2.inRange(img_test, MIN, MIN)
+		no_red = cv2.countNonZero(dstr)
+		print(no_red)
+		frac_red = numpy.divide((float(no_red)),(int(size)))
+		print(frac_red)
+		percent_red = numpy.multiply((int(frac_red)), 100)
+		print('Red: ' + str(percent_red) + '%')
+		# create mask for blue color in hsv
+		# blue is 240 in range 0 to 360, so for opencv it would be 120
+		# lower = None
+		# upper = None
+
+		# if color == 'RED':
+		# 	lower = (100, 100, 100)
+		# 	upper = (160, 255, 255)
+		# elif color == 'BLUE':
+		# 	lower = (0, 70, 50)
+		# 	upper = (10, 255, 255)	
+		# mask = cv2.inRange(hsv, lower, upper)
 
 		# count non-zero pixels in mask
-		count = numpy.count_nonzero(mask)
-		return count
+
+		# count_non_zero = numpy.count_nonzero(mask)
+		# count_zero = numpy.count_nonzero(mask == 0)
+		# total = count_non_zero + count_zero
+
+		return no_red
 
 	def get_bar_locations(self):
 		with open(parent + '\src/bar_location.json', 'r') as openfile: 
@@ -102,7 +123,6 @@ class Actuator():
 			pyautogui.press(character.key_to_press_when_life_70)
 		elif (character.key_to_press_when_life_50 != " " and currentLifePercent <= 50):
 			pyautogui.press(character.key_to_press_when_life_50)
-		print(int(character.mana_percent_to_cure))
 
 		if (character.mana_percent_to_cure.isdigit() and currentManaPercent <= int(character.mana_percent_to_cure) and character.key_to_press_healing_mana != " "):
 			pyautogui.press(character.key_to_press_healing_mana)
@@ -223,7 +243,9 @@ class Actuator():
 			mana_location = locations['mana']
 
 			life = pyautogui.screenshot(region=(life_location['left'], life_location['top'], life_location['width'], life_location['height']))
+			# life.show()
 			total_red_pixels = self.count_pix_color(numpy.array(life), 'RED')
+			# print('Red: ' + str(total_red_pixels))
 
 			mana = pyautogui.screenshot(region=(mana_location['left'], mana_location['top'], mana_location['width'], mana_location['height']))
 			total_blue_pixels = self.count_pix_color(numpy.array(mana), 'BLUE')
@@ -255,18 +277,18 @@ class Actuator():
 			lifeValue = 100
 			manaValue = 100
 
-			if total_red_pixels < 600:
+			if total_red_pixels >= 6:
 				lifeValue = 50
-			elif total_red_pixels <= 750:
+			elif total_red_pixels >= 4:
 				lifeValue = 70
-			elif total_red_pixels < 890:
+			elif total_red_pixels > 0:
 				lifeValue = 90
 
-			if total_blue_pixels >= 340:
+			if total_blue_pixels >= 6:
 				manaValue = 50
-			elif total_blue_pixels >= 235:
+			elif total_blue_pixels >= 4:
 				manaValue = 70
-			elif total_blue_pixels > 150:
+			elif total_blue_pixels > 0:
 				manaValue = 90
 
 
