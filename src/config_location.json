@@ -1,0 +1,32 @@
+{
+    "life": {
+        "left": 1710,
+        "top": 179,
+        "width": 143,
+        "height": 13
+    },
+    "mana": {
+        "left": 1709,
+        "top": 195,
+        "width": 144,
+        "height": 12
+    },
+    "statuses": {
+        "left": 1711,
+        "top": 394,
+        "width": 80,
+        "height": 14
+    },
+    "status_fight": {
+        "left": 1693,
+        "top": 0,
+        "width": 403,
+        "height": 432
+    },
+    "party_list": {
+        "left": 1700,
+        "top": 443,
+        "width": 219,
+        "height": 150
+    }
+}

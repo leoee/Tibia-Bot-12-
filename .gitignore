@@ -3,3 +3,4 @@ dist/
 src/__pycache__
 src/model/__pycache__
 src/controllers/__pycache__
+src/config_location.json

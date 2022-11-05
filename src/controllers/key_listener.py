@@ -22,9 +22,9 @@ class KeyListener(Thread):
 			children_widgets = self.screen.winfo_children()
 			for child_widget in children_widgets:
 				if child_widget.winfo_class() == 'Button':
-					if (str(child_widget) == ".!button5"):
+					if (str(child_widget) == ".!button9"):
 						child_widget.configure(bg="red")
-					elif (str(child_widget) == ".!button4"):
+					elif (str(child_widget) == ".!button8"):
 						child_widget.configure(bg="green")
 			self.bot_is_running = False
 			self.bot_manager.pause()
@@ -34,9 +34,9 @@ class KeyListener(Thread):
 			children_widgets = self.screen.winfo_children()
 			for child_widget in children_widgets:
 				if child_widget.winfo_class() == 'Button':
-					if (str(child_widget) == ".!button5"):
+					if (str(child_widget) == ".!button9"):
 						child_widget.configure(bg="green")
-					elif (str(child_widget) == ".!button4"):
+					elif (str(child_widget) == ".!button8"):
 						child_widget.configure(bg="red")
 			self.bot_manager.resume()
 			self.bot_is_running = True

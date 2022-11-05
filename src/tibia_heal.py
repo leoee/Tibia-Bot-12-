@@ -5,17 +5,22 @@ import os
 import pyautogui
 import sys
 import tkinter as tk
+import webbrowser
+import numpy
 from tkinter import *
 from pynput.mouse import Listener as MouseListener
 from pynput import mouse
 from controllers.bot_manager import BotManager
 from controllers.actuator import Actuator
+from controllers.pixel_configuration import PixelConfiguration
 
 configIndex = 0
-P1 = 0
-P2 = 0
 firstTime = False
 shouldListener = False
+pixel_configuration = PixelConfiguration()
+
+path = os.getcwd()
+parent = os.path.dirname(path)
 
 def create_popup_message(msg):
 	popup = tk.Tk()
@@ -26,15 +31,60 @@ def create_popup_message(msg):
 	B2.pack()
 	popup.mainloop()
 
+def get_bar_locations():
+	with open('config_location.json', 'r') as openfile: 
+		locations = json.load(openfile)
+
+	return locations
+
+def update_json(percentage, value):
+	with open('config_bar_values.json', 'r') as openfile: 
+		configuration = json.load(openfile)
+
+	configuration[percentage] = {
+		'value': value
+	}
+
+	json_object = json.dumps(configuration, indent=4)
+	
+	with open("config_bar_values.json", "w") as outfile:
+			outfile.write(json_object)
+
+def configure_status_90():
+	locations = get_bar_locations()
+	mana_location = locations['mana']
+
+	img_mana = pyautogui.screenshot(region=(mana_location['left'], mana_location['top'], mana_location['width'], mana_location['height']))
+	value = pixel_configuration.count_pix_color(numpy.array(img_mana), 'BLUE')
+	update_json('90', value)
+
+def configure_status_70():
+	locations = get_bar_locations()
+	mana_location = locations['mana']
+
+	img_mana = pyautogui.screenshot(region=(mana_location['left'], mana_location['top'], mana_location['width'], mana_location['height']))
+	value = pixel_configuration.count_pix_color(numpy.array(img_mana), 'BLUE')
+	update_json('70', value)
+
+
+def configure_status_50():
+	locations = get_bar_locations()
+	mana_location = locations['mana']
+
+	img_mana = pyautogui.screenshot(region=(mana_location['left'], mana_location['top'], mana_location['width'], mana_location['height']))
+	value = pixel_configuration.count_pix_color(numpy.array(img_mana), 'BLUE')
+	update_json('50', value)
+
+
 def stop_bot(bot_manager, screen):
 	bot_manager.keyListener.bot_is_running = False
 	children_widgets = screen.winfo_children()
 
 	for child_widget in children_widgets:
 		if child_widget.winfo_class() == 'Button':
-			if (str(child_widget) == ".!button5"):
+			if (str(child_widget) == ".!button9"):
 				child_widget.configure(bg="red")
-			elif (str(child_widget) == ".!button4"):
+			elif (str(child_widget) == ".!button8"):
 				child_widget.configure(bg="green")
 
 	screen.title('TibiaBot - Stopped')
@@ -43,85 +93,89 @@ def stop_bot(bot_manager, screen):
 def loadConfig(a, b):
 	print(a.get())
 	print(b.get())
-	
+
+def open_how_to_configure():
+	webbrowser.open('https://github.com/leoee/Tibia-Bot-12-')
+
 def start_bot(bot_manager, screen):
 	bot_manager.keyListener.bot_is_running = True
+	children_widgets = screen.winfo_children()
+
+	for child_widget in children_widgets:
+		if child_widget.winfo_class() == 'Button':
+			if (str(child_widget) == ".!button9"):
+				child_widget.configure(bg="green")
+			elif (str(child_widget) == ".!button8"):
+				child_widget.configure(bg="red")
 	bot_manager.resume()
 	screen.title('TibiaBot - Running')
 
-def validate_bars_of_screen(screen, controller, itemsFromScreen):
-	children_widgets = screen.winfo_children()
-	valueLife = itemsFromScreen["totalLife"].get()
-	valueMana = itemsFromScreen["totalMana"].get()
-	im=pyautogui.screenshot()
-	life = im
-	mana = im
-	list = controller.get_list_of_points_bar()
-	life = life.crop((int(list[0]), int(list[1]), int(list[2]), int(list[3])))
-	mana = mana.crop((int(list[4]), int(list[5]), int(list[6]), int(list[7])))
-	vector_life = {}
-	vector_mana = {}
-		
-	controller.identify_numbers_on_image(life, mana, vector_life, vector_mana)
-			
-	validIndexLife = 0
-	validIndexMana = 0
-	lifeValue = ""
-	manaValue = ""
-	
-	controller.change_generator_to_list(vector_life, vector_mana)
-	
-	for i in range(0, 10):
-		validIndexLife += (sum(x is not None for x in vector_life[i]))
-		validIndexMana += (sum(x is not None for x in vector_mana[i]))
-
-	lifeValue = controller.convert_numbers_to_string(validIndexLife, vector_life, lifeValue)
-	manaValue = controller.convert_numbers_to_string(validIndexMana, vector_mana, manaValue)
-
-	if (valueLife == "" or valueMana == ""):
-		create_popup_message('Set total life and total mana')
-
-	if (validIndexLife != len(valueLife)):
-		create_popup_message('Length total life does not match with your length from life bar.\n'+
-					'If your total life is right, please change your Life Bar points into config_screen.\n'+
-					'Your life is ' + str(valueLife) + ' but the bot identify ' + str(lifeValue))
-		return
-	elif (validIndexMana != len(valueMana)):
-		create_popup_message('Length total mana does not match with your length from mana bar.\n'+
-					'If your total mana is right, please change your Life Mana points into config_screen.\n'+
-					'Your mana is ' + str(valueMana) + ' but the bot identify ' + str(manaValue))
-		return
-	else:
-		for child_widget in children_widgets:
-			if child_widget.winfo_class() == 'Button':
-				if (str(child_widget) == ".!button3"):
-					child_widget.configure(bg="green")
-
-	screen.title('Tibia Bot - Life: ' + str(lifeValue) + ' // Mana: ' + str(manaValue))
+def check_config_screen():
+	locations = None
+	with open(parent + '\src/config_location.json', 'r') as openfile: 
+		locations = json.load(openfile)
+	life_location = locations['life']
+	mana_location = locations['mana']
+	statuses_location = locations['statuses']
+	equipment_location = locations['status_fight']
 
 def config_screen():
-	location_life = pyautogui.locateOnScreen('images\\lifeBarFull.png', confidence=.85)
-	location_mana = pyautogui.locateOnScreen('images\\manaBarFull.png', confidence=.85)
+	try:
+		width, height= pyautogui.size()
+		right_side = pyautogui.screenshot(region=(width * 0.7, 0, width * 0.3, height * 0.8))
+		location_life = pyautogui.locateOnScreen('images\\lifeBarFull.png', confidence=.85)
+		location_mana = pyautogui.locateOnScreen('images\\manaBarFull.png', confidence=.85)
+		location_statuses = list(pyautogui.locateAll('images\\situationBar.png', right_side, confidence=.65))[0]
+		location_party_list = pyautogui.locateOnScreen('images\\partyList.png', confidence=.75)
+		if location_life == None or location_life == None or location_statuses == None:
+			create_popup_message('The configuration did not work.')
+			return
 
-	locations = {
-		"life": {
-			"left": int(location_life[0]),
-			"top": int(location_life[1]),
-			"width": int(location_life[2] * 1.1),
-			"height": int(location_life[3])
-		},
-		"mana": {
-			"left": int(location_mana[0]),
-			"top": int(location_mana[1]),
-			"width": int(location_mana[2] * 1.1),
-			"height": int(location_mana[3])
+		if location_party_list == None:
+			location_party_list = [0, 0, 0, 0]
+
+		locations = {
+			"life": {
+				"left": int(location_life[0]),
+				"top": int(location_life[1]),
+				"width": int(location_life[2] * 1.3),
+				"height": int(location_life[3])
+			},
+			"mana": {
+				"left": int(location_mana[0]),
+				"top": int(location_mana[1]),
+				"width": int(location_mana[2] * 1.3),
+				"height": int(location_mana[3])
+			},
+			"statuses": {
+				"left": int(location_statuses[0] + width * 0.7),
+				"top": int(location_statuses[1]),
+				"width": int(location_statuses[2] * 2),
+				"height": int(location_statuses[3] * 1.2)
+			},
+			"status_fight": {
+				"left": int((location_statuses[0] + width * 0.7) * 0.99),
+				"top": int(0),
+				"width": int(location_statuses[0] * 1.1),
+				"height": abs(int(height * 0.4))
+			},
+			"party_list": {
+				"left": int(location_party_list[0]),
+				"top": int(location_party_list[1]),
+				"width": int(location_party_list[2]),
+				"height": int(location_party_list[3] * 3)
+			},
 		}
-	}
- 
-	json_object = json.dumps(locations, indent=4)
 	
-	with open("bar_location.json", "w") as outfile:
-			outfile.write(json_object)
+		json_object = json.dumps(locations, indent=4)
+		
+		with open("config_location.json", "w") as outfile:
+				outfile.write(json_object)
+
+		create_popup_message('The configuration worked.')
+	except:
+		create_popup_message('The configuration did not work.')
+		return
 
 def create_screen(bot_manager, controller):
 	fKeys = ('F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 
@@ -129,9 +183,9 @@ def create_screen(bot_manager, controller):
 				, '5', '6', '7', '8', '9', '0', ' ')
 			
 	tk.Label(screen, 
-			 text="Total Life").grid(row = 0)
+			 text="Current Life").grid(row = 0)
 	tk.Label(screen, 
-			 text="Total Mana").grid(row = 1)
+			 text="Current Mana").grid(row = 1)
 	tk.Label(screen, 
 			 text="Time(s)").grid(row=5, column = 8)
 	tk.Label(screen, 
@@ -145,11 +199,13 @@ def create_screen(bot_manager, controller):
 	timeAutoSpell = tk.Entry(screen, width=7)
 	
 	totalLife.grid(row=0, column=1)
+	totalLife.configure(state="disabled")
 	totalMana.grid(row=1, column=1)
+	totalMana.configure(state="disabled")
 	timeAutoSpell.grid(row=5, column = 9)
 
 	autoUtamo = IntVar()
-	Checkbutton(screen, text="Auto Utamo Vita", variable=autoUtamo).grid(row=0, column = 6, sticky=W)
+	Checkbutton(screen, text="Auto Utamo Vita", variable=autoUtamo, state='disable').grid(row=0, column = 6, sticky=W)
 
 	autoUtitoTempo = IntVar()
 	Checkbutton(screen, text="Auto Utito Tempo", variable=autoUtitoTempo).grid(row=1, column = 6, sticky=W)
@@ -164,7 +220,7 @@ def create_screen(bot_manager, controller):
 	Checkbutton(screen, text="Auto Run", variable=autoRun).grid(row=4, column = 6, sticky=W)
 
 	autoSpell = IntVar()
-	Checkbutton(screen, text="Auto Spell", variable=autoSpell).grid(row=5, column = 6, sticky=W)
+	Checkbutton(screen, text="Auto Spell", variable=autoSpell, state='disable').grid(row=5, column = 6, sticky=W)
 
 	textUtamoVita = StringVar()
 	keyUtamoVita = ttk.Combobox(screen, width = 6, textvariable = textUtamoVita)
@@ -377,11 +433,28 @@ def create_screen(bot_manager, controller):
 
 	tk.Button(screen, 
 			  text='Check Party List',
+				state='disabled',
 			  activebackground='green',
 			  command=lambda: controller.check_sio_bar()).grid(row=8, 
 										column=6, 
 										sticky=W, 
 										pady=4)
+	tk.Button(screen, 
+			  text='Check Config Screen',
+				state='disabled',
+			  command = lambda: check_config_screen()).grid(row=0, 
+										column=3, 
+										sticky=E, 
+										pady=4,
+										padx=4)
+
+	tk.Button(screen, 
+			  text='How to configure',
+			  command = lambda: open_how_to_configure()).grid(row=1, 
+										column=3, 
+										sticky=E, 
+										pady=4,
+										padx=4)
 
 	tk.Button(screen, 
 			  text='Config Screen',
@@ -390,11 +463,27 @@ def create_screen(bot_manager, controller):
 										column=4, 
 										sticky=W, 
 										pady=4)
+
 	tk.Button(screen, 
-			  text='Check Config Screen',
-			  bg='red',
-			  command = lambda: validate_bars_of_screen(screen, controller, itemsFromScreen)).grid(row=0, 
-										column=3, 
+			  text='Configure 90%',
+			  command = lambda: configure_status_90()).grid(row=0, 
+										column=9, 
+										sticky=E, 
+										pady=4,
+										padx=4)
+
+	tk.Button(screen, 
+			  text='Configure 70%',
+			  command = lambda: configure_status_70()).grid(row=1, 
+										column=9, 
+										sticky=E, 
+										pady=4,
+										padx=4)
+
+	tk.Button(screen, 
+			  text='Configure 50%',
+			  command = lambda: configure_status_50()).grid(row=2, 
+										column=9, 
 										sticky=E, 
 										pady=4,
 										padx=4)
@@ -414,11 +503,10 @@ def create_screen(bot_manager, controller):
 if __name__ == '__main__':
 	firstTime = True
 	screen = tk.Tk()
-	screen.geometry("800x300")
 	screen.resizable(False, False)
 	screen.title('TibiaBot - Stopped')
 
-	bot_manager = BotManager(screen)
+	bot_manager = BotManager(screen, pixel_configuration)
 
 	#controller = Actuator(screen, bot_manager, keyListener)
 	create_screen(bot_manager, bot_manager.controller)

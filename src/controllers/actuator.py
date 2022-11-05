@@ -21,12 +21,14 @@ parent = os.path.dirname(path)
 class Actuator():
 	screen = None
 	bot_manager = None
+	pixel_configuration = None
 
-	def __init__(self, bot_manager, screen, keyListener):
+	def __init__(self, bot_manager, screen, keyListener, pixel_configuration):
 		self.screen = screen
 		self.bot_manager = bot_manager
 		self.character = Character(bot_manager)
 		self.keyListener = keyListener
+		self.pixel_configuration = pixel_configuration
 		self.x1 = 0
 		self.x2 = 0
 		self.y1 = 0
@@ -35,51 +37,26 @@ class Actuator():
 		self.autoSio = None
 		self.np_im = None
 
-	def count_pix_color(self, image, color):
-		# convert to HSV
-		# hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-		img_test = image
-		size = img_test.size
-		# h,s,v = cv2.split(hsv)
+	def get_status_bar_in_percent(self, pixel_value):
+		with open(parent + '\src/config_bar_values.json', 'r') as openfile: 
+			configuration = json.load(openfile)
+		
+		value_90 = configuration['90']['value']
+		value_70 = configuration['70']['value']
+		value_50 = configuration['50']['value']
+		percentage_value = 100
 
-		if color == 'RED':
-			print('entrou')
-			MIN = numpy.array([38, 58, 102], numpy.uint8)
-			MAX = numpy.array([99, 99, 102], numpy.uint8)
-		elif color == 'BLUE':
-			MIN = numpy.array([38, 58, 102], numpy.uint8)
-			MAX = numpy.array([99, 99, 102], numpy.uint8)
+		if pixel_value >= int(value_50):
+			percentage_value = 50
+		elif pixel_value >= int(value_70):
+			percentage_value = 70
+		elif pixel_value > value_90:
+			percentage_value = 90
 
-		dstr = cv2.inRange(img_test, MIN, MIN)
-		no_red = cv2.countNonZero(dstr)
-		print(no_red)
-		frac_red = numpy.divide((float(no_red)),(int(size)))
-		print(frac_red)
-		percent_red = numpy.multiply((int(frac_red)), 100)
-		print('Red: ' + str(percent_red) + '%')
-		# create mask for blue color in hsv
-		# blue is 240 in range 0 to 360, so for opencv it would be 120
-		# lower = None
-		# upper = None
-
-		# if color == 'RED':
-		# 	lower = (100, 100, 100)
-		# 	upper = (160, 255, 255)
-		# elif color == 'BLUE':
-		# 	lower = (0, 70, 50)
-		# 	upper = (10, 255, 255)	
-		# mask = cv2.inRange(hsv, lower, upper)
-
-		# count non-zero pixels in mask
-
-		# count_non_zero = numpy.count_nonzero(mask)
-		# count_zero = numpy.count_nonzero(mask == 0)
-		# total = count_non_zero + count_zero
-
-		return no_red
+		return percentage_value
 
 	def get_bar_locations(self):
-		with open(parent + '\src/bar_location.json', 'r') as openfile: 
+		with open(parent + '\src/config_location.json', 'r') as openfile: 
 			locations = json.load(openfile)
  
 		return locations
@@ -99,21 +76,11 @@ class Actuator():
 			list.append(value)
 		return list
 
-	def change_generator_to_list(self, vector_life, vector_mana):
-		for i in range(0, 10):
-			vector_life[i] = list(vector_life[i])
-			vector_mana[i] = list(vector_mana[i])
-
 	def config_heal(self, screen, mustEquipSSA, must_equip_energy, must_equip_might, currentLife, currentMana):
 		bot_manager = self.bot_manager
 		self.character.set_all_attributes_about_character()
 		character = self.character
-		
-		if (character.value_total_life.isdigit() == False or character.value_total_mana.isdigit() == False):
-			return
 
-		# currentLifePercent = (float(currentLife/int(character.value_total_life)) * 100)
-		# currentManaPercent = (float(currentMana/int(character.value_total_mana)) * 100)
 		currentLifePercent = currentLife
 		currentManaPercent = currentMana
 
@@ -148,28 +115,6 @@ class Actuator():
 		if (character.mana_percent_to_train.isdigit() and currentManaPercent > int(character.mana_percent_to_train) and character.key_to_press_training_mana != " "):
 			pyautogui.press(character.key_to_press_training_mana)
 
-		# Auto update max Life/Mana
-		if (currentLife > int(character.value_total_life)):
-			value_total_life = currentLife
-			bot_manager.screen["totalLife"].delete(0, END)
-			bot_manager.screen["totalLife"].insert(0, str(currentLife))
-
-		if (currentMana > int(character.value_total_mana)):
-			value_total_mana = currentMana
-			bot_manager.screen["totalMana"].delete(0, END)
-			bot_manager.screen["totalMana"].insert(0, str(currentMana))
-
-	def confirm_is_targeted(self, image):
-		left = pyautogui.locateAll(parent + '\src\images\left.png', image, grayscale=True, confidence=.85)
-		right = pyautogui.locateAll(parent + '\src\images\right.png', image, grayscale=True, confidence=.85)
-		top = pyautogui.locateAll(parent + '\src\images\top.png', image, grayscale=True, confidence=.85)
-		bottom = pyautogui.locateAll(parent + '\src\images\bottom.png', image, grayscale=True, confidence=.85)
-			
-		if (left != None and right != None and top != None and bottom != None):
-			return True
-
-		return False
-
 	def use_spell(self, spell):
 		pyautogui.write(spell)
 		pyautogui.press('enter')
@@ -192,13 +137,24 @@ class Actuator():
 	def check_sio_bar(self):
 		#self.already_checked = False
 		listPoints = self.get_list_of_points_bar()
-		self.autoSio = pyautogui.screenshot()
-		self.autoSio = self.autoSio.crop((int(listPoints[16]), int(listPoints[17]), int(listPoints[18]), int(listPoints[19])))
-		#self.autoSio = self.autoSio.crop((int(listPoints[12]), int(listPoints[13]), int(listPoints[14]), int(listPoints[15])))
-		hasLifeBarSio = pyautogui.locateAll(parent + '\src\images\sio.png', self.autoSio, grayscale=True, confidence=.95)
+		locations = self.get_bar_locations()
+		party_list_location = locations['party_list']
+		# self.autoSio = pyautogui.screenshot()
+		self.autoSio = pyautogui.screenshot(region=(party_list_location['left'], party_list_location['top'], party_list_location['width'], party_list_location['height']))
+		hasLifeBarSio = pyautogui.locateAll(parent + '\src\images\sio.png', self.autoSio, grayscale=False, confidence=.95)
 		listLifeBarSio = list(hasLifeBarSio)
+		life_status_bar_sio = None
+		print(len(listLifeBarSio))
 
-		if (len(listLifeBarSio) != 0 and self.already_checked == False):
+		if len(listLifeBarSio) > 1:
+			if listLifeBarSio[0][1] <= listLifeBarSio[1][1]:
+				life_status_bar_sio = listLifeBarSio[0]
+			else:
+				life_status_bar_sio = listLifeBarSio[1]
+		elif len(listLifeBarSio) == 1:
+			life_status_bar_sio = listLifeBarSio[0]
+
+		if (life_status_bar_sio != None and self.already_checked == False):
 			self.already_checked = True
 
 			x1 = listLifeBarSio[0][0] + 8
@@ -241,70 +197,58 @@ class Actuator():
 			locations = self.get_bar_locations()
 			life_location = locations['life']
 			mana_location = locations['mana']
+			statuses_location = locations['statuses']
+			equipment_location = locations['status_fight']
+			party_list_location = locations['party_list']
 
 			life = pyautogui.screenshot(region=(life_location['left'], life_location['top'], life_location['width'], life_location['height']))
-			# life.show()
-			total_red_pixels = self.count_pix_color(numpy.array(life), 'RED')
+			total_red_pixels = self.pixel_configuration.count_pix_color(numpy.array(life), 'RED')
 			# print('Red: ' + str(total_red_pixels))
 
 			mana = pyautogui.screenshot(region=(mana_location['left'], mana_location['top'], mana_location['width'], mana_location['height']))
-			total_blue_pixels = self.count_pix_color(numpy.array(mana), 'BLUE')
+			total_blue_pixels = self.pixel_configuration.count_pix_color(numpy.array(mana), 'BLUE')
 
-			# mana = mana.crop((int(listPoints[4]), int(listPoints[5]), int(listPoints[6]), int(listPoints[7])))
-			equipment = equipment.crop((int(listPoints[12]), int(listPoints[13]), int(listPoints[14]), int(listPoints[15])))
+			equipment = pyautogui.screenshot(region=(equipment_location['left'], equipment_location['top'], equipment_location['width'], equipment_location['height']))
 
 			# Check if screen of the bot is active. This means user is configuring.
 			screenBot = pyautogui.locateAll(parent + '\src\images\\bot.png', im, grayscale=True, confidence=.70)
 			lstScreen = list(screenBot)
 
 			# Check if has SSA on the equipment.
-			hasSSA = pyautogui.locateAll(parent + '\src\images\ssa.png', equipment, grayscale=True, confidence=.90)
+			hasSSA = pyautogui.locateAll(parent + '\src\images\ssa.png', equipment, grayscale=True, confidence=.65)
 			listHasSSA = list(hasSSA)
 
 			# Check if has energy or might ring on the equipment.
-			has_energy_ring = pyautogui.locateAll(parent + '\src\images\energy_ring.png', equipment, grayscale=True, confidence=.90)
+			has_energy_ring = pyautogui.locateAll(parent + '\src\images\energy_ring.png', equipment, grayscale=True, confidence=.65)
 			list_has_energy_ring = list(has_energy_ring)
-			has_might_ring = pyautogui.locateAll(parent + '\src\images\might_ring.png', equipment, grayscale=True, confidence=.90)
+			has_might_ring = pyautogui.locateAll(parent + '\src\images\might_ring.png', equipment, grayscale=True, confidence=.65)
 			list_has_might_ring = list(has_might_ring)
 
+			lifeValue = self.get_status_bar_in_percent(total_red_pixels)
+			manaValue = self.get_status_bar_in_percent(total_blue_pixels)
+
 			if (len(lstScreen) != 0):
+				self.screen.title('Tibia Bot - Paused - Life: ' + str(lifeValue) + '% // Mana: ' + str(manaValue) + '%')
 				self.keyListener.stop()
 				continue
 
 			if (self.keyListener.running == False):
 				self.keyListener.resume()
 
-			lifeValue = 100
-			manaValue = 100
+			self.screen.title('Tibia Bot - Running - Life: <=' + str(lifeValue) + '% // Mana: <=' + str(manaValue) + '%')
 
-			if total_red_pixels >= 6:
-				lifeValue = 50
-			elif total_red_pixels >= 4:
-				lifeValue = 70
-			elif total_red_pixels > 0:
-				lifeValue = 90
-
-			if total_blue_pixels >= 6:
-				manaValue = 50
-			elif total_blue_pixels >= 4:
-				manaValue = 70
-			elif total_blue_pixels > 0:
-				manaValue = 90
-
-
-			self.screen.title('Tibia Bot - Running - Life: ' + str(lifeValue) + ' // Mana: ' + str(manaValue))
 			self.config_heal(bot_manager.screen, listHasSSA, list_has_energy_ring, list_has_might_ring, int(lifeValue), int(manaValue))
 
-			food = im
-			food = food.crop((int(listPoints[8]), int(listPoints[9]), int(listPoints[10]), int(listPoints[11])))
+			# Need refactor to increase performance. Need to use crop
+			tools = pyautogui.screenshot(region=(statuses_location['left'], statuses_location['top'], statuses_location['width'], statuses_location['height']))
 
-			hasHungry = pyautogui.locateAll(parent + '\src\images\\food.png', food, grayscale=True, confidence=.75)
+			hasHungry = pyautogui.locateAll(parent + '\src\images\\food.png', tools, grayscale=True, confidence=.70)
 			lstHasHungry = list(hasHungry)
-			hasSpeed = pyautogui.locateAll(parent + '\src\images\speed.png', food, grayscale=True, confidence=.75)
+			hasSpeed = pyautogui.locateAll(parent + '\src\images\speed.png', tools, grayscale=True, confidence=.70)
 			lstHasSpeed = list(hasSpeed)
-			hasUtamo = pyautogui.locateAll(parent + '\src\images\\utamo.png', food, grayscale=True, confidence=.75)
+			hasUtamo = pyautogui.locateAll(parent + '\src\images\\utamo.png', tools, grayscale=True, confidence=.70)
 			listHasUtamo = list(hasUtamo)
-			hasUtito = pyautogui.locateAll(parent + '\src\images\\utito.jpeg', food, grayscale=True, confidence=.75)
+			hasUtito = pyautogui.locateAll(parent + '\src\images\\utito.jpeg', tools, grayscale=True, confidence=.70)
 			listHasUtito = list(hasUtito)
 
 			mustEatFood = bot_manager.screen["eatFood"].get()
@@ -326,6 +270,7 @@ class Actuator():
 				self.check_sio_bar()
 
 				self.autoSio = self.autoSio.crop((int(self.x1), int(self.y1), int(self.x2), int(self.y2)))
+				self.autoSio.show()
 				self.np_im = numpy.array(self.autoSio)
 				blue, green, red = self.np_im[..., 0], self.np_im[..., 1], self.np_im[..., 2]
 
