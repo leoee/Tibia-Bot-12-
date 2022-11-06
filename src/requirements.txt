@@ -1,4 +1,4 @@
 pyautogui
 pyscreenshot
-pyscreenshot
+pynput
 opencv-python

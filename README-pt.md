@@ -3,16 +3,19 @@ Bot para Tibia 12+. <br>
 Isso não funciona no Global, somente em OtServer. <br>
 Foi testado em OtServers com versões 12+. Os mesmos permitiam uso de bots.<br>
 
+## Por que não funciona no Global?
+A intenção deste bot é ser usado em servidores que os mesmos permitem o uso. Isso fica como uma alternativa gratuita.<br>
+Além do mais, para funcionar no Global seria necessário adicionar novas ferramentas para visualização da tela, uma vez que screenshot é só através do jogo.
 ## Características
-- Auto Heal
+- Auto Heal 
 - Auto Speed
 - Auto Food
-- Auto Utamo
+- Auto Utamo (Disabled)
 - Auto Utito Tempo
 - Anti Idle
 - Auto SSA
 - Auto Equip Ring (Might and Energy)
-- Auto Sio (90%, 70% e 50%)
+- Auto Sio (90%, 70% e 50%) (Disabled)
 
 ## Dependências
 - Python 3.7+
@@ -28,69 +31,47 @@ Foi testado em OtServers com versões 12+. Os mesmos permitiam uso de bots.<br>
     - Instalando Pynput: ```pip install pynput```
     - Instalando OpenCv: ```pip install opencv-python```
 ## Como o bot funciona?
- Ele usa PyAutoGui para gerenciar os cliques do mouse e teclas, como as telas do F (F1, F2, etc). Pyscreenshot permite identificar objetos na tela, como barra de vida e mana. Pynput é usado para trigar um ouvinte para salvar suas coordenadas (x, y) do mouse quando você está cortando as imagens da sua tela.
-## Como configurar?
-Primeiro de tudo, você precisa configurar sua tela. Para isso, você precisa configurar as coordenadas da sua barra de vida, mana, ferramentas e batalhas.<br>
-Clique em "Config Screen" no bot. Depois de clicar, um ouvinte vai começar a salvar onde você clica com o botão esquerdo do mouse.<br> 
-![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/bot.png)<br>
-Clique em 2 pontos para cortar uma imagem. Ao finalizar os cliques, clique com o botão direito e o ouvinte será parado e uma imagem será mostrada. Se a imagem estiver correta, copie as coordenadas da mensagem pop-up e salve em "config_screen.txt". Seguem alguns exemplos de imagens abaixo para ajudá-lo no corte. Eu recomendo que você corte com espaço após o valor da vida e mana. Isso porque conforme você sobe de nível, os números que representam sua vida e mana aumentam. Se a imagem não for suficiente para ver todos os números, o bot não funcionará.<br>
-![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/lifeRD.png)<br>
-![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/manaRD.png)<br>
-![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/toolsRD.png)<br>
-![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/equipmentRD.png)<br>
-![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/partyListRD.png)<br>
-No projeto, existe um arquivo txt com as coordenadas. O conteúdo do arquivo é o seguinte:
-```
-***Life Bar*****
-x:"P1.x" - y:"P1.y"
-x:"P2.x" - y:"P2.y"
-***Mana Bar*****
-x:"P1.x" - y:"P1.y"
-x:"P2.x" - y:"P2.y"
-***Tools*****
-x:"P1.x" - y:"P1.y"
-x:"P2.x" - y:"P2.y"
-***Equipments*****
-x:"P1.x" - y:"P1.y"
-x:"P2.x" - y:"P2.y"
-***Party List*****
-x:"P1.x" - y:"P1.y"
-x:"P2.x" - y:"P2.y"
-```
-Outro exemplo<br>
-```
-***Life Bar*****
-x:"1193" - y:"138"
-x:"1344" - y:"154"
-***Mana Bar*****
-x:"1193" - y:"148"
-x:"1357" - y:"167"
-***Tools*****
-x:"1197" - y:"310"
-x:"1313" - y:"327"
-***Equipments*****
-x:"1194" - y:"168"
-x:"1307" - y:"324"
-***Party List*****
-x:"1190" - y:"400"
-x:"1357" - y:"477"
-```
-Esse é o padrão, por favor, não mude.<br>
+ Ele usa PyAutoGui para gerenciar os cliques do mouse e teclas, como as telas do F (F1, F2, etc). Pyscreenshot permite identificar objetos na tela, como barra de vida e mana. 
+ Ao clicar em Config Screen, o código vai buscar pelas barra de vida, mana, ferramentas e pelo equipamento. Caso encontre, ele vai salvar as coordenadas em um arquivo JSON para consulta durante o jogo.
 
-Após todas essas etapas, você pode verificar suas coordenadas com o botão "Check Config Screen". Se estiver ok, o botão será pintado de verde. Recomendo que você analise o tópico ***Aviso*** abaixo.<br>
+ #### Como ele identifica a porcentagem de vida e mana?
+ A partir da barra identificada, ele tira uma screenshot do momento e passa a mesma para a grayscale. Com essa escala, conseguimos identificar a porcentagem de cinza - o que representa a falta de cor azul e vermelha - e a partir daí identificamos a porcentagem.
+ Por isso é importante em cada máquina ser configurado o que representa cada porcentagem.
+
+ #### Como ele sabe a hora de usar magias de suporte?
+ Como foi previamente configurado a região da barra de ferramentas (símbolos de luta, speed, etc), ele consegue procurar por ícones.
+ Ele sempre irá procurar pelos seguintes símbolos<br>
+ ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/speed.png)
+ ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/food.png)
+ ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/utito.jpeg)
+ ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/utamo.png)
+## Como configurar?
+Primeiro de tudo, você precisa configurar sua tela. Para isso, certifique que a barra lateral de vida/mana está ativa. Além disso, também deve estar aparecendo a barra de status e os equipamentos.<br>
+Para conseguimos identificar sua barra de vida e mana, elas devem estar completas - isso é, com vida e mana full. Para a barra de ferramentas, você deve estar fora do templo em situação de combate (com o símbolo do fight). Veja o exemplo a seguir<br>
+![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/exampleRD.png)<br>
+Clique em "Config Screen" no bot. Depois de clicar, um pop-up irá dizer se a configuração foi bem sucedida. Você também pode abrir o arquivo config_location.json e confirmar de que todos os valores não estão zerados.<br> 
+
+
+Após todas essas etapas, você está agora apto a configurar o que significa 90%, 70% e 50% da barra de vida/mana. Para isso, gaste somente sua mana de acordo com os valores desejados.<br>
+Exemplo: se você possui 1000 de mana, use magias até chegar em 900 e clique no botão "Configure 90%". Use novamente até chegar em 700 e clique em "Configure 70%". Faça o mesmo para 50% e isso estará configurado.<br>
+Para confirmar de que a configuração de porcentagem de valores funcionou, inicie o bot e acompanhe no título da janela a porcentagem de mana e vida. Elas sempre vão mostrar mais ou menos a porcentagem atual. Veja o exemplo na imagem abaixo.<br>
+![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/titleRD.png)<br>
+*** Não é necessário gastar vida para configurar a barra. Apenas mana já é suficiente ***
 
 ## Como usar?
 Após a configuração, você pode usar. A forma como este bot funciona é analisando sua tela, então os recursos funcionarão *** SE VOCÊ MANTER NA TELA DO JOGO ***. Você pode mudar a tela, mas as funcionalidades serão executadas quando a tela do jogo estiver aparecendo.
 
-- Você deve configurar seu total de vida e total de mana com a quantidade de números que tem sua vida/mana. Com isto, o bot irá identificar qual sua real vida/mana. Sempre que upar, ele irá atualizar também.
 - Você pode usar o "Insert" para iniciar e pausar o bot quando quiser.
 - Você pode usar o "Delete" para fechar todo o bot a qualquer momento.
-- Para que o Auto Sio funcione, você deve abrir o Party list e filtrar pela ***ÚNICA*** pessoa que você deseja curar. Encha a vida da pessoal e clique em "Check Party List". Neste ponto, é importante que a vida da pessoa esteja em 100% para usar o botão. Caso seja identificado, o botão ficará verde e você está apto para usar a funcionalidade. Certifique-se de ter adicionado a localização do Party List no arquivo config_screen.txt.
+- Para que o Auto Sio funcione, você deve abrir o Party list e filtrar pela ***ÚNICA*** pessoa que você deseja curar. Encha a vida da pessoal e clique em "Check Party List". Neste ponto, é importante que a vida da pessoa esteja em 100% para usar o botão. Caso seja identificado, o botão ficará verde e você está apto para usar a funcionalidade. Certifique-se de ter adicionado a localização do Party List no arquivo config_screen.txt. (disabled)
 - Para as funcionalidades que não possuem uma caixa de seleção para ativar, basta colocar a hotkey em branco para não executar a funcionalidade.
 - Auto SSA deve ter um hotkey associadas que equipe o SSA.
 - Auto Equip Ring deve também possuir hotkey associadas que equipam o ring (Might ou Energy).
 - Em caso de Auto SSA e Auto Equip estiverem configurados, o tibia não permite subir os 2 ao mesmo tempo, portanto a prioridade será SSA.
 
-## Aviso
-Se você está tentando usar o bot, mas sempre consegue falhar na "Tela de Check Config", você deve tentar cortar os números do seu Tibia. Como você pode ver, dentro da pasta de imagens, temos várias imagens que representam os números. Corte todos os seus números dentro da tibia (da barra de vida e mana) e tente novamente. Apenas os números são necessários.
-Sempre quando usar "Check Config Screen" tenha certeza que todos os números estão sendo reconhecidos. Uma mensagem irá mostrar quais números estão sendo reconhecidos.
+## Avisos
+- Recomendado sempre utilizar as barras na sequência já mencionado acima;
+- Alguns pontos de melhoria ainda estão sendo implementados. Pode ser que a configuração não funcione 100% em sua máquina;
+- O bot foi testado em diferentes telas;
+- Caso você utiliza mais de 1 monitor com a opção de estender, o bot pode apresentar lags;
+- Por enquanto Auto Sio e Auto Utamo estão desativados. Estavam apresentando problemas com telas diferentes.

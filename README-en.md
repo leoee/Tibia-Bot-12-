@@ -1,4 +1,4 @@
-# TibiaBot12+
+# TibiaBot12+ (OUT OF DATE - SEE PT VERSION)
 Bot for Tibia 12+. <br>
 It doesn't work on TibiaGlobal, just in OTservers. <br>
 It was tested with OtServers 12+. The OtServers allowed bots.<br>
