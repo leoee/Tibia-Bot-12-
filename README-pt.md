@@ -45,7 +45,7 @@ Além do mais, para funcionar no Global seria necessário adicionar novas ferram
  ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/food.png)
  ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/utito.jpeg)
  ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/utamo.png)
-## Como configurar?
+## Como configurar? (Necessário somente a primeira vez)
 Primeiro de tudo, você precisa configurar sua tela. Para isso, certifique que a barra lateral de vida/mana está ativa. Além disso, também deve estar aparecendo a barra de status e os equipamentos.<br>
 Para conseguimos identificar sua barra de vida e mana, elas devem estar completas - isso é, com vida e mana full. Para a barra de ferramentas, você deve estar fora do templo em situação de combate (com o símbolo do fight). Veja o exemplo a seguir<br>
 ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/exampleRD.png)<br>
@@ -56,7 +56,8 @@ Após todas essas etapas, você está agora apto a configurar o que significa 90
 Exemplo: se você possui 1000 de mana, use magias até chegar em 900 e clique no botão "Configure 90%". Use novamente até chegar em 700 e clique em "Configure 70%". Faça o mesmo para 50% e isso estará configurado.<br>
 Para confirmar de que a configuração de porcentagem de valores funcionou, inicie o bot e acompanhe no título da janela a porcentagem de mana e vida. Elas sempre vão mostrar mais ou menos a porcentagem atual. Veja o exemplo na imagem abaixo.<br>
 ![alt text](https://github.com/leoee/bot_for_tibia12.01/blob/master/src/images/titleRD.png)<br>
-*** Não é necessário gastar vida para configurar a barra. Apenas mana já é suficiente ***
+*** Não é necessário gastar vida para configurar a barra. Apenas mana já é suficiente ***<br>
+Uma vez que tudo está configurado, as próximas utilizações não vão exigir essa configuração. Desde que as barras fiquem em suas localizações de quando configurado e de que as resoluções da tela não mudem.
 
 ## Como usar?
 Após a configuração, você pode usar. A forma como este bot funciona é analisando sua tela, então os recursos funcionarão *** SE VOCÊ MANTER NA TELA DO JOGO ***. Você pode mudar a tela, mas as funcionalidades serão executadas quando a tela do jogo estiver aparecendo.
