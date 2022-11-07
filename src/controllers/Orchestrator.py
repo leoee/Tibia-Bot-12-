@@ -1,34 +1,26 @@
 import time
-import json
-import logging
 import random
 import os
 import pyautogui
-import pyscreenshot as ImageGrab
-import sys
-import tkinter as tk
-from tkinter import *
 import numpy
-import cv2
-from pynput.mouse import Listener as MouseListener
-from pynput import mouse
 from model.character import Character
 
 path = os.getcwd()
-#a = os.path.dirname(os.path.abspath(__file__))
 parent = os.path.dirname(path)
 
-class Actuator():
+class Orchestrator():
 	screen = None
 	bot_manager = None
 	pixel_configuration = None
+	bar_configuration = None
 
-	def __init__(self, bot_manager, screen, keyListener, pixel_configuration):
+	def __init__(self, bot_manager, screen, keyListener, pixel_configuration, bar_configuration):
 		self.screen = screen
 		self.bot_manager = bot_manager
 		self.character = Character(bot_manager)
 		self.keyListener = keyListener
 		self.pixel_configuration = pixel_configuration
+		self.bar_configuration = bar_configuration
 		self.x1 = 0
 		self.x2 = 0
 		self.y1 = 0
@@ -37,47 +29,7 @@ class Actuator():
 		self.autoSio = None
 		self.np_im = None
 
-	def get_status_bar_in_percent(self, pixel_value):
-		with open(parent + '\src/config_bar_values.json', 'r') as openfile: 
-			configuration = json.load(openfile)
-		
-		value_90 = configuration['90']['value']
-		value_70 = configuration['70']['value']
-		value_50 = configuration['50']['value']
-		percentage_value = 100
-
-		if pixel_value >= int(value_50):
-			percentage_value = 50
-		elif pixel_value >= int(value_70):
-			percentage_value = 70
-		elif pixel_value > value_90:
-			percentage_value = 90
-
-		return percentage_value
-
-	def get_bar_locations(self):
-		with open(parent + '\src/config_location.json', 'r') as openfile: 
-			locations = json.load(openfile)
- 
-		return locations
-
-	def get_list_of_points_bar(self):
-		file = open(parent + "\src\conf\config_screen.txt", "r")
-		contents = file.read()
-		list = []
-		indexPrevious = 0
-		indexNext = 0
-		for i in range (20):
-			value = ""
-			indexPrevious = contents.index('"', indexNext + 1)
-			indexNext = contents.index('"', indexPrevious + 1)
-			for x in range(indexPrevious + 1, indexNext):
-				value += contents[x]
-			list.append(value)
-		return list
-
 	def config_heal(self, screen, mustEquipSSA, must_equip_energy, must_equip_might, currentLife, currentMana):
-		bot_manager = self.bot_manager
 		self.character.set_all_attributes_about_character()
 		character = self.character
 
@@ -136,8 +88,7 @@ class Actuator():
 
 	def check_sio_bar(self):
 		#self.already_checked = False
-		listPoints = self.get_list_of_points_bar()
-		locations = self.get_bar_locations()
+		locations = self.bar_configuration.get_bar_locations()
 		party_list_location = locations['party_list']
 		# self.autoSio = pyautogui.screenshot()
 		self.autoSio = pyautogui.screenshot(region=(party_list_location['left'], party_list_location['top'], party_list_location['width'], party_list_location['height']))
@@ -193,8 +144,7 @@ class Actuator():
 			equipment = im
 
 			# Cut screenshot according coordinates on the screen
-			listPoints = self.get_list_of_points_bar()
-			locations = self.get_bar_locations()
+			locations = self.bar_configuration.get_bar_locations()
 			life_location = locations['life']
 			mana_location = locations['mana']
 			statuses_location = locations['statuses']
@@ -202,11 +152,10 @@ class Actuator():
 			party_list_location = locations['party_list']
 
 			life = pyautogui.screenshot(region=(life_location['left'], life_location['top'], life_location['width'], life_location['height']))
-			total_red_pixels = self.pixel_configuration.count_pix_color(numpy.array(life), 'RED')
-			# print('Red: ' + str(total_red_pixels))
+			total_red_pixels = self.pixel_configuration.count_pix_color(numpy.array(life))
 
 			mana = pyautogui.screenshot(region=(mana_location['left'], mana_location['top'], mana_location['width'], mana_location['height']))
-			total_blue_pixels = self.pixel_configuration.count_pix_color(numpy.array(mana), 'BLUE')
+			total_blue_pixels = self.pixel_configuration.count_pix_color(numpy.array(mana))
 
 			equipment = pyautogui.screenshot(region=(equipment_location['left'], equipment_location['top'], equipment_location['width'], equipment_location['height']))
 
@@ -224,8 +173,8 @@ class Actuator():
 			has_might_ring = pyautogui.locateAll(parent + '\src\images\might_ring.png', equipment, grayscale=True, confidence=.65)
 			list_has_might_ring = list(has_might_ring)
 
-			lifeValue = self.get_status_bar_in_percent(total_red_pixels)
-			manaValue = self.get_status_bar_in_percent(total_blue_pixels)
+			lifeValue = self.bar_configuration.get_status_bar_in_percent(total_red_pixels)
+			manaValue = self.bar_configuration.get_status_bar_in_percent(total_blue_pixels)
 
 			if (len(lstScreen) != 0):
 				self.screen.title('Tibia Bot - Paused - Life: ' + str(lifeValue) + '% // Mana: ' + str(manaValue) + '%')

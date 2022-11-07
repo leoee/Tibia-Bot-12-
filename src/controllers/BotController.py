@@ -1,12 +1,11 @@
 import threading
-import time
-from .key_listener import KeyListener
-from .actuator import Actuator
+from .KeyListener import KeyListener
+from .Orchestrator import Orchestrator
 
 
-class BotManager(threading.Thread):
-	def __init__(self, screen, pixel_configuration):
-		super(BotManager, self).__init__()
+class BotController(threading.Thread):
+	def __init__(self, screen, pixel_configuration, bar_configuration):
+		super(BotController, self).__init__()
 
 		self.iterations = 0
 		self.screen = screen
@@ -15,7 +14,7 @@ class BotManager(threading.Thread):
 		self.state = threading.Condition()
 		self.keyListener = KeyListener(self.screen, self)
 		self.keyListener.start()
-		self.controller = Actuator(self, self.screen, self.keyListener, pixel_configuration)
+		self.controller = Orchestrator(self, self.screen, self.keyListener, pixel_configuration, bar_configuration)
 
 	def set_screen(self, screen):
 		self.screen = screen

@@ -1,32 +1,32 @@
 {
     "life": {
-        "left": 1710,
-        "top": 179,
+        "left": 2388,
+        "top": 141,
         "width": 143,
         "height": 13
     },
     "mana": {
-        "left": 1709,
-        "top": 195,
+        "left": 2387,
+        "top": 154,
         "width": 144,
         "height": 12
     },
     "statuses": {
-        "left": 1711,
-        "top": 394,
+        "left": 2392,
+        "top": 314,
         "width": 80,
         "height": 14
     },
     "status_fight": {
-        "left": 1693,
+        "left": 2368,
         "top": 0,
-        "width": 403,
+        "width": 660,
         "height": 432
     },
     "party_list": {
-        "left": 1700,
-        "top": 443,
-        "width": 219,
-        "height": 150
+        "left": 0,
+        "top": 0,
+        "width": 0,
+        "height": 0
     }
 }

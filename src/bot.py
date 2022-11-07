@@ -1,23 +1,19 @@
 import json
-import logging
-import random
 import os
 import pyautogui
-import sys
 import tkinter as tk
 import webbrowser
 import numpy
-from tkinter import *
-from pynput.mouse import Listener as MouseListener
-from pynput import mouse
-from controllers.bot_manager import BotManager
-from controllers.actuator import Actuator
-from controllers.pixel_configuration import PixelConfiguration
+from tkinter import ttk, Checkbutton, IntVar, StringVar, W, E
 
-configIndex = 0
-firstTime = False
-shouldListener = False
+from controllers.BotController import BotController
+from controllers.PixelConfiguration import PixelConfiguration
+from controllers.BarConfiguration import BarConfiguration
+from controllers.ScreenConfiguration import ScreenConfiguration
+
 pixel_configuration = PixelConfiguration()
+bar_configuration = BarConfiguration()
+screen_configuration = ScreenConfiguration()
 
 path = os.getcwd()
 parent = os.path.dirname(path)
@@ -55,7 +51,7 @@ def configure_status_90():
 	mana_location = locations['mana']
 
 	img_mana = pyautogui.screenshot(region=(mana_location['left'], mana_location['top'], mana_location['width'], mana_location['height']))
-	value = pixel_configuration.count_pix_color(numpy.array(img_mana), 'BLUE')
+	value = pixel_configuration.count_pix_color(numpy.array(img_mana))
 	update_json('90', value)
 
 def configure_status_70():
@@ -63,7 +59,7 @@ def configure_status_70():
 	mana_location = locations['mana']
 
 	img_mana = pyautogui.screenshot(region=(mana_location['left'], mana_location['top'], mana_location['width'], mana_location['height']))
-	value = pixel_configuration.count_pix_color(numpy.array(img_mana), 'BLUE')
+	value = pixel_configuration.count_pix_color(numpy.array(img_mana))
 	update_json('70', value)
 
 
@@ -72,7 +68,7 @@ def configure_status_50():
 	mana_location = locations['mana']
 
 	img_mana = pyautogui.screenshot(region=(mana_location['left'], mana_location['top'], mana_location['width'], mana_location['height']))
-	value = pixel_configuration.count_pix_color(numpy.array(img_mana), 'BLUE')
+	value = pixel_configuration.count_pix_color(numpy.array(img_mana))
 	update_json('50', value)
 
 
@@ -127,50 +123,7 @@ def config_screen():
 		location_mana = pyautogui.locateOnScreen('images\\manaBarFull.png', confidence=.85)
 		location_statuses = list(pyautogui.locateAll('images\\situationBar.png', right_side, confidence=.65))[0]
 		location_party_list = pyautogui.locateOnScreen('images\\partyList.png', confidence=.75)
-		if location_life == None or location_life == None or location_statuses == None:
-			create_popup_message('The configuration did not work.')
-			return
-
-		if location_party_list == None:
-			location_party_list = [0, 0, 0, 0]
-
-		locations = {
-			"life": {
-				"left": int(location_life[0]),
-				"top": int(location_life[1]),
-				"width": int(location_life[2] * 1.3),
-				"height": int(location_life[3])
-			},
-			"mana": {
-				"left": int(location_mana[0]),
-				"top": int(location_mana[1]),
-				"width": int(location_mana[2] * 1.3),
-				"height": int(location_mana[3])
-			},
-			"statuses": {
-				"left": int(location_statuses[0] + width * 0.7),
-				"top": int(location_statuses[1]),
-				"width": int(location_statuses[2] * 2),
-				"height": int(location_statuses[3] * 1.2)
-			},
-			"status_fight": {
-				"left": int((location_statuses[0] + width * 0.7) * 0.99),
-				"top": int(0),
-				"width": int(location_statuses[0] * 1.1),
-				"height": abs(int(height * 0.4))
-			},
-			"party_list": {
-				"left": int(location_party_list[0]),
-				"top": int(location_party_list[1]),
-				"width": int(location_party_list[2]),
-				"height": int(location_party_list[3] * 3)
-			},
-		}
-	
-		json_object = json.dumps(locations, indent=4)
-		
-		with open("config_location.json", "w") as outfile:
-				outfile.write(json_object)
+		bar_configuration.save_config_screen(width, height, location_life, location_mana, location_statuses, location_party_list)
 
 		create_popup_message('The configuration worked.')
 	except:
@@ -501,14 +454,12 @@ def create_screen(bot_manager, controller):
 														   pady=4)
 
 if __name__ == '__main__':
-	firstTime = True
 	screen = tk.Tk()
 	screen.resizable(False, False)
 	screen.title('TibiaBot - Stopped')
 
-	bot_manager = BotManager(screen, pixel_configuration)
+	bot_manager = BotController(screen, pixel_configuration, bar_configuration)
 
-	#controller = Actuator(screen, bot_manager, keyListener)
 	create_screen(bot_manager, bot_manager.controller)
 	bot_manager.start()
 	bot_manager.pause()

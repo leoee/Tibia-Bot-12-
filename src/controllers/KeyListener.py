@@ -1,6 +1,5 @@
 from pynput.keyboard import Key, Listener
 from threading import Thread
-import sys
 
 class KeyListener(Thread):
 	def __init__ (self, screen, bot_manager):

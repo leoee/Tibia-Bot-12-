@@ -74,4 +74,5 @@ Após a configuração, você pode usar. A forma como este bot funciona é anali
 - Alguns pontos de melhoria ainda estão sendo implementados. Pode ser que a configuração não funcione 100% em sua máquina;
 - O bot foi testado em diferentes telas;
 - Caso você utiliza mais de 1 monitor com a opção de estender, o bot pode apresentar lags;
-- Por enquanto Auto Sio e Auto Utamo estão desativados. Estavam apresentando problemas com telas diferentes.
+- Por enquanto Auto Sio e Auto Utamo estão desativados. Estavam apresentando problemas com telas diferentes;
+- O código está passando por alguns refactors graduais visando melhorar a manutebilidade/legibilidade.
